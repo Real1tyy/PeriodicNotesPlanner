@@ -64,6 +64,12 @@ export const SETTINGS_DEFAULTS = {
 	// ===== Auto-Generation Settings =====
 	AUTO_GENERATE_ON_LOAD: true,
 	GENERATE_PERIODS_AHEAD: 1, // Always generate 1 period into the future
+
+	// ===== PDF Link Settings =====
+	INCLUDE_PDF_FRONTMATTER: false,
+	INCLUDE_PDF_CONTENT: false,
+	PDF_NOTE_PROP: "Note",
+	PDF_CONTENT_HEADER: "## Note",
 } as const;
 
 /**

@@ -48,6 +48,7 @@ export class NoteGenerator {
 			await this.ensureFolderExists(filePath);
 			const file = await this.app.vault.create(filePath, "");
 			await this.writeFrontmatter(file, dt, periodType);
+			await this.writePdfContent(file, filePath);
 
 			return { success: true, filePath, alreadyExists: false };
 		} catch (error) {
@@ -99,6 +100,7 @@ export class NoteGenerator {
 
 	private async writeFrontmatter(file: TFile, dt: DateTime, periodType: PeriodType): Promise<void> {
 		const props = this.settings.properties;
+		const gen = this.settings.generation;
 		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
 		const periodInfo = createPeriodInfo(dt, periodType, format);
 		const links = this.buildPeriodLinks(periodInfo);
@@ -117,6 +119,11 @@ export class NoteGenerator {
 			if (links.year) fm[props.yearProp] = `[[${links.year}]]`;
 
 			fm[props.hoursAvailableProp] = hoursAvailable;
+
+			if (gen.includePdfFrontmatter) {
+				const pdfPath = this.getPdfPath(file.path);
+				fm[gen.pdfNoteProp] = `[[${pdfPath}]]`;
+			}
 		});
 	}
 
@@ -148,5 +155,20 @@ export class NoteGenerator {
 		if (!exists) {
 			await this.app.vault.createFolder(folder);
 		}
+	}
+
+	private getPdfPath(notePath: string): string {
+		return notePath.replace(/\.md$/, ".pdf");
+	}
+
+	private async writePdfContent(file: TFile, filePath: string): Promise<void> {
+		const gen = this.settings.generation;
+		if (!gen.includePdfContent) return;
+
+		const pdfPath = this.getPdfPath(filePath);
+		const content = `${gen.pdfContentHeader}\n\n![[${pdfPath}]]`;
+
+		const currentContent = await this.app.vault.read(file);
+		await this.app.vault.modify(file, currentContent + content);
 	}
 }

@@ -89,6 +89,12 @@ export type PropertySettings = z.infer<typeof PropertySettingsSchema>;
 export const GenerationSettingsSchema = z.object({
 	autoGenerateOnLoad: z.boolean().default(SETTINGS_DEFAULTS.AUTO_GENERATE_ON_LOAD),
 	generatePeriodsAhead: z.number().int().min(1).max(5).default(SETTINGS_DEFAULTS.GENERATE_PERIODS_AHEAD),
+
+	// PDF Link Settings
+	includePdfFrontmatter: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PDF_FRONTMATTER),
+	includePdfContent: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PDF_CONTENT),
+	pdfNoteProp: z.string().default(SETTINGS_DEFAULTS.PDF_NOTE_PROP),
+	pdfContentHeader: z.string().default(SETTINGS_DEFAULTS.PDF_CONTENT_HEADER),
 });
 
 export type GenerationSettings = z.infer<typeof GenerationSettingsSchema>;
