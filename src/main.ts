@@ -10,7 +10,6 @@ import { PERIOD_CONFIG } from "./types";
 import {
 	getActiveFileCache,
 	getLinkFromFrontmatter,
-	getParentLinkFromFrontmatter,
 	getPeriodTypeFromFrontmatter,
 	openNoteFile,
 	resolveNoteFile,
@@ -128,52 +127,9 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			},
 		});
 
-		this.addCommand({
-			id: "go-to-previous",
-			name: "Go to previous period",
-			checkCallback: (checking) => {
-				const context = getActiveFileCache(this.app);
-				if (!context) return false;
-				const props = this.settingsStore.currentSettings.properties;
-				const link = getLinkFromFrontmatter(context.cache, props.previousProp);
-				const periodType = getPeriodTypeFromFrontmatter(context.cache, props);
-				if (!link || !periodType) return false;
-				if (!checking) void this.navigateOrCreate(link, periodType);
-				return true;
-			},
-		});
-
-		this.addCommand({
-			id: "go-to-next",
-			name: "Go to next period",
-			checkCallback: (checking) => {
-				const context = getActiveFileCache(this.app);
-				if (!context) return false;
-				const props = this.settingsStore.currentSettings.properties;
-				const link = getLinkFromFrontmatter(context.cache, props.nextProp);
-				const periodType = getPeriodTypeFromFrontmatter(context.cache, props);
-				if (!link || !periodType) return false;
-				if (!checking) void this.navigateOrCreate(link, periodType);
-				return true;
-			},
-		});
-
-		this.addCommand({
-			id: "go-to-parent",
-			name: "Go to parent period",
-			checkCallback: (checking) => {
-				const context = getActiveFileCache(this.app);
-				if (!context) return false;
-				const props = this.settingsStore.currentSettings.properties;
-				const link = getParentLinkFromFrontmatter(context.cache, props);
-				const periodType = getPeriodTypeFromFrontmatter(context.cache, props);
-				if (!link || !periodType) return false;
-				const parentType = PERIOD_CONFIG[periodType].parent;
-				if (!parentType) return false;
-				if (!checking) void this.navigateOrCreate(link, parentType);
-				return true;
-			},
-		});
+		this.registerNavigationCommand("go-to-previous", "Go to previous period", "previousProp");
+		this.registerNavigationCommand("go-to-next", "Go to next period", "nextProp");
+		this.registerNavigationCommand("go-to-parent", "Go to parent period", "parentProp");
 
 		this.addCommand({
 			id: "show-children",
@@ -189,6 +145,32 @@ export default class PeriodicPlannerPlugin extends Plugin {
 						void this.app.workspace.getLeaf().openFile(selected.file);
 					}).open();
 				}
+				return true;
+			},
+		});
+	}
+
+	private registerNavigationCommand(
+		id: string,
+		name: string,
+		propKey: "previousProp" | "nextProp" | "parentProp"
+	): void {
+		this.addCommand({
+			id,
+			name,
+			checkCallback: (checking) => {
+				const context = getActiveFileCache(this.app);
+				if (!context) return false;
+
+				const props = this.settingsStore.currentSettings.properties;
+				const link = getLinkFromFrontmatter(context.cache, props[propKey]);
+				const periodType = getPeriodTypeFromFrontmatter(context.cache, props);
+				if (!link || !periodType) return false;
+
+				const targetType = propKey === "parentProp" ? PERIOD_CONFIG[periodType].parent : periodType;
+				if (!targetType) return false;
+
+				if (!checking) void this.navigateOrCreate(link, targetType);
 				return true;
 			},
 		});

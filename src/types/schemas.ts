@@ -65,6 +65,7 @@ export const PropertySettingsSchema = z.object({
 	// Navigation properties
 	previousProp: z.string().default(SETTINGS_DEFAULTS.PREVIOUS_PROP),
 	nextProp: z.string().default(SETTINGS_DEFAULTS.NEXT_PROP),
+	parentProp: z.string().default(SETTINGS_DEFAULTS.PARENT_PROP),
 
 	// Hierarchical link properties
 	weekProp: z.string().default(SETTINGS_DEFAULTS.WEEK_PROP),

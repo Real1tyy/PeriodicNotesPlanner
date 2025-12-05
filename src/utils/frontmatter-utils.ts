@@ -19,23 +19,7 @@ export function getPeriodTypeFromFrontmatter(cache: CachedMetadata | null, props
 }
 
 export function getParentLinkFromFrontmatter(cache: CachedMetadata | null, props: PropertySettings): string | null {
-	if (!cache?.frontmatter) return null;
-
-	const periodType = getPeriodTypeFromFrontmatter(cache, props);
-	if (!periodType) return null;
-
-	const parentPropMap: Record<string, string> = {
-		daily: props.weekProp,
-		weekly: props.monthProp,
-		monthly: props.quarterProp,
-		quarterly: props.yearProp,
-	};
-
-	const parentProp = parentPropMap[periodType];
-	if (!parentProp) return null;
-
-	const value = cache.frontmatter[parentProp] as string | undefined;
-	return value ? extractLinkTarget(value) : null;
+	return getLinkFromFrontmatter(cache, props.parentProp);
 }
 
 export function resolveNoteFile(app: App, linkTarget: string): TFile | null {

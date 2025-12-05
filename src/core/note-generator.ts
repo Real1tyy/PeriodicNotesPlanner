@@ -113,6 +113,7 @@ export class NoteGenerator {
 
 			if (links.previous) fm[props.previousProp] = `[[${links.previous}]]`;
 			if (links.next) fm[props.nextProp] = `[[${links.next}]]`;
+			if (links.parent) fm[props.parentProp] = `[[${links.parent}]]`;
 			if (links.week) fm[props.weekProp] = `[[${links.week}]]`;
 			if (links.month) fm[props.monthProp] = `[[${links.month}]]`;
 			if (links.quarter) fm[props.quarterProp] = `[[${links.quarter}]]`;
@@ -136,6 +137,11 @@ export class NoteGenerator {
 			previous: this.getNoteLink(prevDt, type),
 			next: this.getNoteLink(nextDt, type),
 		};
+
+		const parentType = PERIOD_CONFIG[type].parent;
+		if (parentType) {
+			links.parent = this.getNoteLink(dateTime, parentType);
+		}
 
 		for (const ancestorType of getAncestorPeriodTypes(type)) {
 			const { linkKey } = PERIOD_CONFIG[ancestorType];

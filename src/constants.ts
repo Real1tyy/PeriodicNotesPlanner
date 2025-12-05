@@ -27,6 +27,7 @@ export const SETTINGS_DEFAULTS = {
 	// Navigation properties
 	PREVIOUS_PROP: "Previous",
 	NEXT_PROP: "Next",
+	PARENT_PROP: "Parent",
 
 	// Hierarchical link properties
 	WEEK_PROP: "Week",

@@ -66,6 +66,7 @@ describe("getPeriodTypeFromFrontmatter", () => {
 	const props: PropertySettings = {
 		previousProp: "Previous",
 		nextProp: "Next",
+		parentProp: "Parent",
 		weekProp: "Week",
 		monthProp: "Month",
 		quarterProp: "Quarter",
@@ -99,6 +100,7 @@ describe("getParentLinkFromFrontmatter", () => {
 	const props: PropertySettings = {
 		previousProp: "Previous",
 		nextProp: "Next",
+		parentProp: "Parent",
 		weekProp: "Week",
 		monthProp: "Month",
 		quarterProp: "Quarter",
@@ -113,60 +115,19 @@ describe("getParentLinkFromFrontmatter", () => {
 
 	const createCache = (frontmatter: Record<string, unknown>): CachedMetadata => ({ frontmatter }) as CachedMetadata;
 
-	it("returns week link for daily note", () => {
+	it("returns parent link from frontmatter", () => {
 		const cache = createCache({
-			"Period Type": "daily",
-			Week: "[[W01-2025]]",
+			Parent: "[[W01-2025]]",
 		});
 		expect(getParentLinkFromFrontmatter(cache, props)).toBe("W01-2025");
 	});
 
-	it("returns month link for weekly note", () => {
-		const cache = createCache({
-			"Period Type": "weekly",
-			Month: "[[01-2025]]",
-		});
-		expect(getParentLinkFromFrontmatter(cache, props)).toBe("01-2025");
-	});
-
-	it("returns quarter link for monthly note", () => {
-		const cache = createCache({
-			"Period Type": "monthly",
-			Quarter: "[[Q1-2025]]",
-		});
-		expect(getParentLinkFromFrontmatter(cache, props)).toBe("Q1-2025");
-	});
-
-	it("returns year link for quarterly note", () => {
-		const cache = createCache({
-			"Period Type": "quarterly",
-			Year: "[[2025]]",
-		});
-		expect(getParentLinkFromFrontmatter(cache, props)).toBe("2025");
-	});
-
-	it("returns null for yearly note (no parent)", () => {
-		const cache = createCache({
-			"Period Type": "yearly",
-		});
-		expect(getParentLinkFromFrontmatter(cache, props)).toBeNull();
-	});
-
-	it("returns null when parent link is not set", () => {
-		const cache = createCache({
-			"Period Type": "daily",
-		});
+	it("returns null when parent is not set", () => {
+		const cache = createCache({});
 		expect(getParentLinkFromFrontmatter(cache, props)).toBeNull();
 	});
 
 	it("returns null when cache is null", () => {
 		expect(getParentLinkFromFrontmatter(null, props)).toBeNull();
-	});
-
-	it("returns null when period type is not recognized", () => {
-		const cache = createCache({
-			"Period Type": "unknown",
-		});
-		expect(getParentLinkFromFrontmatter(cache, props)).toBeNull();
 	});
 });

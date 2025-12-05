@@ -28,18 +28,14 @@ export interface PeriodChildren {
  * Represents links from a periodic note to its related periods
  */
 export interface PeriodLinks {
-	/** Link to the previous period of the same type */
 	previous: string | null;
-	/** Link to the next period of the same type */
 	next: string | null;
-	/** Link to the parent week (for daily notes) */
+	parent?: string;
 	week?: string;
-	/** Link to the parent month */
 	month?: string;
-	/** Link to the parent quarter */
 	quarter?: string;
-	/** Link to the parent year */
 	year?: string;
+	[key: string]: string | null | undefined;
 }
 
 /**

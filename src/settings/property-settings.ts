@@ -35,6 +35,14 @@ export class PropertySettings {
 			SETTINGS_DEFAULTS.NEXT_PROP
 		);
 
+		this.addPropertySetting(
+			containerEl,
+			"Parent link property",
+			"Property name for link to parent period (daily → week, weekly → month, etc.)",
+			"parentProp",
+			SETTINGS_DEFAULTS.PARENT_PROP
+		);
+
 		// Hierarchical properties
 		new Setting(containerEl)
 			.setName("Hierarchical links")
