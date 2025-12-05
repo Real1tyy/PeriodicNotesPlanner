@@ -300,16 +300,21 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	private insertCodeBlockAfterFrontmatter(content: string, allocations: TimeAllocation[]): string {
 		const settings = this.settingsStore.currentSettings;
 		const allocContent = serializeAllocations(allocations, settings.categories);
-		const codeBlock = `\`\`\`periodic-planner\n${allocContent}\n\`\`\`\n\n`;
+
+		let blockContent = "";
+		if (settings.generation.includePlanHeading && settings.generation.planHeadingContent) {
+			blockContent += `${settings.generation.planHeadingContent}\n\n`;
+		}
+		blockContent += `\`\`\`periodic-planner\n${allocContent}\n\`\`\`\n\n`;
 
 		const frontmatterMatch = content.match(/^---\n[\s\S]*?\n---\n?/);
 		if (frontmatterMatch) {
 			const frontmatter = frontmatterMatch[0];
 			const rest = content.slice(frontmatter.length);
-			return `${frontmatter}\n${codeBlock}${rest}`;
+			return `${frontmatter}\n${blockContent}${rest}`;
 		}
 
-		return codeBlock + content;
+		return blockContent + content;
 	}
 
 	private registerCommands(): void {

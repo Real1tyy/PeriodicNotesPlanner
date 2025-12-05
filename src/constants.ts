@@ -71,6 +71,10 @@ export const SETTINGS_DEFAULTS = {
 	INCLUDE_PDF_CONTENT: false,
 	PDF_NOTE_PROP: "Note",
 	PDF_CONTENT_HEADER: "## Note",
+
+	// ===== Time Budget Code Block Settings =====
+	INCLUDE_PLAN_HEADING: true,
+	PLAN_HEADING_CONTENT: "## Plan",
 } as const;
 
 /**

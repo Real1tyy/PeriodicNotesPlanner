@@ -96,6 +96,10 @@ export const GenerationSettingsSchema = z.object({
 	includePdfContent: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PDF_CONTENT),
 	pdfNoteProp: z.string().default(SETTINGS_DEFAULTS.PDF_NOTE_PROP),
 	pdfContentHeader: z.string().default(SETTINGS_DEFAULTS.PDF_CONTENT_HEADER),
+
+	// Time Budget Code Block Settings
+	includePlanHeading: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PLAN_HEADING),
+	planHeadingContent: z.string().default(SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT),
 });
 
 export type GenerationSettings = z.infer<typeof GenerationSettingsSchema>;

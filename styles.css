@@ -420,10 +420,12 @@
 .periodic-planner-edit-button-container {
 	display: flex;
 	justify-content: center;
+	gap: 12px;
 	margin-top: 16px;
 }
 
-.periodic-planner-edit-allocations-btn {
+.periodic-planner-edit-allocations-btn,
+.periodic-planner-enlarge-chart-btn {
 	padding: 10px 24px;
 	background: var(--interactive-accent);
 	color: var(--text-on-accent);
@@ -435,8 +437,55 @@
 	transition: all 0.15s ease;
 }
 
-.periodic-planner-edit-allocations-btn:hover {
+.periodic-planner-enlarge-chart-btn {
+	background: var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.periodic-planner-edit-allocations-btn:hover,
+.periodic-planner-enlarge-chart-btn:hover {
 	filter: brightness(1.1);
+}
+
+/* ===== Enlarged Chart Modal ===== */
+.modal:has(.periodic-planner-enlarged-chart-modal) {
+	width: 900px;
+	max-width: 95vw;
+	height: auto;
+	max-height: 90vh;
+}
+
+.periodic-planner-enlarged-chart-modal {
+	display: flex;
+	flex-direction: column;
+	padding: 28px;
+}
+
+.periodic-planner-enlarged-chart-header {
+	text-align: center;
+	margin-bottom: 24px;
+	padding-bottom: 20px;
+	border-bottom: 2px solid var(--interactive-accent);
+	flex-shrink: 0;
+}
+
+.periodic-planner-enlarged-chart-header h2 {
+	margin: 0;
+	font-size: 1.8em;
+	font-weight: 700;
+	color: var(--text-normal);
+}
+
+.periodic-planner-enlarged-chart-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px 0;
+}
+
+.periodic-planner-enlarged-chart-container canvas {
+	max-width: 100%;
+	max-height: 580px;
 }
 
 /* ===== Allocation Editor Modal ===== */

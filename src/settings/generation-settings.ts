@@ -119,5 +119,45 @@ export class GenerationSettings {
 						}));
 					});
 			});
+
+		new Setting(containerEl).setName("Time budget code block").setHeading();
+
+		containerEl.createEl("p", {
+			text: "Configure what is added when the time budget code block is auto-inserted into periodic notes.",
+			cls: "setting-item-description",
+		});
+
+		new Setting(containerEl)
+			.setName("Add heading above code block")
+			.setDesc("Add a markdown heading above the periodic-planner code block")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.includePlanHeading).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							includePlanHeading: value,
+						},
+					}));
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Plan heading content")
+			.setDesc("The markdown heading to add above the code block (e.g., ## Plan)")
+			.addText((text) => {
+				text
+					.setPlaceholder(SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT)
+					.setValue(this.settingsStore.currentSettings.generation.planHeadingContent)
+					.onChange(async (value) => {
+						await this.settingsStore.updateSettings((s) => ({
+							...s,
+							generation: {
+								...s.generation,
+								planHeadingContent: value || SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT,
+							},
+						}));
+					});
+			});
 	}
 }

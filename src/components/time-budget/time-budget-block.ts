@@ -5,11 +5,12 @@ import { addCls, cls } from "../../utils/css";
 import { getHoursForPeriodType } from "../../utils/time-budget-utils";
 import { AllocationEditorModal } from "./allocation-editor-modal";
 import {
-    getTotalAllocatedHours,
-    parseAllocationBlock,
-    resolveAllocations,
-    serializeAllocations,
+	getTotalAllocatedHours,
+	parseAllocationBlock,
+	resolveAllocations,
+	serializeAllocations,
 } from "./allocation-parser";
+import { EnlargedChartModal } from "./enlarged-chart-modal";
 import { getParentBudgets } from "./parent-budget-tracker";
 import { PieChartRenderer } from "./pie-chart-renderer";
 
@@ -21,6 +22,39 @@ export class TimeBudgetBlockRenderer {
 		private settings: PeriodicPlannerSettings
 	) {}
 
+	private async getFrontmatter(
+		file: TFile,
+		ctx: MarkdownPostProcessorContext
+	): Promise<Record<string, unknown> | null> {
+		const ctxFrontmatter = ctx.frontmatter as Record<string, unknown> | undefined;
+		if (ctxFrontmatter && Object.keys(ctxFrontmatter).length > 0) {
+			return ctxFrontmatter;
+		}
+
+		const cache = this.app.metadataCache.getFileCache(file);
+		if (cache?.frontmatter) {
+			return cache.frontmatter;
+		}
+
+		await new Promise<void>((resolve) => {
+			const handler = () => {
+				const updatedCache = this.app.metadataCache.getFileCache(file);
+				if (updatedCache?.frontmatter) {
+					this.app.metadataCache.off("resolved", handler);
+					resolve();
+				}
+			};
+			this.app.metadataCache.on("resolved", handler);
+			setTimeout(() => {
+				this.app.metadataCache.off("resolved", handler);
+				resolve();
+			}, 500);
+		});
+
+		const finalCache = this.app.metadataCache.getFileCache(file);
+		return finalCache?.frontmatter ?? null;
+	}
+
 	async render(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<void> {
 		el.empty();
 		el.addClass(cls("time-budget-block"));
@@ -31,8 +65,13 @@ export class TimeBudgetBlockRenderer {
 			return;
 		}
 
-		const cache = this.app.metadataCache.getFileCache(file);
-		const rawPeriodType: unknown = cache?.frontmatter?.[this.settings.properties.periodTypeProp];
+		const frontmatter = await this.getFrontmatter(file, ctx);
+		if (!frontmatter) {
+			this.renderError(el, "Cannot read frontmatter");
+			return;
+		}
+
+		const rawPeriodType: unknown = frontmatter[this.settings.properties.periodTypeProp];
 		const periodType = typeof rawPeriodType === "string" ? (rawPeriodType as PeriodType) : undefined;
 
 		if (!periodType) {
@@ -47,7 +86,7 @@ export class TimeBudgetBlockRenderer {
 			this.renderWarnings(el, unresolved);
 		}
 
-		const rawHours: unknown = cache?.frontmatter?.[this.settings.properties.hoursAvailableProp];
+		const rawHours: unknown = frontmatter[this.settings.properties.hoursAvailableProp];
 		const totalHours =
 			typeof rawHours === "number" ? rawHours : getHoursForPeriodType(this.settings.timeBudget, periodType);
 
@@ -203,6 +242,18 @@ export class TimeBudgetBlockRenderer {
 				}
 			});
 		});
+
+		if (currentAllocations.length > 0) {
+			const enlargeBtn = buttonContainer.createEl("button", {
+				text: "Enlarge chart",
+				cls: cls("enlarge-chart-btn"),
+			});
+
+			enlargeBtn.addEventListener("click", () => {
+				const periodLabel = `${periodType.charAt(0).toUpperCase() + periodType.slice(1)}: ${file.basename}`;
+				new EnlargedChartModal(this.app, currentAllocations, this.settings.categories, periodLabel).open();
+			});
+		}
 	}
 
 	private async updateCodeBlock(
