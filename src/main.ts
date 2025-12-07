@@ -12,6 +12,7 @@ import type { PeriodLinks } from "./types";
 import { PERIOD_CONFIG } from "./types";
 import { createPeriodInfo, getAncestorPeriodTypes, getNextPeriod, getPreviousPeriod } from "./utils/date-utils";
 import {
+	assignPeriodPropertiesToFrontmatter,
 	getActiveFileCache,
 	getLinkFromFrontmatter,
 	getPeriodTypeFromFrontmatter,
@@ -37,7 +38,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.addSettingTab(new PeriodicPlannerSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerVaultEvents();
-		this.registerCodeBlockProcessor();
 
 		this.app.workspace.onLayoutReady(() => {
 			void this.initializeOnLayoutReady();
@@ -52,6 +52,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 	private async initializeOnLayoutReady(): Promise<void> {
 		await this.indexer.start();
+		this.registerCodeBlockProcessor();
 
 		if (this.autoGenerator.shouldAutoGenerate()) {
 			await this.runAutoGeneration();
@@ -98,66 +99,29 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		const hoursAvailable = getHoursForPeriodType(settings.timeBudget, periodType);
 
 		await this.app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
-			if (fm[props.periodTypeProp] === undefined) {
-				fm[props.periodTypeProp] = periodType;
-			}
-			if (fm[props.periodStartProp] === undefined) {
-				fm[props.periodStartProp] = periodInfo.start;
-			}
-			if (fm[props.periodEndProp] === undefined) {
-				fm[props.periodEndProp] = periodInfo.end;
-			}
-			if (fm[props.previousProp] === undefined && links.previous) {
-				fm[props.previousProp] = `[[${links.previous}]]`;
-			}
-			if (fm[props.nextProp] === undefined && links.next) {
-				fm[props.nextProp] = `[[${links.next}]]`;
-			}
-			if (fm[props.parentProp] === undefined && links.parent) {
-				fm[props.parentProp] = `[[${links.parent}]]`;
-			}
-			if (fm[props.weekProp] === undefined && links.week) {
-				fm[props.weekProp] = `[[${links.week}]]`;
-			}
-			if (fm[props.monthProp] === undefined && links.month) {
-				fm[props.monthProp] = `[[${links.month}]]`;
-			}
-			if (fm[props.quarterProp] === undefined && links.quarter) {
-				fm[props.quarterProp] = `[[${links.quarter}]]`;
-			}
-			if (fm[props.yearProp] === undefined && links.year) {
-				fm[props.yearProp] = `[[${links.year}]]`;
-			}
-			if (fm[props.hoursAvailableProp] === undefined) {
-				fm[props.hoursAvailableProp] = hoursAvailable;
-			}
+			assignPeriodPropertiesToFrontmatter(fm, props, periodType, periodInfo, links, hoursAvailable, true);
 		});
 	}
 
 	private buildPeriodLinks(dateTime: DateTime, periodType: PeriodType): PeriodLinks {
-		const settings = this.settingsStore.currentSettings;
+		const noteGenerator = this.autoGenerator.getNoteGenerator();
 		const prevDt = getPreviousPeriod(dateTime, periodType);
 		const nextDt = getNextPeriod(dateTime, periodType);
 
-		const formatLink = (dt: DateTime, type: PeriodType): string => {
-			const format = settings.naming[PERIOD_CONFIG[type].formatKey];
-			return dt.toFormat(format);
-		};
-
 		const links: PeriodLinks = {
-			previous: formatLink(prevDt, periodType),
-			next: formatLink(nextDt, periodType),
+			previous: noteGenerator.getNoteLink(prevDt, periodType),
+			next: noteGenerator.getNoteLink(nextDt, periodType),
 		};
 
 		const parentType = PERIOD_CONFIG[periodType].parent;
 		if (parentType) {
-			links.parent = formatLink(dateTime, parentType);
+			links.parent = noteGenerator.getNoteLink(dateTime, parentType);
 		}
 
 		for (const ancestorType of getAncestorPeriodTypes(periodType)) {
 			const { linkKey } = PERIOD_CONFIG[ancestorType];
 			if (linkKey) {
-				links[linkKey] = formatLink(dateTime, ancestorType);
+				links[linkKey] = noteGenerator.getNoteLink(dateTime, ancestorType);
 			}
 		}
 

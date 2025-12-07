@@ -1,6 +1,7 @@
 import type { App, CachedMetadata, TFile } from "obsidian";
 import type { PeriodType } from "../constants";
-import type { PropertySettings } from "../types";
+import type { PeriodLinks, PropertySettings } from "../types";
+import type { PeriodInfo } from "./date-utils";
 
 export function extractLinkTarget(value: unknown): string | null {
 	if (typeof value !== "string") return null;
@@ -99,4 +100,39 @@ export function parseWikiLink(link: string): ParsedWikiLink | null {
 		fileName: fileName.replace(/\.md$/, ""),
 		alias,
 	};
+}
+
+export function assignPeriodPropertiesToFrontmatter(
+	fm: Record<string, unknown>,
+	props: PropertySettings,
+	periodType: PeriodType,
+	periodInfo: PeriodInfo,
+	links: PeriodLinks,
+	hoursAvailable: number,
+	onlyIfUndefined: boolean = false
+): void {
+	const setIfNeeded = (key: string, value: unknown): void => {
+		if (onlyIfUndefined && fm[key] !== undefined) return;
+		fm[key] = value;
+	};
+
+	const setLinkIfNeeded = (propKey: string, link: string | null | undefined): void => {
+		if (!link) return;
+		if (onlyIfUndefined && fm[propKey] !== undefined) return;
+		fm[propKey] = link;
+	};
+
+	setIfNeeded(props.periodTypeProp, periodType);
+	setIfNeeded(props.periodStartProp, periodInfo.start);
+	setIfNeeded(props.periodEndProp, periodInfo.end);
+
+	setLinkIfNeeded(props.previousProp, links.previous);
+	setLinkIfNeeded(props.nextProp, links.next);
+	setLinkIfNeeded(props.parentProp, links.parent);
+	setLinkIfNeeded(props.weekProp, links.week);
+	setLinkIfNeeded(props.monthProp, links.month);
+	setLinkIfNeeded(props.quarterProp, links.quarter);
+	setLinkIfNeeded(props.yearProp, links.year);
+
+	setIfNeeded(props.hoursAvailableProp, hoursAvailable);
 }

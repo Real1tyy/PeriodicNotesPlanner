@@ -24,7 +24,7 @@ import {
 	getStartOfPeriod,
 	type PeriodInfo,
 } from "../utils/date-utils";
-import { extractLinkTarget } from "../utils/frontmatter-utils";
+import { assignPeriodPropertiesToFrontmatter, createWikiLink, extractLinkTarget } from "../utils/frontmatter-utils";
 import { getHoursForPeriodType, roundHours } from "../utils/time-budget-utils";
 
 type Frontmatter = Record<string, unknown>;
@@ -96,6 +96,18 @@ export class NoteGenerator {
 	getNoteLink(dt: DateTime, periodType: PeriodType): string {
 		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
 		const periodStart = getStartOfPeriod(dt, periodType);
+		const displayName = formatPeriodName(periodStart, format);
+		const fullPath = this.getNotePath(dt, periodType).replace(/\.md$/, "");
+		return createWikiLink(fullPath, displayName);
+	}
+
+	getNotePathWithoutExtension(dt: DateTime, periodType: PeriodType): string {
+		return this.getNotePath(dt, periodType).replace(/\.md$/, "");
+	}
+
+	getNoteDisplayName(dt: DateTime, periodType: PeriodType): string {
+		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
+		const periodStart = getStartOfPeriod(dt, periodType);
 		return formatPeriodName(periodStart, format);
 	}
 
@@ -119,19 +131,7 @@ export class NoteGenerator {
 		const hoursAvailable = getHoursForPeriodType(this.settings.timeBudget, periodType);
 
 		await this.app.fileManager.processFrontMatter(file, (fm: Frontmatter) => {
-			fm[props.periodTypeProp] = periodType;
-			fm[props.periodStartProp] = periodInfo.start;
-			fm[props.periodEndProp] = periodInfo.end;
-
-			if (links.previous) fm[props.previousProp] = `[[${links.previous}]]`;
-			if (links.next) fm[props.nextProp] = `[[${links.next}]]`;
-			if (links.parent) fm[props.parentProp] = `[[${links.parent}]]`;
-			if (links.week) fm[props.weekProp] = `[[${links.week}]]`;
-			if (links.month) fm[props.monthProp] = `[[${links.month}]]`;
-			if (links.quarter) fm[props.quarterProp] = `[[${links.quarter}]]`;
-			if (links.year) fm[props.yearProp] = `[[${links.year}]]`;
-
-			fm[props.hoursAvailableProp] = hoursAvailable;
+			assignPeriodPropertiesToFrontmatter(fm, props, periodType, periodInfo, links, hoursAvailable, false);
 
 			if (gen.includePdfFrontmatter) {
 				const pdfPath = this.getPdfPath(file.path);
