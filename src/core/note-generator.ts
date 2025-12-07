@@ -24,6 +24,7 @@ import {
 	getStartOfPeriod,
 	type PeriodInfo,
 } from "../utils/date-utils";
+import { extractLinkTarget } from "../utils/frontmatter-utils";
 import { getHoursForPeriodType, roundHours } from "../utils/time-budget-utils";
 
 type Frontmatter = Record<string, unknown>;
@@ -239,12 +240,10 @@ export class NoteGenerator {
 		if (typeof propName !== "string") return null;
 
 		const linkValue: unknown = cache.frontmatter?.[propName];
-		if (!linkValue || typeof linkValue !== "string") return null;
+		const linkPath = extractLinkTarget(linkValue);
+		if (!linkPath) return null;
 
-		const linkMatch = linkValue.match(/\[\[([^\]|]+)/);
-		if (!linkMatch) return null;
-
-		const file = this.app.metadataCache.getFirstLinkpathDest(linkMatch[1], "");
+		const file = this.app.metadataCache.getFirstLinkpathDest(linkPath, "");
 		return file instanceof TFile ? file : null;
 	}
 

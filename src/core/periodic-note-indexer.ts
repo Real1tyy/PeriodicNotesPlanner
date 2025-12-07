@@ -16,6 +16,7 @@ import { debounceTime, filter, groupBy, map, mergeMap, switchMap, toArray } from
 import { z } from "zod";
 import { PERIOD_TYPES } from "../constants";
 import type { IndexedPeriodNote, PeriodicPlannerSettings } from "../types";
+import { extractParentLinksFromFrontmatter } from "../utils/frontmatter-utils";
 
 const SCAN_CONCURRENCY = 10;
 
@@ -244,6 +245,8 @@ export class PeriodicNoteIndexer {
 			return null;
 		}
 
+		const parentLinks = extractParentLinksFromFrontmatter(frontmatter, props);
+
 		return {
 			file,
 			filePath: file.path,
@@ -252,6 +255,7 @@ export class PeriodicNoteIndexer {
 			periodEnd: result.data.periodEnd,
 			noteName: file.basename,
 			mtime: file.stat.mtime,
+			parentLinks,
 		};
 	}
 

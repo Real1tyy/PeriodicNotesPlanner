@@ -2,9 +2,10 @@ import type { App, CachedMetadata, TFile } from "obsidian";
 import type { PeriodType } from "../constants";
 import type { PropertySettings } from "../types";
 
-export function extractLinkTarget(value: string): string | null {
+export function extractLinkTarget(value: unknown): string | null {
+	if (typeof value !== "string") return null;
 	const match = value.match(/\[\[([^\]|]+)/);
-	return match ? match[1] : null;
+	return match ? match[1]?.trim() : null;
 }
 
 export function getLinkFromFrontmatter(cache: CachedMetadata | null, propName: string): string | null {
@@ -38,4 +39,21 @@ export function getActiveFileCache(app: App): { file: TFile; cache: CachedMetada
 	if (!cache) return null;
 
 	return { file, cache };
+}
+
+export function extractParentLinksFromFrontmatter(
+	frontmatter: Record<string, unknown>,
+	props: PropertySettings
+): { parent?: string; week?: string; month?: string; quarter?: string; year?: string } {
+	return {
+		parent: extractLinkTarget(frontmatter[props.parentProp]) ?? undefined,
+		week: extractLinkTarget(frontmatter[props.weekProp]) ?? undefined,
+		month: extractLinkTarget(frontmatter[props.monthProp]) ?? undefined,
+		quarter: extractLinkTarget(frontmatter[props.quarterProp]) ?? undefined,
+		year: extractLinkTarget(frontmatter[props.yearProp]) ?? undefined,
+	};
+}
+
+export function resolveFilePath(linkPath: string): string {
+	return linkPath.endsWith(".md") ? linkPath : `${linkPath}.md`;
 }

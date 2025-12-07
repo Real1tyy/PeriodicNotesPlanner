@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 import type { PropertySettings } from "../src/types";
 import {
 	extractLinkTarget,
+	extractParentLinksFromFrontmatter,
 	getLinkFromFrontmatter,
 	getParentLinkFromFrontmatter,
 	getPeriodTypeFromFrontmatter,
+	resolveFilePath,
 } from "../src/utils/frontmatter-utils";
 
 describe("extractLinkTarget", () => {
@@ -129,5 +131,124 @@ describe("getParentLinkFromFrontmatter", () => {
 
 	it("returns null when cache is null", () => {
 		expect(getParentLinkFromFrontmatter(null, props)).toBeNull();
+	});
+});
+
+describe("extractLinkTarget with non-string values", () => {
+	it("returns null for undefined", () => {
+		expect(extractLinkTarget(undefined)).toBeNull();
+	});
+
+	it("returns null for null", () => {
+		expect(extractLinkTarget(null)).toBeNull();
+	});
+
+	it("returns null for number", () => {
+		expect(extractLinkTarget(123)).toBeNull();
+	});
+
+	it("returns null for object", () => {
+		expect(extractLinkTarget({ link: "[[Note]]" })).toBeNull();
+	});
+});
+
+describe("extractParentLinksFromFrontmatter", () => {
+	const props: PropertySettings = {
+		previousProp: "Previous",
+		nextProp: "Next",
+		parentProp: "Parent",
+		weekProp: "Week",
+		monthProp: "Month",
+		quarterProp: "Quarter",
+		yearProp: "Year",
+		hoursAvailableProp: "Hours Available",
+		timeAllocationsProp: "Time Allocations",
+		hoursSpentProp: "Hours Spent",
+		periodTypeProp: "Period Type",
+		periodStartProp: "Period Start",
+		periodEndProp: "Period End",
+	};
+
+	it("extracts all parent links from frontmatter", () => {
+		const frontmatter = {
+			Parent: "[[2024-W49]]",
+			Week: "[[2024-W49]]",
+			Month: "[[2024-12]]",
+			Quarter: "[[2024-Q4]]",
+			Year: "[[2024]]",
+		};
+
+		const result = extractParentLinksFromFrontmatter(frontmatter, props);
+
+		expect(result).toEqual({
+			parent: "2024-W49",
+			week: "2024-W49",
+			month: "2024-12",
+			quarter: "2024-Q4",
+			year: "2024",
+		});
+	});
+
+	it("returns undefined for missing links", () => {
+		const frontmatter = {
+			Parent: "[[2024-W49]]",
+		};
+
+		const result = extractParentLinksFromFrontmatter(frontmatter, props);
+
+		expect(result).toEqual({
+			parent: "2024-W49",
+			week: undefined,
+			month: undefined,
+			quarter: undefined,
+			year: undefined,
+		});
+	});
+
+	it("handles empty frontmatter", () => {
+		const result = extractParentLinksFromFrontmatter({}, props);
+
+		expect(result).toEqual({
+			parent: undefined,
+			week: undefined,
+			month: undefined,
+			quarter: undefined,
+			year: undefined,
+		});
+	});
+
+	it("handles links with aliases", () => {
+		const frontmatter = {
+			Parent: "[[2024-W49|Week 49]]",
+			Month: "[[2024-12|December]]",
+		};
+
+		const result = extractParentLinksFromFrontmatter(frontmatter, props);
+
+		expect(result).toEqual({
+			parent: "2024-W49",
+			week: undefined,
+			month: "2024-12",
+			quarter: undefined,
+			year: undefined,
+		});
+	});
+});
+
+describe("resolveFilePath", () => {
+	it("adds .md extension when missing", () => {
+		expect(resolveFilePath("2024-W49")).toBe("2024-W49.md");
+	});
+
+	it("preserves .md extension when present", () => {
+		expect(resolveFilePath("2024-W49.md")).toBe("2024-W49.md");
+	});
+
+	it("handles paths with folders", () => {
+		expect(resolveFilePath("folder/2024-W49")).toBe("folder/2024-W49.md");
+	});
+
+	it("handles paths with folders and .md extension", () => {
+		expect(resolveFilePath("folder/2024-W49.md")).toBe("folder/2024-W49.md");
 	});
 });

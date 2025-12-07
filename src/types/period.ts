@@ -14,6 +14,13 @@ export interface IndexedPeriodNote {
 	periodEnd: DateTime;
 	noteName: string;
 	mtime: number;
+	parentLinks: {
+		parent?: string;
+		week?: string;
+		month?: string;
+		quarter?: string;
+		year?: string;
+	};
 }
 
 /**
