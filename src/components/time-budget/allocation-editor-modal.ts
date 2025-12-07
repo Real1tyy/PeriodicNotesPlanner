@@ -19,6 +19,7 @@ export class AllocationEditorModal extends Modal {
 	private resolvePromise: ((result: AllocationEditorResult) => void) | null = null;
 	private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 	private focusedCategoryId: string | null = null;
+	private scrollPosition = 0;
 	private inputRefs: Map<string, HTMLInputElement> = new Map();
 	private percentageBarRefs: Map<string, HTMLElement> = new Map();
 	private percentageLabelRefs: Map<string, HTMLElement> = new Map();
@@ -169,6 +170,9 @@ export class AllocationEditorModal extends Modal {
 
 	private buildAllocationList(): void {
 		if (!this.allocationListEl) return;
+
+		this.saveScrollPosition();
+
 		this.allocationListEl.empty();
 		this.inputRefs.clear();
 		this.percentageBarRefs.clear();
@@ -181,6 +185,7 @@ export class AllocationEditorModal extends Modal {
 
 			const item = this.allocationListEl.createDiv({ cls: cls("allocation-item") });
 			item.dataset.categoryId = category.id;
+			item.id = `allocation-item-${category.id}`;
 
 			const topRow = item.createDiv({ cls: cls("allocation-top-row") });
 
@@ -272,6 +277,9 @@ export class AllocationEditorModal extends Modal {
 				addCls(item, "over-budget");
 			}
 		}
+
+		this.restoreScrollPosition();
+		this.scrollToFocusedCategory();
 	}
 
 	private setupBarDragHandlers(barWrapper: HTMLElement, categoryId: string): void {
@@ -384,6 +392,7 @@ export class AllocationEditorModal extends Modal {
 	private applyValue(categoryId: string, value: number, input: HTMLInputElement): void {
 		this.allocations.set(categoryId, value);
 		input.value = String(value);
+		this.focusedCategoryId = categoryId;
 		this.updateViewsWithFocusPreservation();
 	}
 
@@ -402,8 +411,12 @@ export class AllocationEditorModal extends Modal {
 		const selectionStart = focusedInput?.selectionStart ?? null;
 		const selectionEnd = focusedInput?.selectionEnd ?? null;
 
+		this.saveScrollPosition();
+
 		this.renderSummary();
 		this.updateAllocationItemStates();
+
+		this.restoreScrollPosition();
 
 		if (this.focusedCategoryId) {
 			const inputToFocus = this.inputRefs.get(this.focusedCategoryId);
@@ -499,5 +512,26 @@ export class AllocationEditorModal extends Modal {
 			}
 		}
 		return allocations;
+	}
+
+	private saveScrollPosition(): void {
+		if (this.allocationListEl) {
+			this.scrollPosition = this.allocationListEl.scrollTop;
+		}
+	}
+
+	private restoreScrollPosition(): void {
+		if (this.allocationListEl && this.scrollPosition > 0) {
+			this.allocationListEl.scrollTop = this.scrollPosition;
+		}
+	}
+
+	private scrollToFocusedCategory(): void {
+		if (!this.focusedCategoryId || !this.allocationListEl) return;
+
+		const item = this.allocationListEl.querySelector(`#allocation-item-${this.focusedCategoryId}`);
+		if (item) {
+			item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+		}
 	}
 }
