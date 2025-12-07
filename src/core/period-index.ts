@@ -7,7 +7,6 @@ import type { PeriodicNoteIndexer } from "./periodic-note-indexer";
 
 export class PeriodIndex {
 	private eventsSubscription: Subscription | null = null;
-	private indexingCompleteSubscription: Subscription | null = null;
 	private notesByPath: Map<string, IndexedPeriodNote> = new Map();
 	private childrenCache: Map<string, PeriodChildren> = new Map();
 
@@ -19,38 +18,13 @@ export class PeriodIndex {
 				this.removeNoteByPath(event.filePath);
 			}
 		});
-
-		this.indexingCompleteSubscription = indexer.indexingComplete$.subscribe((isComplete) => {
-			if (isComplete) {
-				console.log("📊 Period Index - Indexing Complete");
-				console.log("Total notes indexed:", this.notesByPath.size);
-				console.log("Parent-child relationships:", this.childrenCache.size);
-				console.log("Children cache full content:");
-				console.log(JSON.stringify(this.getDebugSnapshot(), null, 2));
-			}
-		});
 	}
 
 	destroy(): void {
 		this.eventsSubscription?.unsubscribe();
 		this.eventsSubscription = null;
-		this.indexingCompleteSubscription?.unsubscribe();
-		this.indexingCompleteSubscription = null;
 		this.notesByPath.clear();
 		this.childrenCache.clear();
-	}
-
-	private getDebugSnapshot(): Record<string, unknown> {
-		const snapshot: Record<string, unknown> = {};
-		for (const [filePath, children] of this.childrenCache.entries()) {
-			snapshot[filePath] = {
-				days: children.days?.map((n) => ({ filePath: n.filePath, noteName: n.noteName })),
-				weeks: children.weeks?.map((n) => ({ filePath: n.filePath, noteName: n.noteName })),
-				months: children.months?.map((n) => ({ filePath: n.filePath, noteName: n.noteName })),
-				quarters: children.quarters?.map((n) => ({ filePath: n.filePath, noteName: n.noteName })),
-			};
-		}
-		return snapshot;
 	}
 
 	getChildren(parent: IndexedPeriodNote): PeriodChildren {

@@ -21,6 +21,7 @@ export interface IndexedPeriodNote {
 		quarter?: string;
 		year?: string;
 	};
+	categoryAllocations: Map<string, number>;
 }
 
 /**

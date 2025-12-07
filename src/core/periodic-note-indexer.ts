@@ -14,6 +14,7 @@ import {
 } from "rxjs";
 import { debounceTime, filter, groupBy, map, mergeMap, switchMap, toArray } from "rxjs/operators";
 import { z } from "zod";
+import { parseAllocationBlock } from "../components/time-budget/allocation-parser";
 import { PERIOD_TYPES } from "../constants";
 import type { IndexedPeriodNote, PeriodicPlannerSettings } from "../types";
 import { extractParentLinksFromFrontmatter } from "../utils/frontmatter-utils";
@@ -224,13 +225,13 @@ export class PeriodicNoteIndexer {
 		const cache = this.metadataCache.getFileCache(file);
 		if (!cache?.frontmatter) return [];
 
-		const note = this.parseFileToNote(file, cache.frontmatter);
+		const note = await this.parseFileToNote(file, cache.frontmatter);
 		if (!note) return [];
 
 		return [{ type: "note-indexed", filePath: file.path, oldPath, note }];
 	}
 
-	private parseFileToNote(file: TFile, frontmatter: Record<string, unknown>): IndexedPeriodNote | null {
+	private async parseFileToNote(file: TFile, frontmatter: Record<string, unknown>): Promise<IndexedPeriodNote | null> {
 		const props = this.settings.properties;
 
 		const extracted = {
@@ -246,6 +247,7 @@ export class PeriodicNoteIndexer {
 		}
 
 		const parentLinks = extractParentLinksFromFrontmatter(frontmatter, props);
+		const categoryAllocations = await this.extractCategoryAllocations(file);
 
 		return {
 			file,
@@ -256,7 +258,31 @@ export class PeriodicNoteIndexer {
 			noteName: file.basename,
 			mtime: file.stat.mtime,
 			parentLinks,
+			categoryAllocations,
 		};
+	}
+
+	private async extractCategoryAllocations(file: TFile): Promise<Map<string, number>> {
+		const allocations = new Map<string, number>();
+
+		try {
+			const content = await this.vault.read(file);
+			const codeBlockMatch = content.match(/```periodic-planner\n([\s\S]*?)```/);
+
+			if (!codeBlockMatch) {
+				return allocations;
+			}
+
+			const parsed = parseAllocationBlock(codeBlockMatch[1]);
+
+			for (const allocation of parsed.allocations) {
+				allocations.set(allocation.categoryName, allocation.hours);
+			}
+		} catch (error) {
+			console.debug(`Error extracting allocations from ${file.path}:`, error);
+		}
+
+		return allocations;
 	}
 
 	private isRelevantFile(file: TFile): boolean {
