@@ -13,7 +13,7 @@ import {
 } from "./allocation-parser";
 import { getChildBudgetsFromIndex } from "./child-budget-calculator";
 import { EnlargedChartModal } from "./enlarged-chart-modal";
-import { CategoryBudgetInfo, getParentBudgets } from "./parent-budget-tracker";
+import { getParentBudgets } from "./parent-budget-tracker";
 import { PieChartRenderer } from "./pie-chart-renderer";
 
 export class TimeBudgetBlockRenderer {
@@ -58,7 +58,13 @@ export class TimeBudgetBlockRenderer {
 			this.settings.categories
 		);
 
-		this.renderHeader(el, totalHours, allocations, periodType, childBudgets.budgets);
+		this.renderHeader(
+			el,
+			totalHours,
+			allocations,
+			periodType,
+			childBudgets.totalChildrenAllocated
+		);
 		this.renderAllocationTable(
 			el,
 			allocations,
@@ -97,7 +103,7 @@ export class TimeBudgetBlockRenderer {
 		totalHours: number,
 		allocations: TimeAllocation[],
 		periodType: PeriodType,
-		childBudgets: Map<string, CategoryBudgetInfo>
+		totalChildrenAllocated: number
 	): void {
 		const header = el.createDiv({ cls: cls("time-budget-header") });
 
@@ -123,15 +129,8 @@ export class TimeBudgetBlockRenderer {
 
 		const showChild = periodType !== "daily";
 		if (showChild) {
-			let totalChildAllocated = 0;
-			for (const allocation of allocations) {
-				const childBudget = childBudgets.get(allocation.categoryId);
-				if (childBudget) {
-					totalChildAllocated += childBudget.allocated;
-				}
-			}
-			const totalChildAllocatedHours = roundHours(totalChildAllocated);
-			const childAllocatedPercentage = totalHours > 0 ? (totalChildAllocated / totalHours) * 100 : 0;
+			const totalChildAllocatedHours = roundHours(totalChildrenAllocated);
+			const childAllocatedPercentage = totalHours > 0 ? (totalChildrenAllocated / totalHours) * 100 : 0;
 			this.createStatItem(
 				statsRow,
 				"Child Allocated",
@@ -274,7 +273,6 @@ export class TimeBudgetBlockRenderer {
 		});
 
 		editBtn.addEventListener("click", () => {
-			console.log("Opening edit modal - childBudgets:", Array.from(childBudgets.entries()));
 			const modal = new AllocationEditorModal(
 				this.app,
 				this.settings.categories,

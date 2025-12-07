@@ -37,8 +37,6 @@ export class AllocationEditorModal extends Modal {
 	) {
 		super(app);
 
-		console.log("AllocationEditorModal constructor - childBudgets:", Array.from(childBudgets.entries()));
-
 		for (const allocation of initialAllocations) {
 			this.allocations.set(allocation.categoryId, allocation.hours);
 		}
@@ -239,19 +237,12 @@ export class AllocationEditorModal extends Modal {
 			}
 
 			const childBudget = this.childBudgets.get(category.id);
-			console.log(`[buildAllocationList] Category ${category.id} - childBudget:`, childBudget);
 			if (childBudget) {
-				console.log(`[buildAllocationList] Category ${category.id} - childBudget.allocated:`, childBudget.allocated);
 				const allocated = childBudget.allocated ?? 0;
 				const total = childBudget.total ?? 0;
 				const percentage = total > 0 ? (allocated / total) * 100 : 0;
-				console.log(
-					`[buildAllocationList] Creating child budget info for category ${category.id} with ${allocated}h (${percentage.toFixed(1)}%)`
-				);
 				const childBudgetInfo = budgetInfoContainer.createSpan({ cls: cls("child-budget-info") });
 				childBudgetInfo.setText(`Child allocated: ${formatHours(allocated)}h (${percentage.toFixed(1)}%)`);
-			} else {
-				console.log(`[buildAllocationList] No child budget found for category ${category.id}`);
 			}
 
 			if (!parentBudget && !childBudget) {

@@ -1,12 +1,19 @@
 import type { TFile } from "obsidian";
 import type { PeriodType } from "../../constants";
 import type { PeriodIndex } from "../../core/period-index";
-import type { Category, IndexedPeriodNote, TimeAllocation } from "../../types";
+import type { Category, TimeAllocation } from "../../types";
+import { PERIOD_CONFIG } from "../../types";
 import { buildCategoryNameToIdMap, type CategoryBudgetInfo } from "./parent-budget-tracker";
 
 export interface ChildBudgetResult {
 	budgets: Map<string, CategoryBudgetInfo>;
 	totalChildrenAllocated: number;
+}
+
+function getDirectChildrenKey(periodType: PeriodType): keyof import("../../types").PeriodChildren | null {
+	const directChildType = PERIOD_CONFIG[periodType].children[0];
+	if (!directChildType) return null;
+	return PERIOD_CONFIG[directChildType].childrenKey;
 }
 
 export async function getChildBudgetsFromIndex(
@@ -30,6 +37,13 @@ export async function getChildBudgetsFromIndex(
 		return emptyResult;
 	}
 
+	const directChildrenKey = getDirectChildrenKey(periodType);
+	if (!directChildrenKey) {
+		return emptyResult;
+	}
+
+	const directChildren = children[directChildrenKey] ?? [];
+
 	const categoryNameToId = buildCategoryNameToIdMap(categories);
 
 	const budgets = new Map<string, CategoryBudgetInfo>();
@@ -42,14 +56,7 @@ export async function getChildBudgetsFromIndex(
 		});
 	}
 
-	const allChildren: IndexedPeriodNote[] = [
-		...(children.quarters ?? []),
-		...(children.months ?? []),
-		...(children.weeks ?? []),
-		...(children.days ?? []),
-	];
-
-	for (const child of allChildren) {
+	for (const child of directChildren) {
 		for (const [categoryName, hours] of child.categoryAllocations) {
 			const categoryId = categoryNameToId.get(categoryName);
 			if (categoryId) {
