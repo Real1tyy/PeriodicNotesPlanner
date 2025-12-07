@@ -1,6 +1,6 @@
 import type { DateTimeUnit, DurationLike } from "luxon";
 import { PERIOD_TYPES, type PeriodType } from "../constants";
-import type { PeriodLinks } from "./period";
+import type { PeriodChildren, PeriodLinks } from "./period";
 import type { DirectorySettings, NamingSettings } from "./schemas";
 
 export const ORDERED_PERIOD_TYPES: PeriodType[] = [
@@ -11,7 +11,8 @@ export const ORDERED_PERIOD_TYPES: PeriodType[] = [
 	PERIOD_TYPES.DAILY,
 ];
 
-export type LinkKey = keyof Omit<PeriodLinks, "previous" | "next">;
+export type LinkKey = keyof Omit<PeriodLinks, "previous" | "next" | "parent">;
+export type ChildrenKey = keyof PeriodChildren;
 
 export interface PeriodConfig {
 	luxonUnit: DateTimeUnit;
@@ -19,7 +20,9 @@ export interface PeriodConfig {
 	folderKey: keyof DirectorySettings;
 	formatKey: keyof NamingSettings;
 	linkKey: LinkKey | null;
+	childrenKey: ChildrenKey | null;
 	parent: PeriodType | null;
+	children: PeriodType[];
 }
 
 export const PERIOD_CONFIG: Record<PeriodType, PeriodConfig> = {
@@ -29,7 +32,9 @@ export const PERIOD_CONFIG: Record<PeriodType, PeriodConfig> = {
 		folderKey: "dailyFolder",
 		formatKey: "dailyFormat",
 		linkKey: null,
+		childrenKey: null,
 		parent: "weekly",
+		children: [],
 	},
 	weekly: {
 		luxonUnit: "week",
@@ -37,7 +42,9 @@ export const PERIOD_CONFIG: Record<PeriodType, PeriodConfig> = {
 		folderKey: "weeklyFolder",
 		formatKey: "weeklyFormat",
 		linkKey: "week",
+		childrenKey: "weeks",
 		parent: "monthly",
+		children: ["daily"],
 	},
 	monthly: {
 		luxonUnit: "month",
@@ -45,7 +52,9 @@ export const PERIOD_CONFIG: Record<PeriodType, PeriodConfig> = {
 		folderKey: "monthlyFolder",
 		formatKey: "monthlyFormat",
 		linkKey: "month",
+		childrenKey: "months",
 		parent: "quarterly",
+		children: ["weekly", "daily"],
 	},
 	quarterly: {
 		luxonUnit: "quarter",
@@ -53,7 +62,9 @@ export const PERIOD_CONFIG: Record<PeriodType, PeriodConfig> = {
 		folderKey: "quarterlyFolder",
 		formatKey: "quarterlyFormat",
 		linkKey: "quarter",
+		childrenKey: "quarters",
 		parent: "yearly",
+		children: ["monthly", "weekly", "daily"],
 	},
 	yearly: {
 		luxonUnit: "year",
@@ -61,6 +72,8 @@ export const PERIOD_CONFIG: Record<PeriodType, PeriodConfig> = {
 		folderKey: "yearlyFolder",
 		formatKey: "yearlyFormat",
 		linkKey: "year",
+		childrenKey: null,
 		parent: null,
+		children: ["quarterly", "monthly", "weekly", "daily"],
 	},
 };

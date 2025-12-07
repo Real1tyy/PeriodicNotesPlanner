@@ -8,10 +8,12 @@ import type { TimeAllocation } from "./schemas";
  */
 export interface IndexedPeriodNote {
 	file: TFile;
+	filePath: string;
 	periodType: PeriodType;
 	periodStart: DateTime;
 	periodEnd: DateTime;
 	noteName: string;
+	mtime: number;
 }
 
 /**
