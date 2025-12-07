@@ -1,6 +1,14 @@
 import type { PeriodType } from "../constants";
 import type { TimeBudgetSettings } from "../types";
 
+export function roundHours(hours: number): number {
+	return Math.round(hours * 100) / 100;
+}
+
+export function formatHours(hours: number): string {
+	return roundHours(hours).toFixed(2);
+}
+
 /**
  * Calculated hours for each period type based on settings
  */

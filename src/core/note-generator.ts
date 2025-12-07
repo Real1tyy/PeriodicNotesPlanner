@@ -24,7 +24,7 @@ import {
 	getStartOfPeriod,
 	type PeriodInfo,
 } from "../utils/date-utils";
-import { getHoursForPeriodType } from "../utils/time-budget-utils";
+import { getHoursForPeriodType, roundHours } from "../utils/time-budget-utils";
 
 type Frontmatter = Record<string, unknown>;
 
@@ -198,12 +198,12 @@ export class NoteGenerator {
 	): TimeAllocation[] {
 		const scaledAllocations = parentAllocations.map((alloc) => ({
 			categoryId: alloc.categoryId,
-			hours: Math.round((alloc.hours / totalParentHours) * totalCurrentHours * 10) / 10,
+			hours: roundHours((alloc.hours / totalParentHours) * totalCurrentHours),
 		}));
 
 		const sumScaled = scaledAllocations.reduce((sum, a) => sum + a.hours, 0);
-		const roundedSum = Math.round(sumScaled * 10) / 10;
-		const targetSum = Math.round(totalCurrentHours * 10) / 10;
+		const roundedSum = roundHours(sumScaled);
+		const targetSum = roundHours(totalCurrentHours);
 
 		const parentSum = parentAllocations.reduce((sum, a) => sum + a.hours, 0);
 		const parentWas100Percent = Math.abs(parentSum - totalParentHours) < 0.01;
@@ -220,7 +220,7 @@ export class NoteGenerator {
 				}
 			}
 
-			scaledAllocations[largestIndex].hours = Math.round((scaledAllocations[largestIndex].hours + diff) * 10) / 10;
+			scaledAllocations[largestIndex].hours = roundHours(scaledAllocations[largestIndex].hours + diff);
 		}
 
 		return scaledAllocations;

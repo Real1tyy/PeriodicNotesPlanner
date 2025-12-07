@@ -1,6 +1,7 @@
 import { type App, Modal } from "obsidian";
 import type { Category, TimeAllocation } from "../../types";
 import { addCls, cls, removeCls } from "../../utils/css";
+import { formatHours, roundHours } from "../../utils/time-budget-utils";
 import type { CategoryBudgetInfo } from "./parent-budget-tracker";
 
 const DEBOUNCE_MS = 300;
@@ -12,6 +13,7 @@ export interface AllocationEditorResult {
 
 export class AllocationEditorModal extends Modal {
 	private allocations: Map<string, number> = new Map();
+	private fillFromParent: Map<string, boolean> = new Map();
 	private allocationListEl: HTMLElement | null = null;
 	private result: AllocationEditorResult = { allocations: [], cancelled: true };
 	private resolvePromise: ((result: AllocationEditorResult) => void) | null = null;
@@ -135,7 +137,7 @@ export class AllocationEditorModal extends Modal {
 		const allocatedItem = summary.createDiv({ cls: cls("summary-item") });
 		allocatedItem.createSpan({ text: "Allocated:", cls: cls("summary-label") });
 		const allocatedValue = allocatedItem.createSpan({
-			text: `${totalAllocated}h (${allocatedPercentage.toFixed(1)}%)`,
+			text: `${formatHours(totalAllocated)}h (${allocatedPercentage.toFixed(1)}%)`,
 			cls: cls("summary-value"),
 		});
 		addCls(allocatedValue, `status-${statusClass}`);
@@ -143,7 +145,7 @@ export class AllocationEditorModal extends Modal {
 		const remainingItem = summary.createDiv({ cls: cls("summary-item") });
 		remainingItem.createSpan({ text: "Remaining:", cls: cls("summary-label") });
 		const remainingValue = remainingItem.createSpan({
-			text: `${remaining}h (${remainingPercentage.toFixed(1)}%)`,
+			text: `${formatHours(remaining)}h (${remainingPercentage.toFixed(1)}%)`,
 			cls: cls("summary-value"),
 		});
 		if (remaining < 0) {
@@ -153,7 +155,7 @@ export class AllocationEditorModal extends Modal {
 		const totalItem = summary.createDiv({ cls: cls("summary-item") });
 		totalItem.createSpan({ text: "Total:", cls: cls("summary-label") });
 		totalItem.createSpan({
-			text: `${this.totalHoursAvailable}h`,
+			text: `${formatHours(this.totalHoursAvailable)}h`,
 			cls: cls("summary-value"),
 		});
 
@@ -185,22 +187,39 @@ export class AllocationEditorModal extends Modal {
 			const colorDot = topRow.createSpan({ cls: cls("category-color-dot-large") });
 			colorDot.style.backgroundColor = category.color;
 
-			const infoContainer = topRow.createDiv({ cls: cls("allocation-info") });
-
-			const nameRow = infoContainer.createDiv({ cls: cls("allocation-name-row") });
-			nameRow.createSpan({ text: category.name, cls: cls("category-name") });
+			topRow.createSpan({ text: category.name, cls: cls("category-name") });
 
 			if (parentBudget) {
-				const budgetInfo = nameRow.createSpan({ cls: cls("parent-budget-info") });
+				const budgetInfo = topRow.createSpan({ cls: cls("parent-budget-info") });
 				const remainingBudget = parentBudget.remaining;
 				const isOver = currentHours > remainingBudget && remainingBudget >= 0;
 
 				if (isOver) {
 					addCls(budgetInfo, "over-budget");
-					budgetInfo.setText(`⚠️ Parent: ${parentBudget.allocated}h / ${parentBudget.total}h`);
+					budgetInfo.setText(`⚠️ ${formatHours(parentBudget.allocated)}h / ${formatHours(parentBudget.total)}h`);
 				} else {
-					budgetInfo.setText(`(${remainingBudget}h available from parent)`);
+					budgetInfo.setText(`${formatHours(remainingBudget)}h from parent`);
 				}
+
+				const checkboxContainer = topRow.createDiv({ cls: cls("fill-from-parent-container") });
+
+				const checkbox = checkboxContainer.createEl("input", {
+					type: "checkbox",
+					cls: cls("fill-from-parent-checkbox"),
+				});
+				checkbox.checked = this.fillFromParent.get(category.id) ?? false;
+				checkbox.addEventListener("change", () => {
+					this.fillFromParent.set(category.id, checkbox.checked);
+				});
+
+				const checkboxLabel = checkboxContainer.createSpan({
+					text: "Fill from parent",
+					cls: cls("fill-from-parent-label"),
+				});
+				checkboxLabel.addEventListener("click", () => {
+					checkbox.checked = !checkbox.checked;
+					this.fillFromParent.set(category.id, checkbox.checked);
+				});
 			}
 
 			const inputRow = item.createDiv({ cls: cls("allocation-input-row") });
@@ -264,7 +283,7 @@ export class AllocationEditorModal extends Modal {
 			const rect = barWrapper.getBoundingClientRect();
 			const relativeX = Math.max(0, Math.min(clientX - rect.left, rect.width));
 			const percentage = (relativeX / rect.width) * 100;
-			const hours = Math.round((percentage / 100) * this.totalHoursAvailable * 10) / 10;
+			const hours = roundHours((percentage / 100) * this.totalHoursAvailable);
 
 			this.allocations.set(categoryId, hours);
 
@@ -330,7 +349,10 @@ export class AllocationEditorModal extends Modal {
 			e.preventDefault();
 			const percentValue = Number.parseFloat(customInput.value) || 0;
 			const clampedPercent = Math.max(0, Math.min(100, percentValue));
-			const newValue = Math.round((clampedPercent / 100) * this.totalHoursAvailable * 10) / 10;
+			const useParent = this.fillFromParent.get(categoryId) ?? false;
+			const parentBudget = this.parentBudgets.get(categoryId);
+			const baseAmount = useParent && parentBudget ? parentBudget.allocated : this.totalHoursAvailable;
+			const newValue = roundHours((clampedPercent / 100) * baseAmount);
 			this.applyValue(categoryId, newValue, input);
 			customInput.value = "";
 		});
@@ -344,12 +366,19 @@ export class AllocationEditorModal extends Modal {
 	}
 
 	private calculatePresetValue(preset: number | "max", categoryId: string): number {
+		const useParent = this.fillFromParent.get(categoryId) ?? false;
+		const parentBudget = this.parentBudgets.get(categoryId);
+		const baseAmount = useParent && parentBudget ? parentBudget.allocated : this.totalHoursAvailable;
+
 		if (preset === "max") {
+			if (useParent && parentBudget) {
+				return roundHours(parentBudget.remaining);
+			}
 			const currentForThis = this.allocations.get(categoryId) ?? 0;
 			const otherAllocations = this.getTotalAllocated() - currentForThis;
 			return Math.max(0, this.totalHoursAvailable - otherAllocations);
 		}
-		return Math.round(this.totalHoursAvailable * preset * 10) / 10;
+		return roundHours(baseAmount * preset);
 	}
 
 	private applyValue(categoryId: string, value: number, input: HTMLInputElement): void {
@@ -406,9 +435,9 @@ export class AllocationEditorModal extends Modal {
 				removeCls(budgetInfo as HTMLElement, "over-budget");
 				if (isOver) {
 					addCls(budgetInfo as HTMLElement, "over-budget");
-					budgetInfo.textContent = `⚠️ Parent: ${parentBudget.allocated}h / ${parentBudget.total}h`;
+					budgetInfo.textContent = `⚠️ ${formatHours(parentBudget.allocated)}h / ${formatHours(parentBudget.total)}h`;
 				} else {
-					budgetInfo.textContent = `(${remainingBudget}h available from parent)`;
+					budgetInfo.textContent = `${formatHours(remainingBudget)}h from parent`;
 				}
 			}
 

@@ -5,8 +5,10 @@ import {
 	calculateHoursForPeriods,
 	calculateRemainingHours,
 	createAllocationSummary,
+	formatHours,
 	getBudgetStatus,
 	getHoursForPeriodType,
+	roundHours,
 } from "../src/utils/time-budget-utils";
 
 describe("Time Budget Utilities", () => {
@@ -139,6 +141,42 @@ describe("Time Budget Utilities", () => {
 			expect(summary.status).toBe("over");
 			expect(summary.remainingHours).toBe(0);
 			expect(summary.percentage).toBe(120);
+		});
+	});
+
+	describe("roundHours", () => {
+		it("should round to 2 decimal places", () => {
+			expect(roundHours(10.123456)).toBe(10.12);
+			expect(roundHours(5.999)).toBe(6);
+			expect(roundHours(3.145)).toBe(3.15);
+		});
+
+		it("should handle whole numbers", () => {
+			expect(roundHours(10)).toBe(10);
+			expect(roundHours(0)).toBe(0);
+		});
+
+		it("should handle single decimal", () => {
+			expect(roundHours(10.1)).toBe(10.1);
+			expect(roundHours(5.5)).toBe(5.5);
+		});
+	});
+
+	describe("formatHours", () => {
+		it("should format with 2 decimal places", () => {
+			expect(formatHours(10.123456)).toBe("10.12");
+			expect(formatHours(5.999)).toBe("6.00");
+			expect(formatHours(3.145)).toBe("3.15");
+		});
+
+		it("should format whole numbers with decimals", () => {
+			expect(formatHours(10)).toBe("10.00");
+			expect(formatHours(0)).toBe("0.00");
+		});
+
+		it("should format single decimal with trailing zero", () => {
+			expect(formatHours(10.1)).toBe("10.10");
+			expect(formatHours(5.5)).toBe("5.50");
 		});
 	});
 });

@@ -2,7 +2,7 @@ import { type App, type MarkdownPostProcessorContext, TFile } from "obsidian";
 import type { PeriodType } from "../../constants";
 import type { Category, PeriodicPlannerSettings, TimeAllocation } from "../../types";
 import { addCls, cls } from "../../utils/css";
-import { getHoursForPeriodType } from "../../utils/time-budget-utils";
+import { formatHours, getHoursForPeriodType, roundHours } from "../../utils/time-budget-utils";
 import { AllocationEditorModal } from "./allocation-editor-modal";
 import {
 	getTotalAllocatedHours,
@@ -115,17 +115,22 @@ export class TimeBudgetBlockRenderer {
 		const title = header.createEl("h3", { text: "Time budget" });
 		addCls(title, "time-budget-title");
 
-		const totalAllocated = Math.round(getTotalAllocatedHours(allocations) * 10) / 10;
-		const remaining = Math.round((totalHours - totalAllocated) * 10) / 10;
+		const totalAllocated = roundHours(getTotalAllocatedHours(allocations));
+		const remaining = roundHours(totalHours - totalAllocated);
 		const percentage = totalHours > 0 ? (totalAllocated / totalHours) * 100 : 0;
 
 		const summary = header.createDiv({ cls: cls("time-budget-summary") });
 
 		const statsRow = summary.createDiv({ cls: cls("stats-row") });
 
-		this.createStatItem(statsRow, "Total", `${totalHours}h`);
-		this.createStatItem(statsRow, "Allocated", `${totalAllocated}h`, percentage > 100 ? "over" : undefined);
-		this.createStatItem(statsRow, "Remaining", `${remaining}h`, remaining < 0 ? "over" : undefined);
+		this.createStatItem(statsRow, "Total", `${formatHours(totalHours)}h`);
+		this.createStatItem(
+			statsRow,
+			"Allocated",
+			`${formatHours(totalAllocated)}h`,
+			percentage > 100 ? "over" : undefined
+		);
+		this.createStatItem(statsRow, "Remaining", `${formatHours(remaining)}h`, remaining < 0 ? "over" : undefined);
 
 		const progressBar = summary.createDiv({ cls: cls("progress-bar-container") });
 		const progressFill = progressBar.createDiv({ cls: cls("progress-bar-fill") });
