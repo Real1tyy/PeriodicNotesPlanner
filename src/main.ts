@@ -5,6 +5,7 @@ import { TimeBudgetBlockRenderer } from "./components/time-budget";
 import type { PeriodType } from "./constants";
 import { AutoGenerator, formatAutoGenerationSummary } from "./core/auto-generator";
 import { PeriodIndex } from "./core/period-index";
+import { PeriodicNoteIndexer } from "./core/periodic-note-indexer";
 import { SettingsStore } from "./core/settings-store";
 import { PeriodicPlannerSettingsTab } from "./settings/settings-tab";
 import type { PeriodLinks } from "./types";
@@ -22,6 +23,7 @@ import { getHoursForPeriodType } from "./utils/time-budget-utils";
 export default class PeriodicPlannerPlugin extends Plugin {
 	settingsStore!: SettingsStore;
 	autoGenerator!: AutoGenerator;
+	indexer!: PeriodicNoteIndexer;
 	periodIndex!: PeriodIndex;
 
 	async onload() {
@@ -29,7 +31,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		await this.settingsStore.loadSettings();
 
 		this.autoGenerator = new AutoGenerator(this.app, this.settingsStore.settings$);
-		this.periodIndex = new PeriodIndex(this.app, this.settingsStore.settings$);
+		this.indexer = new PeriodicNoteIndexer(this.app, this.settingsStore.settings$);
+		this.periodIndex = new PeriodIndex(this.indexer);
 
 		this.addSettingTab(new PeriodicPlannerSettingsTab(this.app, this));
 		this.registerCommands();
@@ -43,11 +46,12 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 	onunload() {
 		this.autoGenerator.destroy();
+		this.indexer.stop();
 		this.periodIndex.destroy();
 	}
 
 	private async initializeOnLayoutReady(): Promise<void> {
-		await this.periodIndex.buildIndex();
+		await this.indexer.start();
 
 		if (this.autoGenerator.shouldAutoGenerate()) {
 			await this.runAutoGeneration();
@@ -61,7 +65,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 			if (summary.created > 0) {
 				new Notice(`Periodic Planner: Created ${summary.created} note(s)`);
-				await this.periodIndex.buildIndex();
 			}
 		} catch (error) {
 			console.error("Periodic Planner: Auto-generation failed", error);
@@ -69,38 +72,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private registerVaultEvents(): void {
-		this.registerEvent(
-			this.app.vault.on("create", (file) => {
-				if (file instanceof TFile && file.extension === "md") {
-					void this.periodIndex.indexFile(file);
-				}
-			})
-		);
-
-		this.registerEvent(
-			this.app.vault.on("modify", (file) => {
-				if (file instanceof TFile && file.extension === "md") {
-					void this.periodIndex.indexFile(file);
-				}
-			})
-		);
-
-		this.registerEvent(
-			this.app.vault.on("delete", (file) => {
-				if (file instanceof TFile) {
-					this.periodIndex.removeFile(file);
-				}
-			})
-		);
-
-		this.registerEvent(
-			this.app.vault.on("rename", (file, _oldPath) => {
-				if (file instanceof TFile && file.extension === "md") {
-					void this.periodIndex.indexFile(file);
-				}
-			})
-		);
-
 		this.registerEvent(
 			this.app.workspace.on("file-open", (file) => {
 				if (file instanceof TFile && file.extension === "md") {
@@ -114,8 +85,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		const entry = this.periodIndex.getEntryForFile(file);
 		if (!entry) return;
 
-		await this.ensureFrontmatterProperties(file, entry.periodType, entry.periodStart);
-		await this.autoGenerator.getNoteGenerator().ensureTimeBudgetBlock(file, entry.periodType);
+		await this.ensureFrontmatterProperties(entry.file, entry.periodType, entry.periodStart);
+		await this.autoGenerator.getNoteGenerator().ensureTimeBudgetBlock(entry.file, entry.periodType);
 	}
 
 	private async ensureFrontmatterProperties(file: TFile, periodType: PeriodType, dateTime: DateTime): Promise<void> {
@@ -204,7 +175,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 				if (created > 0) {
 					new Notice(`Created ${created} note(s), ${existing} already existed`);
-					await this.periodIndex.buildIndex();
 				} else {
 					new Notice(`All ${existing} notes already exist`);
 				}
@@ -217,9 +187,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			callback: async () => {
 				const summary = await this.autoGenerator.runAutoGeneration();
 				new Notice(`Generated: ${summary.created} created, ${summary.existing} existing, ${summary.failed} failed`);
-				if (summary.created > 0) {
-					await this.periodIndex.buildIndex();
-				}
 			},
 		});
 
@@ -292,9 +259,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			const file = this.app.vault.getAbstractFileByPath(result.filePath);
 			if (file instanceof TFile) {
 				await openNoteFile(this.app, file);
-				if (!result.alreadyExists) {
-					await this.periodIndex.indexFile(file);
-				}
 			}
 		} else {
 			new Notice(`Failed to open note: ${result.error}`);
@@ -319,7 +283,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			const file = this.app.vault.getAbstractFileByPath(result.filePath);
 			if (file instanceof TFile) {
 				await openNoteFile(this.app, file);
-				await this.periodIndex.indexFile(file);
 			}
 		} else {
 			new Notice(`Failed to create note: ${result.error}`);
@@ -334,7 +297,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 	private registerCodeBlockProcessor(): void {
 		this.registerMarkdownCodeBlockProcessor("periodic-planner", async (source, el, ctx) => {
-			const renderer = new TimeBudgetBlockRenderer(this.app, this.settingsStore.currentSettings);
+			const renderer = new TimeBudgetBlockRenderer(this.app, this.settingsStore.currentSettings, this.periodIndex);
 			await renderer.render(source, el, ctx);
 		});
 	}
