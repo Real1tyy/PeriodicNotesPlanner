@@ -25,6 +25,10 @@ export class AllocationEditorModal extends Modal {
 	private percentageLabelRefs: Map<string, HTMLElement> = new Map();
 	private isDragging = false;
 	private dragCategoryId: string | null = null;
+	private undoStack: Map<string, number>[] = [];
+	private redoStack: Map<string, number>[] = [];
+	private undoButton: HTMLButtonElement | null = null;
+	private redoButton: HTMLButtonElement | null = null;
 
 	constructor(
 		app: App,
@@ -40,6 +44,7 @@ export class AllocationEditorModal extends Modal {
 		for (const allocation of initialAllocations) {
 			this.allocations.set(allocation.categoryId, allocation.hours);
 		}
+		this.saveState();
 	}
 
 	async openAndWait(): Promise<AllocationEditorResult> {
@@ -59,6 +64,7 @@ export class AllocationEditorModal extends Modal {
 		this.renderActions();
 
 		this.setupGlobalDragListeners();
+		this.setupKeyboardShortcuts();
 	}
 
 	onClose(): void {
@@ -129,6 +135,19 @@ export class AllocationEditorModal extends Modal {
 		const summary = document.createElement("div");
 		summary.className = cls("allocation-summary");
 
+		const summaryControls = summary.createDiv({ cls: cls("summary-controls") });
+
+		this.undoButton = summaryControls.createEl("button", {
+			text: "↶ Undo",
+			cls: cls("undo-redo-btn"),
+		});
+		this.undoButton.disabled = this.undoStack.length === 0;
+		this.undoButton.addEventListener("click", () => {
+			this.undo();
+		});
+
+		const summaryStats = summaryControls.createDiv({ cls: cls("summary-stats") });
+
 		const totalAllocated = this.getTotalAllocated();
 		const remaining = this.totalHoursAvailable - totalAllocated;
 		const allocatedPercentage = this.totalHoursAvailable > 0 ? (totalAllocated / this.totalHoursAvailable) * 100 : 0;
@@ -136,7 +155,7 @@ export class AllocationEditorModal extends Modal {
 
 		const statusClass = allocatedPercentage > 100 ? "over" : allocatedPercentage >= 80 ? "warning" : "under";
 
-		const allocatedItem = summary.createDiv({ cls: cls("summary-item") });
+		const allocatedItem = summaryStats.createDiv({ cls: cls("summary-item") });
 		allocatedItem.createSpan({ text: "Allocated:", cls: cls("summary-label") });
 		const allocatedValue = allocatedItem.createSpan({
 			text: `${formatHours(totalAllocated)}h (${allocatedPercentage.toFixed(1)}%)`,
@@ -144,7 +163,7 @@ export class AllocationEditorModal extends Modal {
 		});
 		addCls(allocatedValue, `status-${statusClass}`);
 
-		const remainingItem = summary.createDiv({ cls: cls("summary-item") });
+		const remainingItem = summaryStats.createDiv({ cls: cls("summary-item") });
 		remainingItem.createSpan({ text: "Remaining:", cls: cls("summary-label") });
 		const remainingValue = remainingItem.createSpan({
 			text: `${formatHours(remaining)}h (${remainingPercentage.toFixed(1)}%)`,
@@ -154,11 +173,20 @@ export class AllocationEditorModal extends Modal {
 			addCls(remainingValue, "status-over");
 		}
 
-		const totalItem = summary.createDiv({ cls: cls("summary-item") });
+		const totalItem = summaryStats.createDiv({ cls: cls("summary-item") });
 		totalItem.createSpan({ text: "Total:", cls: cls("summary-label") });
 		totalItem.createSpan({
 			text: `${formatHours(this.totalHoursAvailable)}h`,
 			cls: cls("summary-value"),
+		});
+
+		this.redoButton = summaryControls.createEl("button", {
+			text: "↷ Redo",
+			cls: cls("undo-redo-btn"),
+		});
+		this.redoButton.disabled = this.redoStack.length === 0;
+		this.redoButton.addEventListener("click", () => {
+			this.redo();
 		});
 
 		this.contentEl.prepend(summary);
@@ -271,6 +299,7 @@ export class AllocationEditorModal extends Modal {
 
 			input.addEventListener("input", () => {
 				const value = Number.parseFloat(input.value) || 0;
+				this.saveState();
 				this.allocations.set(category.id, value);
 				this.scheduleUpdate();
 			});
@@ -310,6 +339,7 @@ export class AllocationEditorModal extends Modal {
 			this.isDragging = true;
 			this.dragCategoryId = categoryId;
 			document.body.classList.add(cls("dragging"));
+			this.saveState();
 
 			const rect = barWrapper.getBoundingClientRect();
 			const relativeX = Math.max(0, Math.min(clientX - rect.left, rect.width));
@@ -356,6 +386,7 @@ export class AllocationEditorModal extends Modal {
 
 			btn.addEventListener("click", (e) => {
 				e.preventDefault();
+				this.saveState();
 				const newValue = this.calculatePresetValue(preset.value, categoryId);
 				this.applyValue(categoryId, newValue, input);
 			});
@@ -378,6 +409,7 @@ export class AllocationEditorModal extends Modal {
 
 		applyBtn.addEventListener("click", (e) => {
 			e.preventDefault();
+			this.saveState();
 			const percentValue = Number.parseFloat(customInput.value) || 0;
 			const clampedPercent = Math.max(0, Math.min(100, percentValue));
 			const useParent = this.fillFromParent.get(categoryId) ?? false;
@@ -576,5 +608,87 @@ export class AllocationEditorModal extends Modal {
 		if (item) {
 			item.scrollIntoView({ behavior: "smooth", block: "nearest" });
 		}
+	}
+
+	private saveState(): void {
+		const snapshot = new Map<string, number>();
+		for (const [key, value] of this.allocations) {
+			snapshot.set(key, value);
+		}
+		this.undoStack.push(snapshot);
+		this.redoStack = [];
+		this.updateUndoRedoButtons();
+	}
+
+	private undo(): void {
+		if (this.undoStack.length === 0) return;
+
+		const currentState = new Map<string, number>();
+		for (const [key, value] of this.allocations) {
+			currentState.set(key, value);
+		}
+		this.redoStack.push(currentState);
+
+		const previousState = this.undoStack.pop();
+		if (previousState) {
+			this.allocations.clear();
+			for (const [key, value] of previousState) {
+				this.allocations.set(key, value);
+			}
+			this.updateAllInputs();
+			this.updateViewsWithFocusPreservation();
+		}
+		this.updateUndoRedoButtons();
+	}
+
+	private redo(): void {
+		if (this.redoStack.length === 0) return;
+
+		const currentState = new Map<string, number>();
+		for (const [key, value] of this.allocations) {
+			currentState.set(key, value);
+		}
+		this.undoStack.push(currentState);
+
+		const nextState = this.redoStack.pop();
+		if (nextState) {
+			this.allocations.clear();
+			for (const [key, value] of nextState) {
+				this.allocations.set(key, value);
+			}
+			this.updateAllInputs();
+			this.updateViewsWithFocusPreservation();
+		}
+		this.updateUndoRedoButtons();
+	}
+
+	private updateAllInputs(): void {
+		for (const [categoryId, hours] of this.allocations) {
+			const input = this.inputRefs.get(categoryId);
+			if (input) {
+				input.value = String(hours);
+			}
+		}
+	}
+
+	private updateUndoRedoButtons(): void {
+		if (this.undoButton) {
+			this.undoButton.disabled = this.undoStack.length === 0;
+		}
+		if (this.redoButton) {
+			this.redoButton.disabled = this.redoStack.length === 0;
+		}
+	}
+
+	private setupKeyboardShortcuts(): void {
+		this.contentEl.addEventListener("keydown", (e) => {
+			if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+				e.preventDefault();
+				this.undo();
+			} else if ((e.metaKey || e.ctrlKey) && (e.key === "z" || e.key === "Z") && e.shiftKey) {
+				e.preventDefault();
+				this.redo();
+			}
+		});
 	}
 }

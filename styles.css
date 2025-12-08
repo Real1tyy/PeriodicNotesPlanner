@@ -564,10 +564,43 @@
 	padding: 16px 24px;
 	border-radius: 8px;
 	margin-bottom: 16px;
+}
+
+.periodic-planner-summary-controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 12px;
+}
+
+.periodic-planner-summary-stats {
 	display: flex;
 	justify-content: center;
 	gap: 32px;
 	flex-wrap: wrap;
+}
+
+.periodic-planner-undo-redo-btn {
+	padding: 6px 12px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-primary);
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	color: var(--text-normal);
+	transition: all 0.15s ease;
+	white-space: nowrap;
+}
+
+.periodic-planner-undo-redo-btn:hover:not(:disabled) {
+	background: var(--background-modifier-hover);
+	border-color: var(--interactive-accent);
+}
+
+.periodic-planner-undo-redo-btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
 }
 
 .periodic-planner-summary-item {
