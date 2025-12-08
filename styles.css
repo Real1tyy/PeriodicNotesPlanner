@@ -389,6 +389,37 @@
 	font-weight: 500;
 }
 
+.periodic-planner-sortable-header {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	user-select: none;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.periodic-planner-sortable-header:hover {
+	color: var(--text-normal);
+}
+
+.periodic-planner-sortable-header.periodic-planner-sorted {
+	color: var(--interactive-accent);
+}
+
+.periodic-planner-sort-indicator {
+	font-size: 10px;
+	opacity: 0.6;
+	transition: opacity 0.2s ease;
+}
+
+.periodic-planner-sortable-header:hover .periodic-planner-sort-indicator {
+	opacity: 1;
+}
+
+.periodic-planner-sort-indicator.periodic-planner-unsorted {
+	opacity: 0.3;
+}
+
 .periodic-planner-allocation-table tr.periodic-planner-over-budget-row {
 	background: rgba(255, 0, 0, 0.05);
 }

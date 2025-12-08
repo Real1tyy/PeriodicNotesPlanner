@@ -3,7 +3,7 @@ import type { PeriodType } from "../../constants";
 import type { PeriodIndex } from "../../core/period-index";
 import type { Category, IndexedPeriodNote, PeriodicPlannerSettings, TimeAllocation } from "../../types";
 import { addCls, cls } from "../../utils/css";
-import { formatHours, roundHours, sortAllocationsByCategoryName } from "../../utils/time-budget-utils";
+import { formatHours, roundHours } from "../../utils/time-budget-utils";
 import { AllocationEditorModal } from "./allocation-editor-modal";
 import {
 	getTotalAllocatedHours,
@@ -16,8 +16,23 @@ import { EnlargedChartModal } from "./enlarged-chart-modal";
 import { type CategoryBudgetInfo, getParentBudgets } from "./parent-budget-tracker";
 import { PieChartRenderer } from "./pie-chart-renderer";
 
+type SortColumn = "name" | "hours" | "parentBudget" | "childAllocated";
+type SortDirection = "asc" | "desc";
+
 export class TimeBudgetBlockRenderer {
 	private pieChartRenderer: PieChartRenderer | null = null;
+	private sortColumn: SortColumn = "name";
+	private sortDirection: SortDirection = "asc";
+	private tableData: {
+		allocations: TimeAllocation[];
+		categories: Category[];
+		periodType: PeriodType;
+		parentBudgets: Map<string, CategoryBudgetInfo>;
+		childBudgets: Map<string, CategoryBudgetInfo>;
+		totalHours: number;
+	} | null = null;
+	private tableContainer: HTMLElement | null = null;
+	private tableInsertBefore: HTMLElement | null = null;
 
 	constructor(
 		private app: App,
@@ -59,16 +74,22 @@ export class TimeBudgetBlockRenderer {
 		);
 
 		this.renderHeader(el, totalHours, allocations, periodType, childBudgets.totalChildrenAllocated);
-		this.renderAllocationTable(
-			el,
+
+		this.tableData = {
 			allocations,
-			this.settings.categories,
+			categories: this.settings.categories,
 			periodType,
-			parentBudgets.budgets,
-			childBudgets.budgets,
-			totalHours
-		);
-		this.renderPieChart(el, allocations, this.settings.categories);
+			parentBudgets: parentBudgets.budgets,
+			childBudgets: childBudgets.budgets,
+			totalHours,
+		};
+		this.tableContainer = el;
+
+		const pieChartContainer = el.createDiv({ cls: cls("pie-chart-container") });
+		this.tableInsertBefore = pieChartContainer;
+
+		this.renderAllocationTable();
+		this.renderPieChart(pieChartContainer, allocations, this.settings.categories);
 		this.renderEditButton(
 			el,
 			file,
@@ -152,38 +173,52 @@ export class TimeBudgetBlockRenderer {
 		}
 	}
 
-	private renderAllocationTable(
-		el: HTMLElement,
-		allocations: TimeAllocation[],
-		categories: Category[],
-		periodType: PeriodType,
-		parentBudgets: Map<string, CategoryBudgetInfo>,
-		childBudgets: Map<string, CategoryBudgetInfo>,
-		totalHours: number
-	): void {
+	private renderAllocationTable(): void {
+		if (!this.tableContainer || !this.tableData) return;
+
+		const { allocations, categories, periodType, parentBudgets, childBudgets, totalHours } = this.tableData;
+
+		const existingTable = this.tableContainer.querySelector(`table.${cls("allocation-table")}`);
+		const existingEmpty = this.tableContainer.querySelector(`.${cls("time-budget-empty")}`);
+
+		if (existingTable) {
+			existingTable.remove();
+		}
+		if (existingEmpty) {
+			existingEmpty.remove();
+		}
+
 		if (allocations.length === 0) {
-			const emptyEl = el.createDiv({ cls: cls("time-budget-empty") });
+			const emptyEl = this.tableContainer.createDiv({ cls: cls("time-budget-empty") });
 			emptyEl.setText("No time allocations yet. Click edit to add categories.");
+			if (this.tableInsertBefore) {
+				this.tableContainer.insertBefore(emptyEl, this.tableInsertBefore);
+			}
 			return;
 		}
 
 		const showParent = periodType !== "yearly";
 		const showChild = periodType !== "daily";
 
-		const table = el.createEl("table", { cls: cls("allocation-table") });
+		const table = this.tableContainer.createEl("table", { cls: cls("allocation-table") });
+
+		if (this.tableInsertBefore) {
+			this.tableContainer.insertBefore(table, this.tableInsertBefore);
+		}
 
 		const thead = table.createEl("thead");
 		const headerRow = thead.createEl("tr");
-		headerRow.createEl("th", { text: "Category" });
-		headerRow.createEl("th", { text: "Hours" });
-		if (showParent) headerRow.createEl("th", { text: "Parent budget" });
-		if (showChild) headerRow.createEl("th", { text: "Child allocated" });
+
+		this.createSortableHeader(headerRow, "Category", "name");
+		this.createSortableHeader(headerRow, "Hours", "hours");
+		if (showParent) this.createSortableHeader(headerRow, "Parent budget", "parentBudget");
+		if (showChild) this.createSortableHeader(headerRow, "Child allocated", "childAllocated");
 		headerRow.createEl("th", { text: "Status" });
 
 		const tbody = table.createEl("tbody");
 		const categoryMap = new Map(categories.map((c) => [c.id, c]));
 
-		const sortedAllocations = sortAllocationsByCategoryName(allocations, categories);
+		const sortedAllocations = this.sortAllocations(allocations, categories, parentBudgets, childBudgets);
 
 		for (const allocation of sortedAllocations) {
 			const category = categoryMap.get(allocation.categoryId);
@@ -244,11 +279,83 @@ export class TimeBudgetBlockRenderer {
 		}
 	}
 
-	private renderPieChart(el: HTMLElement, allocations: TimeAllocation[], categories: Category[]): void {
+	private createSortableHeader(headerRow: HTMLTableRowElement, label: string, column: SortColumn): void {
+		const th = headerRow.createEl("th");
+		const headerContent = th.createDiv({ cls: cls("sortable-header") });
+		headerContent.createSpan({ text: label });
+
+		const sortIndicator = headerContent.createSpan({ cls: cls("sort-indicator") });
+
+		if (this.sortColumn === column) {
+			addCls(headerContent, "sorted");
+			sortIndicator.textContent = this.sortDirection === "asc" ? " ↑" : " ↓";
+		} else {
+			sortIndicator.textContent = " ⇅";
+			addCls(sortIndicator, "unsorted");
+		}
+
+		headerContent.addEventListener("click", () => {
+			if (this.sortColumn === column) {
+				this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+			} else {
+				this.sortColumn = column;
+				this.sortDirection = "asc";
+			}
+			this.renderAllocationTable();
+		});
+	}
+
+	private sortAllocations(
+		allocations: TimeAllocation[],
+		categories: Category[],
+		parentBudgets: Map<string, CategoryBudgetInfo>,
+		childBudgets: Map<string, CategoryBudgetInfo>
+	): TimeAllocation[] {
+		const categoryMap = new Map(categories.map((c) => [c.id, c]));
+		const sorted = [...allocations];
+
+		sorted.sort((a, b) => {
+			let comparison = 0;
+
+			switch (this.sortColumn) {
+				case "name": {
+					const nameA = categoryMap.get(a.categoryId)?.name ?? "";
+					const nameB = categoryMap.get(b.categoryId)?.name ?? "";
+					comparison = nameA.localeCompare(nameB);
+					break;
+				}
+				case "hours": {
+					comparison = a.hours - b.hours;
+					break;
+				}
+				case "parentBudget": {
+					const parentA = parentBudgets.get(a.categoryId);
+					const parentB = parentBudgets.get(b.categoryId);
+					const totalA = parentA?.total ?? 0;
+					const totalB = parentB?.total ?? 0;
+					comparison = totalA - totalB;
+					break;
+				}
+				case "childAllocated": {
+					const childA = childBudgets.get(a.categoryId);
+					const childB = childBudgets.get(b.categoryId);
+					const allocatedA = childA?.allocated ?? 0;
+					const allocatedB = childB?.allocated ?? 0;
+					comparison = allocatedA - allocatedB;
+					break;
+				}
+			}
+
+			return this.sortDirection === "asc" ? comparison : -comparison;
+		});
+
+		return sorted;
+	}
+
+	private renderPieChart(container: HTMLElement, allocations: TimeAllocation[], categories: Category[]): void {
 		if (allocations.length === 0) return;
 
-		const chartContainer = el.createDiv({ cls: cls("pie-chart-container") });
-		this.pieChartRenderer = new PieChartRenderer(chartContainer);
+		this.pieChartRenderer = new PieChartRenderer(container);
 		this.pieChartRenderer.render(allocations, categories);
 	}
 
