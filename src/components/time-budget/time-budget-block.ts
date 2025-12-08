@@ -263,7 +263,7 @@ export class TimeBudgetBlockRenderer {
 			const childBudget = childBudgets.get(allocation.categoryId);
 
 			let hasIssue = false;
-			if (showParent && parentBudget && allocation.hours > parentBudget.remaining && parentBudget.remaining >= 0) {
+			if (showParent && parentBudget && parentBudget.allocated > parentBudget.total) {
 				statusCell.createSpan({ text: "⚠️ Over parent", cls: cls("status-over") });
 				addCls(row, "over-budget-row");
 				hasIssue = true;
