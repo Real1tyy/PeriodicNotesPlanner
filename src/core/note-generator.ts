@@ -111,17 +111,6 @@ export class NoteGenerator {
 		return formatPeriodName(periodStart, format);
 	}
 
-	noteExists(dt: DateTime, periodType: PeriodType): boolean {
-		const path = this.getNotePath(dt, periodType);
-		return this.app.vault.getAbstractFileByPath(path) !== null;
-	}
-
-	getNoteFile(dt: DateTime, periodType: PeriodType): TFile | null {
-		const path = this.getNotePath(dt, periodType);
-		const file = this.app.vault.getAbstractFileByPath(path);
-		return file instanceof TFile ? file : null;
-	}
-
 	private async writeFrontmatter(file: TFile, dt: DateTime, periodType: PeriodType): Promise<void> {
 		const props = this.settings.properties;
 		const gen = this.settings.generation;
