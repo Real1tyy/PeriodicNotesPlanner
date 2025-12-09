@@ -12,11 +12,8 @@ import {
 	type Subscription,
 } from "rxjs";
 import { debounceTime, filter, groupBy, map, mergeMap, switchMap, toArray } from "rxjs/operators";
-import { getHoursForPeriodType } from "src/utils";
-import { parseAllocationBlock } from "../components/time-budget/allocation-parser";
 import type { IndexedPeriodNote, PeriodicPlannerSettings } from "../types";
-import { FrontmatterSchema } from "../types/schemas";
-import { extractParentLinksFromFrontmatter } from "../utils/frontmatter-utils";
+import { parseFileToNote } from "../utils/note-utils";
 
 const SCAN_CONCURRENCY = 10;
 
@@ -202,78 +199,17 @@ export class PeriodicNoteIndexer {
 		const cache = this.metadataCache.getFileCache(file);
 		if (!cache?.frontmatter) return [];
 
-		const note = await this.parseFileToNote(file, cache.frontmatter);
+		const note = await parseFileToNote(file, cache.frontmatter, this.vault, this.settings);
 		if (!note) return [];
 
-		return [{ type: "note-indexed", filePath: file.path, oldPath, note }];
-	}
-
-	private async parseFileToNote(file: TFile, frontmatter: Record<string, unknown>): Promise<IndexedPeriodNote | null> {
 		const props = this.settings.properties;
-
-		const extracted = {
-			periodType: frontmatter[props.periodTypeProp],
-			periodStart: frontmatter[props.periodStartProp],
-			periodEnd: frontmatter[props.periodEndProp],
-		};
-
-		const result = FrontmatterSchema.safeParse(extracted);
-		if (!result.success) {
-			console.debug(`File ${file.path} is not a valid periodic note:`, result.error.format());
-			return null;
-		}
-
-		const parentLinks = extractParentLinksFromFrontmatter(frontmatter, props);
-		const categoryAllocations = await this.extractCategoryAllocations(file);
-
-		const rawHours: unknown = frontmatter[props.hoursAvailableProp];
-		const hoursAvailable =
-			typeof rawHours === "number" ? rawHours : getHoursForPeriodType(this.settings.timeBudget, result.data.periodType);
-
-		const totalHoursSpent = Array.from(categoryAllocations.values()).reduce((sum, hours) => sum + hours, 0);
-		const roundedHoursSpent = Math.round(totalHoursSpent * 10) / 10;
-
 		await this.app.fileManager.processFrontMatter(file, (fm) => {
 			if (props.hoursSpentProp) {
-				fm[props.hoursSpentProp] = roundedHoursSpent;
+				fm[props.hoursSpentProp] = note.hoursSpent;
 			}
 		});
 
-		return {
-			file,
-			filePath: file.path,
-			periodType: result.data.periodType,
-			periodStart: result.data.periodStart,
-			periodEnd: result.data.periodEnd,
-			noteName: file.basename,
-			mtime: file.stat.mtime,
-			hoursAvailable,
-			parentLinks,
-			categoryAllocations,
-		};
-	}
-
-	private async extractCategoryAllocations(file: TFile): Promise<Map<string, number>> {
-		const allocations = new Map<string, number>();
-
-		try {
-			const content = await this.vault.read(file);
-			const codeBlockMatch = content.match(/```periodic-planner\n([\s\S]*?)```/);
-
-			if (!codeBlockMatch) {
-				return allocations;
-			}
-
-			const parsed = parseAllocationBlock(codeBlockMatch[1]);
-
-			for (const allocation of parsed.allocations) {
-				allocations.set(allocation.categoryName, allocation.hours);
-			}
-		} catch (error) {
-			console.debug(`Error extracting allocations from ${file.path}:`, error);
-		}
-
-		return allocations;
+		return [{ type: "note-indexed", filePath: file.path, oldPath, note }];
 	}
 
 	private isRelevantFile(file: TFile): boolean {

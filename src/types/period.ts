@@ -12,6 +12,7 @@ export interface IndexedPeriodNote {
 	noteName: string;
 	mtime: number;
 	hoursAvailable: number;
+	hoursSpent: number;
 	parentLinks: {
 		parent?: string;
 		week?: string;
