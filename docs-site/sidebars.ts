@@ -1,11 +1,11 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 
 const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     {
       type: "doc",
       id: "intro",
-      label: "Prisma Calendar"
+      label: "Periodix-Planner"
     },
     "installation",
     "quickstart",
@@ -15,32 +15,18 @@ const sidebars: SidebarsConfig = {
       collapsible: true,
       items: [
         "features/overview",
-        "features/multiple-calendars",
-        "features/folder-scanning",
-        "features/templater",
-        "features/color-rules",
-        "features/filtering",
-        "features/weekly-stats",
-        "features/time-tracker",
-        "features/global-search",
-        "features/notifications",
-        "features/event-previews",
-        "features/zettelid-naming",
-        "features/batch-operations",
-        "features/event-skipping",
-        "features/undo-redo",
-        "features/recurring-dsl",
-        "features/virtual-events",
-        "features/integrations",
-        "features/hotkeys"
+        "features/time-budgeting",
+        "features/allocation-editor",
+        "features/note-generation",
+        "features/note-interconnection",
+        "features/navigation"
       ]
     },
     "configuration",
     "faq",
     "troubleshooting",
     "contributing",
-    "support",
-    "changelog"
+    "support"
   ]
 };
 

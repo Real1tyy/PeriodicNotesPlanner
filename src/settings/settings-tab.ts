@@ -48,6 +48,13 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		// Content area
 		this.contentEl = containerEl.createDiv({ cls: cls("settings-content") });
 		this.renderActiveTab();
+
+		const linksContainer = containerEl.createDiv({ cls: cls("settings-support-container") });
+		linksContainer.createEl("a", {
+			text: "Support Periodix-Planner development",
+			href: "https://github.com/Real1tyy#-support-my-work",
+			cls: cls("settings-support-link"),
+		});
 	}
 
 	private createTabNavigation(containerEl: HTMLElement): void {

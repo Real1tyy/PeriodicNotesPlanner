@@ -1,9 +1,15 @@
 <div align="center">
 
-# Periodic Planner
+# Periodix-Planner
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue?style=for-the-badge)
-![License](https://img.shields.io/github/license/Real1tyy/Periodic-Planner?style=for-the-badge)
+![Downloads](https://img.shields.io/github/downloads/Real1tyy/Periodix-Planner/total?label=Downloads&style=for-the-badge)
+
+![Release](https://img.shields.io/github/v/release/Real1tyy/Periodix-Planner?label=Latest%20Release&style=for-the-badge)
+
+![Stars](https://img.shields.io/github/stars/Real1tyy/Periodix-Planner?style=for-the-badge)
+
+![License](https://img.shields.io/github/license/Real1tyy/Periodix-Planner?style=for-the-badge)
+
 ![Obsidian](https://img.shields.io/badge/obsidian-plugin-purple.svg?style=for-the-badge)
 
 **Intelligent periodic note generation with hierarchical time allocation, budget tracking, and interconnected planning across daily, weekly, monthly, quarterly, and yearly timeframes.**
@@ -14,9 +20,7 @@
 
 ## 🎯 Vision
 
-Periodic Planner transforms your Obsidian vault into a **time-aware planning system**. It automatically generates interconnected periodic notes (daily, weekly, monthly, quarterly, yearly) and provides powerful time budgeting tools to help you allocate your most precious resource: **time**.
-
----
+Periodix-Planner transforms your Obsidian vault into a **time-aware planning system**. It automatically generates interconnected periodic notes (daily, weekly, monthly, quarterly, yearly) and provides powerful time budgeting tools to help you allocate your most precious resource: **time**.
 
 ## ✨ Core Features
 
@@ -86,43 +90,73 @@ Time budgets flow down through the hierarchy:
 - **Progress bars** → Visual tracking of time consumption
 - **Trend analysis** → How your actual time compares to planned
 
----
+### ✏️ **Interactive Allocation Editor**
 
-## 🏗️ Architecture
+Powerful modal for editing time allocations:
+- Drag-to-adjust percentage bars
+- Quick-fill buttons (10%, 25%, 50%, Max)
+- Custom percentage input
+- Parent budget warnings
+- Undo/redo support
+- Keyboard shortcuts
 
-### Hierarchical Time Structure
+## 🚀 Quick Start
 
-```
-Year (2025)
-├── Q1 (2025-Q1)
-│   ├── January (2025-01)
-│   │   ├── Week 1 (2025-W01)
-│   │   │   ├── 2025-01-01 (Wed)
-│   │   │   ├── 2025-01-02 (Thu)
-│   │   │   └── ...
-│   │   ├── Week 2 (2025-W02)
-│   │   └── ...
-│   ├── February (2025-02)
-│   └── March (2025-03)
-├── Q2 (2025-Q2)
-├── Q3 (2025-Q3)
-└── Q4 (2025-Q4)
-```
+1. **Install** the plugin from Obsidian Community Plugins or BRAT
+2. **Configure** your folder structure and naming preferences in settings
+3. **Set up** your time budget categories
+4. **Generate** your first set of periodic notes
+5. **Allocate** time using the interactive allocation editor
 
-### Frontmatter Properties
+See the [Installation Guide](https://real1tyy.github.io/Periodix-Planner/installation) and [Quick Start Guide](https://real1tyy.github.io/Periodix-Planner/quickstart) for detailed setup instructions.
 
-| Property | Description | Example |
-|----------|-------------|---------|
-| `previous` | Link to previous period | `[[2025-01-14]]` |
-| `next` | Link to next period | `[[2025-01-16]]` |
-| `week` | Parent week (daily notes) | `[[2025-W03]]` |
-| `month` | Parent month | `[[2025-01]]` |
-| `quarter` | Parent quarter | `[[2025-Q1]]` |
-| `year` | Parent year | `[[2025]]` |
-| `hours_available` | Total hours in this period | `168` |
-| `time_allocations` | Category breakdown | YAML object |
+## 📦 Installation
 
----
+Periodix-Planner is currently **awaiting approval** for the Obsidian Community Plugin store. In the meantime, you can install it using one of these methods:
+
+### 🎯 Recommended: BRAT (Beta Reviewers Auto-update Tool)
+
+The easiest way to install and keep Periodix-Planner up to date:
+
+1. Install the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat) from Obsidian's Community Plugins
+
+2. Open BRAT settings (Settings → BRAT)
+
+3. Click **Add Beta Plugin**
+
+4. Enter this repository URL: `https://github.com/Real1tyy/Periodix-Planner`
+
+5. Click **Add Plugin**
+
+6. Enable Periodix-Planner in Settings → Community Plugins
+
+**Benefits**: Automatic updates, smooth experience, one-click installation
+
+### 📥 Manual Installation from GitHub Releases
+
+1. Go to [Releases](https://github.com/Real1tyy/Periodix-Planner/releases)
+
+2. Download the latest release assets:
+
+   - `main.js`
+
+   - `manifest.json`
+
+   - `styles.css`
+
+3. Create folder: `{VaultFolder}/.obsidian/plugins/periodix-planner/`
+
+4. Move downloaded files into the folder
+
+5. Reload Obsidian (Ctrl/Cmd + R)
+
+6. Enable Periodix-Planner in Settings → Community Plugins
+
+**Note**: All releases are versioned and tagged for easy reference.
+
+### ✨ Coming Soon
+
+Once approved for the Community Plugin store, you'll be able to install Periodix-Planner directly from Settings → Community Plugins → Browse.
 
 ## ⚙️ Configuration
 
@@ -161,60 +195,7 @@ categories:
     color: "#F59E0B"
 ```
 
----
-
-## 📦 Installation
-
-### Coming Soon
-
-Periodic Planner is currently in active development. Once ready, it will be available via:
-
-1. **BRAT Plugin** (Beta testing)
-2. **Community Plugins** (After approval)
-3. **Manual installation** (From GitHub releases)
-
----
-
-## 🗺️ Roadmap
-
-### Phase 1: Foundation ✅
-- [ ] Basic plugin structure
-- [ ] Settings management
-- [ ] Directory configuration
-
-### Phase 2: Note Generation
-- [ ] Daily note generation
-- [ ] Weekly note generation
-- [ ] Monthly note generation
-- [ ] Quarterly note generation
-- [ ] Yearly note generation
-- [ ] Automatic "next period" generation
-
-### Phase 3: Interconnection
-- [ ] Previous/Next linking
-- [ ] Hierarchical linking (daily → weekly → monthly → quarterly → yearly)
-- [ ] Backlink population
-
-### Phase 4: Time Budgeting
-- [ ] Category definition
-- [ ] Yearly time allocation modal
-- [ ] Quarterly allocation with tracking
-- [ ] Monthly allocation with tracking
-- [ ] Weekly allocation with tracking
-
-### Phase 5: Visualization
-- [ ] Pie chart statistics view
-- [ ] Table statistics view
-- [ ] Budget warnings and alerts
-- [ ] Progress tracking
-
-### Phase 6: Polish
-- [ ] Templates integration
-- [ ] Custom naming patterns
-- [ ] Command palette integration
-- [ ] Hotkey support
-
----
+**Full configuration guide:** [Configuration](https://real1tyy.github.io/Periodix-Planner/configuration)
 
 ## 💡 Use Cases
 
@@ -233,23 +214,39 @@ Periodic Planner is currently in active development. Once ready, it will be avai
 - Project time allocation
 - Resource planning across time horizons
 
----
+## 📚 Documentation
+
+Comprehensive documentation is available at: **[docs.periodix-planner.com](https://real1tyy.github.io/Periodix-Planner/)**
+
+- [Installation Guide](https://real1tyy.github.io/Periodix-Planner/installation)
+- [Quick Start](https://real1tyy.github.io/Periodix-Planner/quickstart)
+- [Features Overview](https://real1tyy.github.io/Periodix-Planner/features/overview)
+- [Time Budgeting](https://real1tyy.github.io/Periodix-Planner/features/time-budgeting)
+- [Allocation Editor](https://real1tyy.github.io/Periodix-Planner/features/allocation-editor)
+- [Configuration](https://real1tyy.github.io/Periodix-Planner/configuration)
+- [FAQ](https://real1tyy.github.io/Periodix-Planner/faq)
+- [Troubleshooting](https://real1tyy.github.io/Periodix-Planner/troubleshooting)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+Contributions are welcome! Please see our [Contributing Guide](https://real1tyy.github.io/Periodix-Planner/contributing) for details.
 
----
+- 🐛 [Report Bugs](https://github.com/Real1tyy/Periodix-Planner/issues)
+- 💡 [Request Features](https://github.com/Real1tyy/Periodix-Planner/issues)
+- 📝 [Improve Documentation](https://github.com/Real1tyy/Periodix-Planner/tree/main/docs-site/docs)
 
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
----
+## Support & Sponsorship
 
-## ☕ Support
+If you find Periodix-Planner useful and want to support its ongoing development, please consider becoming a sponsor. Your contribution helps ensure continuous maintenance, bug fixes, and the introduction of new features.
 
-If you find Periodic Planner useful, consider supporting development:
+- [Support My Work](https://github.com/Real1tyy#-support-my-work)
 
-- [Sponsor on GitHub](https://github.com/sponsors/Real1tyy)
-- [Buy Me a Coffee](https://www.buymeacoffee.com/real1ty)
+Every contribution, no matter the size, is greatly appreciated!
+
+## Contributing
+
+MIT-licensed. PRs welcome!

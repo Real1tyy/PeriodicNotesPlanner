@@ -3,16 +3,16 @@ import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
 
 const config: Config = {
-	title: "Periodic Planner",
+	title: "Periodix-Planner",
 	tagline:
 		"Intelligent periodic note generation with hierarchical time allocation and budget tracking.",
 	favicon: "img/favicon.ico",
 
 	url: "https://Real1tyy.github.io",
-	baseUrl: "/Periodic-Planner/",
+	baseUrl: "/Periodix-Planner/",
 
 	organizationName: "Real1tyy",
-	projectName: "Periodic-Planner",
+	projectName: "Periodix-Planner",
 
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
@@ -32,7 +32,7 @@ const config: Config = {
 					routeBasePath: "/",
 					sidebarPath: "./sidebars.ts",
 					editUrl:
-						"https://github.com/Real1tyy/Periodic-Planner/edit/main/docs-site/",
+						"https://github.com/Real1tyy/Periodix-Planner/edit/main/docs-site/",
 					showLastUpdateAuthor: true,
 					showLastUpdateTime: true,
 				},
@@ -66,9 +66,9 @@ const config: Config = {
 			respectPrefersColorScheme: true,
 		},
 		navbar: {
-			title: "Periodic Planner",
+			title: "Periodix-Planner",
 			logo: {
-				alt: "Periodic Planner Logo",
+				alt: "Periodix-Planner Logo",
 				src: "img/logo.png",
 				href: "/",
 			},
@@ -79,7 +79,12 @@ const config: Config = {
 					position: "left",
 				},
 				{
-					href: "https://github.com/Real1tyy/Periodic-Planner",
+					href: "#",
+					label: "Tutorial",
+					position: "right",
+				},
+				{
+					href: "https://github.com/Real1tyy/Periodix-Planner",
 					label: "GitHub",
 					position: "right",
 				},
@@ -92,7 +97,7 @@ const config: Config = {
 					title: "Docs",
 					items: [
 						{
-							label: "Periodic Planner",
+							label: "Periodix-Planner",
 							to: "/",
 						},
 						{
@@ -114,7 +119,7 @@ const config: Config = {
 						},
 						{
 							label: "GitHub Issues",
-							href: "https://github.com/Real1tyy/Periodic-Planner/issues",
+							href: "https://github.com/Real1tyy/Periodix-Planner/issues",
 						},
 					],
 				},
@@ -123,11 +128,11 @@ const config: Config = {
 					items: [
 						{
 							label: "Repository",
-							href: "https://github.com/Real1tyy/Periodic-Planner",
+							href: "https://github.com/Real1tyy/Periodix-Planner",
 						},
 						{
 							label: "Releases",
-							href: "https://github.com/Real1tyy/Periodic-Planner/releases",
+							href: "https://github.com/Real1tyy/Periodix-Planner/releases",
 						},
 					],
 				},
@@ -135,17 +140,13 @@ const config: Config = {
 					title: "Support",
 					items: [
 						{
-							label: "Sponsor on GitHub",
-							href: "https://github.com/sponsors/Real1tyy",
-						},
-						{
-							label: "Buy Me a Coffee",
-							href: "https://www.buymeacoffee.com/real1ty",
+							label: "Support My Work",
+							href: "https://github.com/Real1tyy#-support-my-work",
 						},
 					],
 				},
 			],
-			copyright: `© ${new Date().getFullYear()} Periodic Planner`,
+			copyright: `© ${new Date().getFullYear()} Periodix-Planner`,
 		},
 		prism: {
 			theme: prismThemes.github,
