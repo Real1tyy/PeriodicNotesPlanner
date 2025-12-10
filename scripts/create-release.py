@@ -198,7 +198,7 @@ def main():
         commit_message = f"chore: release {new_version}"
 
         add_result = subprocess.run(
-            ["git", "add", "manifest.json", "versions.json"],
+            ["git", "add", "manifest.json", "package.json", "versions.json"],
             cwd=project_root,
             capture_output=True,
             text=True
@@ -220,6 +220,37 @@ def main():
                 print(commit_result.stderr)
             else:
                 print(f"✅ Committed changes: {commit_message}")
+
+        print(f"\n📤 Step 6: Pushing to remote repository...")
+
+        push_result = subprocess.run(
+            ["git", "push"],
+            cwd=project_root,
+            capture_output=True,
+            text=True
+        )
+
+        if push_result.returncode != 0:
+            print(f"⚠️  Failed to push changes:")
+            print(push_result.stderr)
+        else:
+            print(f"✅ Pushed commit to remote")
+
+        push_tag_result = subprocess.run(
+            ["git", "push", "origin", tag],
+            cwd=project_root,
+            capture_output=True,
+            text=True
+        )
+
+        if push_tag_result.returncode != 0:
+            if "already exists" in push_tag_result.stderr.lower():
+                print(f"⚠️  Tag {tag} already exists on remote")
+            else:
+                print(f"⚠️  Failed to push tag:")
+                print(push_tag_result.stderr)
+        else:
+            print(f"✅ Pushed tag {tag} to remote")
 
         repo_url = get_repo_url()
         print(f"\n✅ Release {tag} created successfully!")
