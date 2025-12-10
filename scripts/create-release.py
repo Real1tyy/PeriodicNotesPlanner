@@ -236,22 +236,6 @@ def main():
         else:
             print(f"✅ Pushed commit to remote")
 
-        push_tag_result = subprocess.run(
-            ["git", "push", "origin", tag],
-            cwd=project_root,
-            capture_output=True,
-            text=True
-        )
-
-        if push_tag_result.returncode != 0:
-            if "already exists" in push_tag_result.stderr.lower():
-                print(f"⚠️  Tag {tag} already exists on remote")
-            else:
-                print(f"⚠️  Failed to push tag:")
-                print(push_tag_result.stderr)
-        else:
-            print(f"✅ Pushed tag {tag} to remote")
-
         repo_url = get_repo_url()
         print(f"\n✅ Release {tag} created successfully!")
         print(f"   View at: {repo_url}/releases/tag/{tag}")
