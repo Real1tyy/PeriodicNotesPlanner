@@ -13,7 +13,7 @@ import {
 } from "rxjs";
 import { debounceTime, filter, groupBy, map, mergeMap, switchMap, toArray } from "rxjs/operators";
 import type { IndexedPeriodNote, PeriodicPlannerSettings } from "../types";
-import { parseFileToNote } from "../utils/note-utils";
+import { parseFileToNote, updateHoursSpentInFrontmatter } from "../utils/note-utils";
 
 const SCAN_CONCURRENCY = 10;
 
@@ -80,6 +80,19 @@ export class PeriodicNoteIndexer {
 	resync(): void {
 		this.indexingCompleteSubject.next(false);
 		void this.scanAllFiles();
+	}
+
+	async refreshFile(file: TFile): Promise<void> {
+		if (!this.isRelevantFile(file)) return;
+
+		try {
+			const events = await this.buildEventsForFile(file);
+			for (const event of events) {
+				this.scanEventsSubject.next(event);
+			}
+		} catch (error) {
+			console.error(`Error refreshing file ${file.path}:`, error);
+		}
 	}
 
 	private async scanAllFiles(): Promise<void> {
@@ -197,17 +210,12 @@ export class PeriodicNoteIndexer {
 
 	private async buildEventsForFile(file: TFile, oldPath?: string): Promise<IndexerEvent[]> {
 		const cache = this.metadataCache.getFileCache(file);
-		if (!cache?.frontmatter) return [];
+		const frontmatter = cache?.frontmatter ?? {};
 
-		const note = await parseFileToNote(file, cache.frontmatter, this.vault, this.settings);
+		const note = await parseFileToNote(file, frontmatter, this.vault, this.settings, this.app);
 		if (!note) return [];
 
-		const props = this.settings.properties;
-		await this.app.fileManager.processFrontMatter(file, (fm) => {
-			if (props.hoursSpentProp) {
-				fm[props.hoursSpentProp] = note.hoursSpent;
-			}
-		});
+		await updateHoursSpentInFrontmatter(this.app, file, note.hoursSpent, this.settings.properties.hoursSpentProp);
 
 		return [{ type: "note-indexed", filePath: file.path, oldPath, note }];
 	}

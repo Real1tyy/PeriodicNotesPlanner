@@ -86,6 +86,20 @@ export default class PeriodicPlannerPlugin extends Plugin {
 				}
 			})
 		);
+
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", () => {
+				const file = this.app.workspace.getActiveFile();
+				if (file instanceof TFile && file.extension === "md") {
+					void this.refreshActiveNote(file);
+				}
+			})
+		);
+	}
+
+	private async refreshActiveNote(file: TFile): Promise<void> {
+		await this.indexer.refreshFile(file);
+		await this.ensurePeriodicNoteComplete(file);
 	}
 
 	private async ensurePeriodicNoteComplete(file: TFile): Promise<void> {

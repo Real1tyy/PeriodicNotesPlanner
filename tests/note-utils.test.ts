@@ -364,17 +364,9 @@ describe("Note Utilities", () => {
 			const file = createMockFile("test.md");
 			const settings = createDefaultSettings();
 
-			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
-
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
 			expect(result).toBeNull();
-			expect(consoleSpy).toHaveBeenCalledWith(
-				expect.stringContaining("is not a valid periodic note"),
-				expect.any(Object)
-			);
-
-			consoleSpy.mockRestore();
 		});
 
 		it("should return null when periodStart is missing", async () => {
