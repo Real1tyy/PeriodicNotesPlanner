@@ -63,7 +63,7 @@ export class AllocationEditorModal extends Modal {
 		this.renderActions();
 
 		this.setupGlobalDragListeners();
-		this.setupKeyboardShortcuts();
+		this.setupScopeHandlers();
 	}
 
 	onClose(): void {
@@ -723,15 +723,42 @@ export class AllocationEditorModal extends Modal {
 		}
 	}
 
-	private setupKeyboardShortcuts(): void {
-		this.contentEl.addEventListener("keydown", (e) => {
-			if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
-				e.preventDefault();
+	private setupScopeHandlers(): void {
+		// Undo: Ctrl/Cmd + Z
+		this.scope.register(["Mod"], "z", (evt) => {
+			if (!evt.shiftKey) {
+				evt.preventDefault();
 				this.undo();
-			} else if ((e.metaKey || e.ctrlKey) && (e.key === "z" || e.key === "Z") && e.shiftKey) {
-				e.preventDefault();
-				this.redo();
+				return false;
 			}
+		});
+
+		// Redo: Ctrl/Cmd + Shift + Z
+		this.scope.register(["Mod", "Shift"], "z", (evt) => {
+			evt.preventDefault();
+			this.redo();
+			return false;
+		});
+
+		// Submit: Enter (when not in input)
+		this.scope.register([], "Enter", (evt) => {
+			const activeElement = document.activeElement as HTMLElement;
+			const isInputFocused = activeElement?.tagName === "INPUT" && activeElement.getAttribute("type") !== "checkbox";
+
+			if (isInputFocused) {
+				// If in input, blur it first
+				activeElement.blur();
+				return false;
+			}
+
+			// If not in input, submit form
+			evt.preventDefault();
+			this.result = {
+				allocations: this.getAllocationsArray(),
+				cancelled: false,
+			};
+			this.close();
+			return false;
 		});
 	}
 }
