@@ -1,4 +1,5 @@
 import { type App, type MarkdownPostProcessorContext, TFile } from "obsidian";
+import type { Subscription } from "rxjs";
 import type { PeriodType } from "../../constants";
 import type { PeriodIndex } from "../../core/period-index";
 import type { Category, IndexedPeriodNote, PeriodicPlannerSettings, TimeAllocation } from "../../types";
@@ -33,6 +34,11 @@ export class TimeBudgetBlockRenderer {
 	} | null = null;
 	private tableContainer: HTMLElement | null = null;
 	private tableInsertBefore: HTMLElement | null = null;
+	private filePath: string | null = null;
+	private indexSubscription: Subscription | null = null;
+	private rootElement: HTMLElement | null = null;
+	private sourceContent: string | null = null;
+	private context: MarkdownPostProcessorContext | null = null;
 
 	constructor(
 		private app: App,
@@ -41,6 +47,37 @@ export class TimeBudgetBlockRenderer {
 	) {}
 
 	async render(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<void> {
+		this.filePath = ctx.sourcePath;
+		this.rootElement = el;
+		this.sourceContent = source;
+		this.context = ctx;
+
+		this.setupIndexListener();
+
+		await this.renderContent();
+	}
+
+	private setupIndexListener(): void {
+		if (this.indexSubscription) {
+			this.indexSubscription.unsubscribe();
+		}
+
+		this.indexSubscription = this.periodIndex.events$.subscribe((event) => {
+			if (event.type === "period-updated" && event.filePath === this.filePath) {
+				void this.renderContent();
+			}
+		});
+	}
+
+	private async renderContent(): Promise<void> {
+		if (!this.rootElement || !this.sourceContent || !this.context || !this.filePath) {
+			return;
+		}
+
+		const el = this.rootElement;
+		const source = this.sourceContent;
+		const ctx = this.context;
+
 		el.empty();
 		el.addClass(cls("time-budget-block"));
 
@@ -452,6 +489,10 @@ export class TimeBudgetBlockRenderer {
 	destroy(): void {
 		if (this.pieChartRenderer) {
 			this.pieChartRenderer.destroy();
+		}
+		if (this.indexSubscription) {
+			this.indexSubscription.unsubscribe();
+			this.indexSubscription = null;
 		}
 	}
 }
