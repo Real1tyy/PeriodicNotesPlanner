@@ -70,7 +70,14 @@ export class TimeBudgetBlockRenderer {
 	}
 
 	private async renderContent(): Promise<void> {
-		if (!this.rootElement || !this.sourceContent || !this.context || !this.filePath) {
+		// Allow empty source content (empty code block should still render)
+		if (
+			!this.rootElement ||
+			this.sourceContent === null ||
+			this.sourceContent === undefined ||
+			!this.context ||
+			!this.filePath
+		) {
 			return;
 		}
 
