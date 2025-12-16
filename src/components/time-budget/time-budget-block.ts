@@ -315,7 +315,11 @@ export class TimeBudgetBlockRenderer {
 			const EPSILON = 0.01;
 
 			let hasIssue = false;
-			if (showParent && parentBudget && parentBudget.allocated > parentBudget.total + EPSILON) {
+			if (showParent && !parentBudget) {
+				statusCell.createSpan({ text: "⚠️ Parent category not set", cls: cls("status-over") });
+				addCls(row, "over-budget-row");
+				hasIssue = true;
+			} else if (showParent && parentBudget && parentBudget.allocated > parentBudget.total + EPSILON) {
 				statusCell.createSpan({ text: "⚠️ Over parent", cls: cls("status-over") });
 				addCls(row, "over-budget-row");
 				hasIssue = true;
