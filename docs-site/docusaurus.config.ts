@@ -108,6 +108,10 @@ const config: Config = {
 							label: "Quick Start",
 							to: "/quickstart",
 						},
+						{
+							label: "Changelog",
+							to: "/changelog",
+						},
 					],
 				},
 				{
