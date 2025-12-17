@@ -61,7 +61,7 @@ export const SETTINGS_DEFAULTS = {
 	OVER_BUDGET_THRESHOLD_PERCENT: 100, // Red when over 100%
 
 	// ===== Auto-Generation Settings =====
-	AUTO_GENERATE_ON_LOAD: true,
+	AUTO_GENERATE_ON_LOAD: false,
 	GENERATE_PERIODS_AHEAD: 1, // Always generate 1 period into the future
 
 	// ===== PDF Link Settings =====
