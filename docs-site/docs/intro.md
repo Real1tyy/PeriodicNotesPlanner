@@ -48,13 +48,13 @@ All notes are linked through frontmatter properties, creating a navigable web of
 ```yaml
 ---
 # Daily Note Example (2025-01-15)
-previous: "[[2025-01-14]]"
-next: "[[2025-01-16]]"
-week: "[[2025-W03]]"
-month: "[[2025-01]]"
-quarter: "[[2025-Q1]]"
-year: "[[2025]]"
-hours_available: 24
+Previous: "[[2025-01-14]]"
+Next: "[[2025-01-16]]"
+Week: "[[2025-W03]]"
+Month: "[[2025-01]]"
+Quarter: "[[2025-Q1]]"
+Year: "[[2025]]"
+Hours Available: 24
 ---
 ```
 

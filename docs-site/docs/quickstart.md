@@ -54,7 +54,6 @@ Set your available hours:
 
 1. Go to the **Time budget** tab
 2. Set **Hours per Week** (default: 40)
-3. Optionally override monthly, quarterly, or yearly hours if needed
 
 The plugin will automatically calculate hours for each period type based on your weekly hours.
 
@@ -63,68 +62,50 @@ The plugin will automatically calculate hours for each period type based on your
 Customize how your notes are named:
 
 1. Go to the **Naming** tab
-2. Adjust the format strings if desired:
-   - **Daily**: `YYYY-MM-DD` (default)
-   - **Weekly**: `YYYY-[W]WW` (default)
-   - **Monthly**: `YYYY-MM` (default)
-   - **Quarterly**: `YYYY-[Q]Q` (default)
-   - **Yearly**: `YYYY` (default)
+2. Adjust the format strings if desired (uses [Luxon format tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens)):
+   - **Daily**: `dd-MM-yyyy` (default: 04-12-2025)
+   - **Weekly**: `WW-kkkk` (default: 47-2025)
+   - **Monthly**: `M-yyyy` (default: 5-2025)
+   - **Quarterly**: `'Q'q-yyyy` (default: Q1-2025)
+   - **Yearly**: `yyyy` (default: 2025)
 
 ## Step 6: Generate your first notes
 
-You have two options:
-
-### Option A: Generate for Today
-1. Open the **Command Palette** (Ctrl/Cmd + P)
-2. Type **"Generate all periods for today"**
-3. Execute the command
-
-This will create:
-- Today's daily note
-- This week's weekly note
-- This month's monthly note
-- This quarter's quarterly note
-- This year's yearly note
-
-### Option B: Auto-Generation
 1. Go to the **Generation** tab in settings
 2. Enable **Auto-generate future periods**
-3. The plugin will automatically create notes when you open Obsidian
+3. The plugin will automatically create notes when you open Obsidian again or use the command `Generate future periods`
 
-## Step 7: Add a time budget block
+## Step 7: View the time budget block
 
-To render a time budget block in a note:
+The plugin automatically adds a time budget block to each generated periodic note:
 
 1. Open one of your generated periodic notes
-2. Add a code block with the language `periodic-planner`:
-
-````markdown
-```periodic-planner
-work: 8h
-health: 2h
-learning: 1h
-```
-````
-
-3. The plugin will render a time budget view with:
+2. You'll see a `periodic-planner` code block already added after the frontmatter
+3. The block renders as an interactive view with:
    - Pie chart visualization
-   - Allocation table
-   - Budget tracking
-   - Edit button to modify allocations
+   - Allocation table showing each category
+   - Budget tracking indicators
+   - **Edit allocations** button
 
-## Step 8: Edit allocations
+**Note:** If auto-inherit is enabled (Settings → Time budget → Auto-inherit parent percentages), child periods will automatically inherit allocations from their parent period based on percentage distribution.
 
-To update allocations:
+## Step 8: Allocate time to categories
+
+Use the Allocation Editor to distribute hours across your categories:
 
 1. Click the **Edit allocations** button in the time budget block
-2. Use the allocation editor modal to:
-   - Set hours for each category
-   - Use quick-fill buttons (10%, 25%, 50%, Max)
-   - Drag the percentage bar to adjust
-   - See parent budget warnings
-   - Track remaining hours
+2. For each category, you can:
+   - **Type hours directly** in the input field
+   - **Use quick-fill buttons**: 10%, 25%, 50%, or Max
+   - **Drag the percentage bar** to adjust visually
+   - **Enter custom percentage** and click Set
+3. The editor shows:
+   - Total allocated vs. remaining hours
+   - Color-coded status (green/yellow/red)
+   - Parent budget warnings if you exceed parent allocations
+4. Click **Save allocations** to write the changes to the note
 
-3. Click **Save allocations** to update the note's frontmatter
+**Tip:** Use the **Fill parent** button (top-left) to instantly inherit your parent period's percentage distribution.
 
 ## Next steps
 

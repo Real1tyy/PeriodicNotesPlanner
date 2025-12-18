@@ -24,7 +24,7 @@ Periodix-Planner automatically creates periodic notes for all time periods, alwa
 All periodic notes are intelligently linked through frontmatter properties, creating a navigable web of time that lets you zoom in and out of your planning horizon effortlessly.
 
 **Navigation Links:**
-- `previous` / `next` - Navigate chronologically within the same period type
+- `Previous` / `Next` - Navigate chronologically within the same period type
 - Hierarchical links - Jump from daily → weekly → monthly → quarterly → yearly
 
 **Learn more:** [Note Interconnection](/features/note-interconnection)
