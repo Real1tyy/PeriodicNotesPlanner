@@ -81,17 +81,17 @@ All periodic notes are intelligently linked through frontmatter properties:
 ```yaml
 ---
 # Daily Note Example (2025-01-15)
-previous: "[[2025-01-14]]"
-next: "[[2025-01-16]]"
-week: "[[2025-W03]]"
-month: "[[2025-01]]"
-quarter: "[[2025-Q1]]"
-year: "[[2025]]"
+Previous: "[[2025-01-14]]"
+Next: "[[2025-01-16]]"
+Week: "[[2025-W03]]"
+Month: "[[2025-01]]"
+Quarter: "[[2025-Q1]]"
+Year: "[[2025]]"
 ---
 ```
 
 **Navigation Links:**
-- `previous` / `next` → Navigate chronologically within the same period type
+- `Previous` / `Next` → Navigate chronologically within the same period type
 - Hierarchical links → Jump from daily → weekly → monthly → quarterly → yearly
 
 This creates a powerful **navigable web of time** that lets you zoom in and out of your planning horizon effortlessly.
@@ -126,7 +126,6 @@ Time budgets flow down through the hierarchy:
 - **Pie charts** → Category distribution at each time level
 - **Tables** → Detailed breakdown with allocated vs. remaining
 - **Progress bars** → Visual tracking of time consumption
-- **Trend analysis** → How your actual time compares to planned
 
 ### ✏️ **Interactive Allocation Editor**
 
@@ -248,7 +247,3 @@ If you find Periodix-Planner useful and want to support its ongoing development,
 - [Support My Work](https://github.com/Real1tyy#-support-my-work)
 
 Every contribution, no matter the size, is greatly appreciated!
-
-## Contributing
-
-MIT-licensed. PRs welcome!
