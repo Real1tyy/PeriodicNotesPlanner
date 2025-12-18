@@ -8,17 +8,27 @@
 ![License](https://img.shields.io/github/license/Real1tyy/Periodix-Planner?style=for-the-badge)
 ![Obsidian](https://img.shields.io/badge/obsidian-plugin-purple.svg?style=for-the-badge)
 
-**Intelligent periodic note generation with hierarchical time allocation, budget tracking, and interconnected planning across daily, weekly, monthly, quarterly, and yearly timeframes.**
+**Turn Obsidian into a time-aware planning system: automatic periodic notes + time budgets that make trade-offs visible.**
 
 ---
 
 </div>
 
-## 🎯 Vision
+## Why Periodix-Planner exists
 
-Periodix-Planner transforms your Obsidian vault into a **time-aware planning system**. It automatically generates interconnected periodic notes (daily, weekly, monthly, quarterly, yearly) and provides powerful time budgeting tools to help you allocate your most precious resource: **time**.
+Time is your scarcest resource. You can’t do everything — and most “planning” fails because it avoids the trade-offs.
 
-## ✨ Core Features
+**Periodix-Planner** helps you plan *time*, not just tasks. It treats time like a finite investment portfolio:
+
+- You allocate hours into categories (work, learning, health, relationships, projects)
+- You observe where time actually goes over time
+- You decide whether those investments are worth the returns you’re getting
+
+**This plugin is not a task manager.** Tasks are result-oriented. Periodix-Planner is time-oriented.
+
+It complements your task manager by helping you decide what deserves your time in the first place.
+
+## What it does
 
 ### 📅 **Automatic Periodic Note Generation**
 
@@ -56,7 +66,7 @@ This creates a powerful **navigable web of time** that lets you zoom in and out 
 
 ### ⏱️ **Time Budget System**
 
-Define how many hours you have available and delegate them across categories:
+Define how many hours you have available and delegate them across categories (time investments), with budgets flowing down the hierarchy:
 
 #### Yearly Time Pool
 ```
@@ -154,44 +164,7 @@ The easiest way to install and keep Periodix-Planner up to date:
 
 Once approved for the Community Plugin store, you'll be able to install Periodix-Planner directly from Settings → Community Plugins → Browse.
 
-## ⚙️ Configuration
 
-### Directory Settings
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Daily Folder | Where daily notes are stored | `Periodic/Daily` |
-| Weekly Folder | Where weekly notes are stored | `Periodic/Weekly` |
-| Monthly Folder | Where monthly notes are stored | `Periodic/Monthly` |
-| Quarterly Folder | Where quarterly notes are stored | `Periodic/Quarterly` |
-| Yearly Folder | Where yearly notes are stored | `Periodic/Yearly` |
-
-### Time Settings
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Hours per Week | Base weekly hour budget | `40` |
-| Override Monthly | Custom monthly hours (optional) | - |
-| Override Quarterly | Custom quarterly hours (optional) | - |
-| Override Yearly | Custom yearly hours (optional) | - |
-
-### Categories
-
-Define your time investment categories:
-
-```yaml
-categories:
-  - name: "Work"
-    color: "#3B82F6"
-  - name: "Health"
-    color: "#10B981"
-  - name: "Learning"
-    color: "#8B5CF6"
-  - name: "Relationships"
-    color: "#F59E0B"
-```
-
-**Full configuration guide:** [Configuration](https://real1tyy.github.io/Periodix-Planner/configuration)
 
 ## 💡 Use Cases
 

@@ -5,11 +5,23 @@ slug: /
 
 # Welcome to Periodix-Planner
 
-**Periodix-Planner** transforms your Obsidian vault into a **time-aware planning system**. It automatically generates interconnected periodic notes (daily, weekly, monthly, quarterly, yearly) and provides powerful time budgeting tools to help you allocate your most precious resource: **time**.
+Time is your scarcest resource — and the hardest one to “optimize” because you can’t get more of it.
+
+**Periodix-Planner** turns your Obsidian vault into a **time-aware planning system**. It automatically generates and connects periodic notes (daily → yearly) and adds a structured way to plan **time investments**, not just tasks.
 
 ## 🎯 What is Periodix-Planner?
 
-Periodix-Planner is an Obsidian plugin that combines:
+Most planning systems focus on output (“What did I get done?”). Periodix-Planner focuses on inputs (“What am I spending my time on?”).
+
+**This plugin is not a task manager.** Tasks are result-oriented. Periodix-Planner is time-oriented.
+
+The core idea is to treat time like a finite investment portfolio:
+
+- Allocate hours into categories (work, learning, health, relationships, projects)
+- Observe where time actually goes over days/weeks/months
+- Decide whether those investments are worth the returns you’re getting
+
+Periodix-Planner combines:
 
 - **📅 Automatic Periodic Note Generation** - Creates notes for each time period automatically
 - **🔗 Interconnected Note Web** - Links notes hierarchically through frontmatter properties
@@ -31,7 +43,7 @@ The plugin automatically creates notes for each time period, always staying **on
 
 ### Hierarchical Time Structure
 
-All notes are intelligently linked through frontmatter properties, creating a navigable web of time:
+All notes are linked through frontmatter properties, creating a navigable web of time:
 
 ```yaml
 ---
@@ -48,7 +60,7 @@ hours_available: 24
 
 ### Time Budgeting
 
-Define how many hours you have available and delegate them across categories with visual tracking:
+Time budgets flow through your periods so trade-offs become obvious:
 
 - **Yearly** → Define total category budgets
 - **Quarterly** → Allocate portions of yearly budgets (plugin tracks remaining)
@@ -61,6 +73,12 @@ Define how many hours you have available and delegate them across categories wit
 - 🟢 **Within budget** → Green indicators
 - 🟡 **Approaching limit** → Yellow warnings
 - 🔴 **Over budget** → Red alerts with clear messaging
+
+### Complements task managers (doesn’t replace them)
+
+Tasks help you execute.
+
+Periodix-Planner helps you decide what deserves your time in the first place.
 
 ## 🚀 Quick Start
 
