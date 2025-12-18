@@ -4,6 +4,8 @@ sidebar_position: 4
 
 # Automatic Note Generation
 
+![Automatic note generation screenshot](/img/features/note-generation.png)
+
 Periodix-Planner automatically generates periodic notes for all time periods, ensuring you always have the notes you need when you need them.
 
 ## 🎯 Overview

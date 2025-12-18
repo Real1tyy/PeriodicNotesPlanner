@@ -4,6 +4,8 @@ sidebar_position: 6
 
 # Navigation Commands
 
+![Navigation commands screenshot](/img/features/navigation.png)
+
 Periodix-Planner provides powerful commands for navigating between periodic notes quickly and efficiently.
 
 ## 🎯 Available Commands

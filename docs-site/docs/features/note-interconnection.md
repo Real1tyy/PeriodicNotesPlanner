@@ -4,6 +4,8 @@ sidebar_position: 5
 
 # Note Interconnection
 
+![Note interconnection screenshot](/img/features/note-interconnection.png)
+
 All periodic notes in Periodix-Planner are intelligently linked through frontmatter properties, creating a navigable web of time that lets you zoom in and out of your planning horizon effortlessly.
 
 ## 🔗 Link Structure

@@ -4,6 +4,8 @@ sidebar_position: 11
 
 # Period Children View
 
+![Period children view screenshot](/img/features/period-children.png)
+
 The Period Children view shows all child periods for a given period, helping you navigate and understand the hierarchical structure of your periodic notes.
 
 ## 🎯 Overview

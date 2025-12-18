@@ -4,6 +4,8 @@ sidebar_position: 2
 
 # Time Budgeting
 
+![Time budgeting screenshot](/img/features/time-budgeting.png)
+
 The time budgeting system in Periodix-Planner allows you to allocate and track time across categories with hierarchical tracking from yearly down to daily periods.
 
 ## 🎯 Overview

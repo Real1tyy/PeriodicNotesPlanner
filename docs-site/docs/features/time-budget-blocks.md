@@ -4,6 +4,8 @@ sidebar_position: 9
 
 # Time Budget Blocks
 
+![Time budget blocks screenshot](/img/features/time-budget-blocks.png)
+
 Time budget blocks are interactive code blocks that display visual time allocation statistics directly in your periodic notes.
 
 ## 🎯 Overview

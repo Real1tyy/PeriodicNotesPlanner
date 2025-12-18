@@ -4,6 +4,8 @@ sidebar_position: 3
 
 # Allocation Editor
 
+![Allocation editor screenshot](/img/features/edit-allocator.png)
+
 The Allocation Editor is an interactive modal that provides powerful tools for editing time allocations with visual feedback and intuitive controls.
 
 ## 🎯 Overview

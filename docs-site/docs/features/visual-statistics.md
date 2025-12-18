@@ -4,6 +4,8 @@ sidebar_position: 7
 
 # Visual Statistics
 
+![Visual statistics screenshot](/img/features/visual-statistics.png)
+
 Periodix-Planner provides powerful visual statistics to help you understand your time allocation and track your budget across all time periods.
 
 ## 📊 Overview

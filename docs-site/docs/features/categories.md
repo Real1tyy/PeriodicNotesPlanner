@@ -4,6 +4,8 @@ sidebar_position: 8
 
 # Category Management
 
+![Category management screenshot](/img/features/categories.png)
+
 Categories in Periodix-Planner allow you to organize and track your time investments across different areas of your life.
 
 ## 🎯 Overview
