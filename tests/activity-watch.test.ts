@@ -129,9 +129,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should not inject when ActivityWatch is disabled", async () => {
-			const settings = createMockSettings({
-				activityWatch: { enabled: false, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" },
-			});
+			const settings = createMockSettings();
 			const app = createMockApp("");
 			const file = createMockFile("Periodic/Daily/18-12-2025.md");
 			const date = DateTime.fromISO("2025-12-18");
@@ -176,7 +174,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should inject ActivityWatch data for past dates", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const app = createMockApp("# Daily Note\n\nExisting content");
 			const file = createMockFile("Periodic/Daily/17-12-2025.md");
 			const yesterday = DateTime.now().minus({ days: 1 }).startOf("day");
@@ -203,11 +201,7 @@ describe("ActivityWatch Utils", () => {
 
 		it("should use custom heading from settings", async () => {
 			const settings = createMockSettings({
-				activityWatch: {
-					enabled: true,
-					apiUrl: "http://localhost:5600",
-					heading: "## My Custom Heading",
-				},
+				activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## My Custom Heading" },
 			});
 			const app = createMockApp("# Daily");
 			const file = createMockFile("Periodic/Daily/17-12-2025.md");
@@ -225,7 +219,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should handle API errors gracefully", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const app = createMockApp("# Daily");
 			const file = createMockFile("Periodic/Daily/17-12-2025.md");
 			const yesterday = DateTime.now().minus({ days: 1 }).startOf("day");
@@ -250,9 +244,7 @@ describe("ActivityWatch Utils", () => {
 
 	describe("processAllDailyNotesForActivityWatch", () => {
 		it("should skip processing when ActivityWatch is disabled", async () => {
-			const settings = createMockSettings({
-				activityWatch: { enabled: false, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" },
-			});
+			const settings = createMockSettings();
 			const app = createMockApp();
 
 			await processAllDailyNotesForActivityWatch(app, settings);
@@ -261,7 +253,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should only process files in daily folder", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [
 				createMockFile("Periodic/Daily/18-12-2025.md"),
 				createMockFile("Periodic/Weekly/51-2025.md"),
@@ -276,7 +268,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should skip files without frontmatter", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [createMockFile("Periodic/Daily/18-12-2025.md")];
 			const app = createMockApp("# Note", files);
 			vi.mocked(app.metadataCache.getFileCache).mockReturnValue(null);
@@ -287,7 +279,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should skip non-daily period types", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [createMockFile("Periodic/Daily/51-2025.md")];
 			const app = createMockApp("# Note", files);
 			vi.mocked(app.metadataCache.getFileCache).mockReturnValue({
@@ -303,7 +295,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should skip files without period start property", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [createMockFile("Periodic/Daily/18-12-2025.md")];
 			const app = createMockApp("# Note", files);
 			vi.mocked(app.metadataCache.getFileCache).mockReturnValue({
@@ -318,7 +310,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should skip files with invalid dates", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [createMockFile("Periodic/Daily/invalid.md")];
 			const app = createMockApp("# Note", files);
 			vi.mocked(app.metadataCache.getFileCache).mockReturnValue({
@@ -334,7 +326,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should process valid daily notes", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [createMockFile("Periodic/Daily/17-12-2025.md"), createMockFile("Periodic/Daily/16-12-2025.md")];
 			const app = createMockApp("# Note", files);
 			const yesterday = DateTime.now().minus({ days: 1 }).startOf("day").toISO();
@@ -359,7 +351,7 @@ describe("ActivityWatch Utils", () => {
 		});
 
 		it("should handle errors for individual files and continue processing", async () => {
-			const settings = createMockSettings();
+			const settings = createMockSettings({ activityWatch: { enabled: true, apiUrl: "http://localhost:5600", heading: "## ActivityWatch" } });
 			const files = [createMockFile("Periodic/Daily/17-12-2025.md"), createMockFile("Periodic/Daily/16-12-2025.md")];
 			const app = createMockApp("# Note", files);
 			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});

@@ -56,7 +56,7 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 		overBudgetThresholdPercent: 100,
 	},
 	activityWatch: {
-		enabled: true,
+		enabled: false,
 		apiUrl: "http://localhost:5600",
 		heading: "## ActivityWatch",
 	},

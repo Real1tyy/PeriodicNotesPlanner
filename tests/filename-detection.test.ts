@@ -1,11 +1,9 @@
 import { DateTime } from "luxon";
 import { describe, expect, it } from "vitest";
-import { SETTINGS_DEFAULTS } from "../src/constants";
-import type { PeriodicPlannerSettings } from "../src/types";
 import { buildPeriodLinksForNote, detectPeriodTypeFromFilename } from "../src/utils/note-utils";
+import { createMockSettings } from "./test-helpers";
 
-const mockSettings: PeriodicPlannerSettings = {
-	version: 1,
+const mockSettings = createMockSettings({
 	directories: {
 		dailyFolder: "Journal/Daily",
 		weeklyFolder: "Journal/Weekly",
@@ -20,51 +18,12 @@ const mockSettings: PeriodicPlannerSettings = {
 		quarterlyFormat: "'Q'q-yyyy",
 		yearlyFormat: "yyyy",
 	},
-	timeBudget: {
-		hoursPerWeek: SETTINGS_DEFAULTS.HOURS_PER_WEEK,
-		autoInheritParentPercentages: false,
-	},
 	activityWatch: {
 		enabled: false,
-		apiUrl: SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL,
-		heading: SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING,
+		apiUrl: "http://localhost:5600",
+		heading: "## ActivityWatch",
 	},
-	properties: {
-		previousProp: SETTINGS_DEFAULTS.PREVIOUS_PROP,
-		nextProp: SETTINGS_DEFAULTS.NEXT_PROP,
-		parentProp: SETTINGS_DEFAULTS.PARENT_PROP,
-		weekProp: SETTINGS_DEFAULTS.WEEK_PROP,
-		monthProp: SETTINGS_DEFAULTS.MONTH_PROP,
-		quarterProp: SETTINGS_DEFAULTS.QUARTER_PROP,
-		yearProp: SETTINGS_DEFAULTS.YEAR_PROP,
-		hoursAvailableProp: SETTINGS_DEFAULTS.HOURS_AVAILABLE_PROP,
-		hoursSpentProp: SETTINGS_DEFAULTS.HOURS_SPENT_PROP,
-		periodTypeProp: SETTINGS_DEFAULTS.PERIOD_TYPE_PROP,
-		periodStartProp: SETTINGS_DEFAULTS.PERIOD_START_PROP,
-		periodEndProp: SETTINGS_DEFAULTS.PERIOD_END_PROP,
-	},
-	generation: {
-		autoGenerateOnLoad: SETTINGS_DEFAULTS.AUTO_GENERATE_ON_LOAD,
-		generatePeriodsAhead: SETTINGS_DEFAULTS.GENERATE_PERIODS_AHEAD,
-		enableDaily: SETTINGS_DEFAULTS.ENABLE_DAILY,
-		enableWeekly: SETTINGS_DEFAULTS.ENABLE_WEEKLY,
-		enableMonthly: SETTINGS_DEFAULTS.ENABLE_MONTHLY,
-		enableQuarterly: SETTINGS_DEFAULTS.ENABLE_QUARTERLY,
-		enableYearly: SETTINGS_DEFAULTS.ENABLE_YEARLY,
-		includePdfFrontmatter: SETTINGS_DEFAULTS.INCLUDE_PDF_FRONTMATTER,
-		includePdfContent: SETTINGS_DEFAULTS.INCLUDE_PDF_CONTENT,
-		pdfNoteProp: SETTINGS_DEFAULTS.PDF_NOTE_PROP,
-		pdfContentHeader: SETTINGS_DEFAULTS.PDF_CONTENT_HEADER,
-		autoInsertCodeBlock: SETTINGS_DEFAULTS.AUTO_INSERT_CODE_BLOCK,
-		includePlanHeading: SETTINGS_DEFAULTS.INCLUDE_PLAN_HEADING,
-		planHeadingContent: SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT,
-	},
-	ui: {
-		warningThresholdPercent: SETTINGS_DEFAULTS.WARNING_THRESHOLD_PERCENT,
-		overBudgetThresholdPercent: SETTINGS_DEFAULTS.OVER_BUDGET_THRESHOLD_PERCENT,
-	},
-	categories: [],
-};
+});
 
 function createMockFile(path: string, basename: string) {
 	return {

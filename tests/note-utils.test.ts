@@ -1,10 +1,11 @@
 import { DateTime } from "luxon";
 import type { TFile, Vault } from "obsidian";
 import { describe, expect, it, vi } from "vitest";
-import { PERIOD_TYPES, SETTINGS_DEFAULTS } from "../src/constants";
-import type { IndexedPeriodNote, PeriodicPlannerSettings } from "../src/types";
+import { PERIOD_TYPES } from "../src/constants";
+import type { IndexedPeriodNote } from "../src/types";
 import { extractCategoryAllocations, getParentFilePathsFromLinks, parseFileToNote } from "../src/utils/note-utils";
 import { TFile as MockTFile, Vault as MockVault } from "./mocks/obsidian";
+import { createMockSettings } from "./test-helpers";
 
 describe("Note Utilities", () => {
 	const createMockVault = (content: string): Vault => {
@@ -19,68 +20,6 @@ describe("Note Utilities", () => {
 		(file as any).stat = { mtime: mtime ?? Date.now() };
 		return file as unknown as TFile;
 	};
-
-	const createDefaultSettings = (): PeriodicPlannerSettings => ({
-		version: 1,
-		directories: {
-			dailyFolder: SETTINGS_DEFAULTS.DAILY_FOLDER,
-			weeklyFolder: SETTINGS_DEFAULTS.WEEKLY_FOLDER,
-			monthlyFolder: SETTINGS_DEFAULTS.MONTHLY_FOLDER,
-			quarterlyFolder: SETTINGS_DEFAULTS.QUARTERLY_FOLDER,
-			yearlyFolder: SETTINGS_DEFAULTS.YEARLY_FOLDER,
-		},
-		naming: {
-			dailyFormat: SETTINGS_DEFAULTS.DAILY_FORMAT,
-			weeklyFormat: SETTINGS_DEFAULTS.WEEKLY_FORMAT,
-			monthlyFormat: SETTINGS_DEFAULTS.MONTHLY_FORMAT,
-			quarterlyFormat: SETTINGS_DEFAULTS.QUARTERLY_FORMAT,
-			yearlyFormat: SETTINGS_DEFAULTS.YEARLY_FORMAT,
-		},
-		timeBudget: {
-			hoursPerWeek: SETTINGS_DEFAULTS.HOURS_PER_WEEK,
-			autoInheritParentPercentages: false,
-		},
-		properties: {
-			previousProp: SETTINGS_DEFAULTS.PREVIOUS_PROP,
-			nextProp: SETTINGS_DEFAULTS.NEXT_PROP,
-			parentProp: SETTINGS_DEFAULTS.PARENT_PROP,
-			weekProp: SETTINGS_DEFAULTS.WEEK_PROP,
-			monthProp: SETTINGS_DEFAULTS.MONTH_PROP,
-			quarterProp: SETTINGS_DEFAULTS.QUARTER_PROP,
-			yearProp: SETTINGS_DEFAULTS.YEAR_PROP,
-			hoursAvailableProp: SETTINGS_DEFAULTS.HOURS_AVAILABLE_PROP,
-			hoursSpentProp: SETTINGS_DEFAULTS.HOURS_SPENT_PROP,
-			periodTypeProp: SETTINGS_DEFAULTS.PERIOD_TYPE_PROP,
-			periodStartProp: SETTINGS_DEFAULTS.PERIOD_START_PROP,
-			periodEndProp: SETTINGS_DEFAULTS.PERIOD_END_PROP,
-		},
-		generation: {
-			autoGenerateOnLoad: SETTINGS_DEFAULTS.AUTO_GENERATE_ON_LOAD,
-			generatePeriodsAhead: SETTINGS_DEFAULTS.GENERATE_PERIODS_AHEAD,
-			enableDaily: SETTINGS_DEFAULTS.ENABLE_DAILY,
-			enableWeekly: SETTINGS_DEFAULTS.ENABLE_WEEKLY,
-			enableMonthly: SETTINGS_DEFAULTS.ENABLE_MONTHLY,
-			enableQuarterly: SETTINGS_DEFAULTS.ENABLE_QUARTERLY,
-			enableYearly: SETTINGS_DEFAULTS.ENABLE_YEARLY,
-			includePdfFrontmatter: SETTINGS_DEFAULTS.INCLUDE_PDF_FRONTMATTER,
-			includePdfContent: SETTINGS_DEFAULTS.INCLUDE_PDF_CONTENT,
-			pdfNoteProp: SETTINGS_DEFAULTS.PDF_NOTE_PROP,
-			pdfContentHeader: SETTINGS_DEFAULTS.PDF_CONTENT_HEADER,
-			autoInsertCodeBlock: SETTINGS_DEFAULTS.AUTO_INSERT_CODE_BLOCK,
-			includePlanHeading: SETTINGS_DEFAULTS.INCLUDE_PLAN_HEADING,
-			planHeadingContent: SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT,
-		},
-		ui: {
-			warningThresholdPercent: SETTINGS_DEFAULTS.WARNING_THRESHOLD_PERCENT,
-			overBudgetThresholdPercent: 100,
-		},
-		activityWatch: {
-			enabled: false,
-			apiUrl: SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL,
-			heading: SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING,
-		},
-		categories: [],
-	});
 
 	describe("extractCategoryAllocations", () => {
 		it("should extract single category allocation", async () => {
@@ -227,7 +166,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("Periodic/Weekly/01-2025.md", "01-2025", 1234567890);
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -253,7 +192,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 6\n```");
 			const file = createMockFile("Periodic/Daily/06-01-2025.md", "06-01-2025");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -271,7 +210,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 160\n```");
 			const file = createMockFile("Periodic/Monthly/1-2025.md", "1-2025");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -287,7 +226,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -299,7 +238,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -311,7 +250,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 8\nHealth: 2\nLearning: 3\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -324,7 +263,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 8.33\nHealth: 2.67\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -336,7 +275,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("No code block here");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -355,7 +294,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -374,7 +313,7 @@ describe("Note Utilities", () => {
 			};
 			const vault = createMockVault("");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -388,7 +327,7 @@ describe("Note Utilities", () => {
 			};
 			const vault = createMockVault("");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
@@ -406,7 +345,7 @@ describe("Note Utilities", () => {
 			};
 			const vault = createMockVault("");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
@@ -423,7 +362,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
@@ -440,7 +379,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
@@ -457,7 +396,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
@@ -476,7 +415,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 480\n```");
 			const file = createMockFile("Periodic/Quarterly/Q1-2025.md", "Q1-2025");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -494,7 +433,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 2080\n```");
 			const file = createMockFile("Periodic/Yearly/2025.md", "2025");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -510,7 +449,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -522,7 +461,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -539,7 +478,7 @@ describe("Note Utilities", () => {
 			});
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -553,7 +492,7 @@ describe("Note Utilities", () => {
 			const vault = new MockVault();
 			vault.read = vi.fn().mockRejectedValue(new Error("File read error"));
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
@@ -570,7 +509,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 1000\nHealth: 500\n```");
 			const file = createMockFile("test.md");
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
@@ -582,7 +521,7 @@ describe("Note Utilities", () => {
 			const frontmatter = createValidFrontmatter();
 			const vault = createMockVault("```periodic-planner\nWork: 8\n```");
 			const file = createMockFile("Periodic/Weekly/01-2025.md", "01-2025", 9876543210);
-			const settings = createDefaultSettings();
+			const settings = createMockSettings();
 
 			const result = await parseFileToNote(file, frontmatter, vault, settings);
 
