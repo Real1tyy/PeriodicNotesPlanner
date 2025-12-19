@@ -69,25 +69,6 @@ Use the command **"Generate all periods for today"** from the command palette (C
 
 ## ⏱️ Time Budgeting
 
-### How do I allocate time to categories?
-
-1. Open any periodic note
-2. Add a time budget code block: ` ```periodic-planner `
-3. Click **Edit allocations** button
-4. Use the allocation editor to set hours
-
-### Can I edit allocations directly in frontmatter?
-
-Yes! You can edit the `time_allocations` array directly in frontmatter:
-
-```yaml
-time_allocations:
-  - categoryId: "work"
-    hours: 8
-  - categoryId: "health"
-    hours: 2
-```
-
 ### What happens if I exceed the available hours?
 
 The plugin shows warnings:
@@ -115,58 +96,6 @@ Yes! Go to **Settings** → **Hotkeys**, search for "Periodix-Planner", and assi
 ### Do links work if notes don't exist?
 
 Yes! When you click a link or use a navigation command, the plugin automatically creates the target note if it doesn't exist.
-
-## 📊 Visual Statistics
-
-### How do I see time budget statistics?
-
-Add a time budget code block to any periodic note:
-
-````markdown
-```periodic-planner
-work: 8h
-health: 2h
-```
-````
-
-The plugin renders:
-- Pie chart visualization
-- Allocation table
-- Budget status indicators
-
-### Can I enlarge the pie chart?
-
-Yes! Click the pie chart to open an enlarged view in a modal.
-
-### How do I sort the allocation table?
-
-Click column headers to sort by:
-- Category name
-- Allocated hours
-- Parent budget
-- Child allocations
-
-## 🐛 Troubleshooting
-
-### Notes aren't being generated
-
-1. Check that auto-generation is enabled in settings
-2. Verify folder paths are correct
-3. Check the Developer Console (Ctrl/Cmd + Shift + I) for errors
-4. Try manual generation with the command
-
-### Time budget block isn't rendering
-
-1. Ensure the code block language is `periodic-planner`
-2. Check that categories are configured
-3. Verify the note is indexed (wait a moment after opening)
-4. Check the Developer Console for errors
-
-### Categories aren't showing
-
-1. Verify categories are configured in settings
-2. Check category IDs match in allocations
-3. Ensure categories aren't deleted while in use
 
 ## 🤝 Support
 
