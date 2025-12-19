@@ -49,10 +49,10 @@ export type AppTimeData = z.infer<typeof AppTimeDataSchema>;
 export type BucketIds = z.infer<typeof BucketIdsSchema>;
 
 export {
-    ActivityWatchBucketSchema,
-    ActivityWatchBucketsResponseSchema,
-    ActivityWatchEventSchema,
-    ActivityWatchQueryResponseSchema,
-    AppTimeDataSchema,
-    BucketIdsSchema
+	ActivityWatchBucketSchema,
+	ActivityWatchBucketsResponseSchema,
+	ActivityWatchEventSchema,
+	ActivityWatchQueryResponseSchema,
+	AppTimeDataSchema,
+	BucketIdsSchema,
 };
