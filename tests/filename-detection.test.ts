@@ -24,6 +24,11 @@ const mockSettings: PeriodicPlannerSettings = {
 		hoursPerWeek: SETTINGS_DEFAULTS.HOURS_PER_WEEK,
 		autoInheritParentPercentages: false,
 	},
+	activityWatch: {
+		enabled: false,
+		apiUrl: SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL,
+		heading: SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING,
+	},
 	properties: {
 		previousProp: SETTINGS_DEFAULTS.PREVIOUS_PROP,
 		nextProp: SETTINGS_DEFAULTS.NEXT_PROP,

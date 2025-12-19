@@ -4,11 +4,12 @@ import { cls, toggleCls } from "../utils/css";
 import { CategorySettings } from "./category-settings";
 import { DirectorySettings } from "./directory-settings";
 import { GenerationSettings } from "./generation-settings";
+import { IntegrationSettings } from "./integration-settings";
 import { NamingSettings } from "./naming-settings";
 import { PropertySettings } from "./property-settings";
 import { TimeBudgetSettings } from "./time-budget-settings";
 
-type TabId = "directories" | "naming" | "time" | "properties" | "categories" | "generation";
+type TabId = "directories" | "naming" | "time" | "properties" | "categories" | "generation" | "integrations";
 
 export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 	private activeTab: TabId = "directories";
@@ -20,6 +21,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 	private propertySettings: PropertySettings;
 	private categorySettings: CategorySettings;
 	private generationSettings: GenerationSettings;
+	private integrationSettings: IntegrationSettings;
 
 	constructor(app: App, plugin: PeriodicPlannerPlugin) {
 		super(app, plugin);
@@ -31,6 +33,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		this.propertySettings = new PropertySettings(plugin.settingsStore);
 		this.categorySettings = new CategorySettings(plugin.settingsStore);
 		this.generationSettings = new GenerationSettings(plugin.settingsStore);
+		this.integrationSettings = new IntegrationSettings(plugin.settingsStore, app);
 	}
 
 	display(): void {
@@ -67,6 +70,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 			{ id: "categories", label: "Categories", icon: "tag" },
 			{ id: "properties", label: "Properties", icon: "list" },
 			{ id: "generation", label: "Generation", icon: "play" },
+			{ id: "integrations", label: "Integrations", icon: "plug" },
 		];
 
 		for (const tab of tabs) {
@@ -85,7 +89,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 
 	private updateTabStyles(tabsContainer: HTMLElement): void {
 		const tabs = tabsContainer.querySelectorAll(`.${cls("tab")}`);
-		const tabIds: TabId[] = ["directories", "naming", "time", "categories", "properties", "generation"];
+		const tabIds: TabId[] = ["directories", "naming", "time", "categories", "properties", "generation", "integrations"];
 
 		tabs.forEach((tab, index) => {
 			toggleCls(tab as HTMLElement, "active", tabIds[index] === this.activeTab);
@@ -114,6 +118,9 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 				break;
 			case "generation":
 				this.generationSettings.display(this.contentEl);
+				break;
+			case "integrations":
+				this.integrationSettings.display(this.contentEl);
 				break;
 		}
 	}

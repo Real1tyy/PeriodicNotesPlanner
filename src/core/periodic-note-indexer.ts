@@ -12,7 +12,9 @@ import {
 	type Subscription,
 } from "rxjs";
 import { debounceTime, filter, groupBy, map, mergeMap, switchMap, toArray } from "rxjs/operators";
+import { PERIOD_TYPES } from "../constants";
 import type { IndexedPeriodNote, PeriodicPlannerSettings } from "../types";
+import { injectActivityWatchContent } from "../utils/activity-watch";
 import { parseFileToNote, updateHoursSpentInFrontmatter } from "../utils/note-utils";
 
 const SCAN_CONCURRENCY = 10;
@@ -216,6 +218,10 @@ export class PeriodicNoteIndexer {
 		if (!note) return [];
 
 		await updateHoursSpentInFrontmatter(this.app, file, note.hoursSpent, this.settings.properties.hoursSpentProp);
+
+		if (note.periodType === PERIOD_TYPES.DAILY) {
+			await injectActivityWatchContent(this.app, file, note.periodStart, this.settings);
+		}
 
 		return [{ type: "note-indexed", filePath: file.path, oldPath, note }];
 	}

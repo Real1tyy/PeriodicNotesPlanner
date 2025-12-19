@@ -130,6 +130,15 @@ export const UISettingsSchema = z.object({
 
 export type UISettings = z.infer<typeof UISettingsSchema>;
 
+// ===== ActivityWatch Settings Schema =====
+export const ActivityWatchSettingsSchema = z.object({
+	enabled: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_ACTIVITY_WATCH),
+	apiUrl: z.url().default(SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL),
+	heading: z.string().default(SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING),
+});
+
+export type ActivityWatchSettings = z.infer<typeof ActivityWatchSettingsSchema>;
+
 // ===== Main Plugin Settings Schema =====
 export const PeriodicPlannerSettingsSchema = z.object({
 	version: z.number().int().positive().default(1),
@@ -151,6 +160,9 @@ export const PeriodicPlannerSettingsSchema = z.object({
 
 	// UI configuration
 	ui: UISettingsSchema.default(UISettingsSchema.parse({})),
+
+	// ActivityWatch integration
+	activityWatch: ActivityWatchSettingsSchema.default(ActivityWatchSettingsSchema.parse({})),
 
 	// User-defined time categories
 	categories: z.array(CategorySchema).default([]),

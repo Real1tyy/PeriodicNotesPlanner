@@ -1,0 +1,65 @@
+import { SETTINGS_DEFAULTS } from "../src/constants";
+import type { PeriodicPlannerSettings } from "../src/types";
+
+export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>): PeriodicPlannerSettings => ({
+	version: 1,
+	directories: {
+		dailyFolder: "Periodic/Daily",
+		weeklyFolder: "Periodic/Weekly",
+		monthlyFolder: "Periodic/Monthly",
+		quarterlyFolder: "Periodic/Quarterly",
+		yearlyFolder: "Periodic/Yearly",
+	},
+	naming: {
+		dailyFormat: "dd-MM-yyyy",
+		weeklyFormat: "WW-kkkk",
+		monthlyFormat: "M-yyyy",
+		quarterlyFormat: "'Q'q-yyyy",
+		yearlyFormat: "yyyy",
+	},
+	timeBudget: {
+		hoursPerWeek: 40,
+		autoInheritParentPercentages: false,
+	},
+	properties: {
+		previousProp: SETTINGS_DEFAULTS.PREVIOUS_PROP,
+		nextProp: SETTINGS_DEFAULTS.NEXT_PROP,
+		parentProp: SETTINGS_DEFAULTS.PARENT_PROP,
+		weekProp: SETTINGS_DEFAULTS.WEEK_PROP,
+		monthProp: SETTINGS_DEFAULTS.MONTH_PROP,
+		quarterProp: SETTINGS_DEFAULTS.QUARTER_PROP,
+		yearProp: SETTINGS_DEFAULTS.YEAR_PROP,
+		hoursAvailableProp: SETTINGS_DEFAULTS.HOURS_AVAILABLE_PROP,
+		hoursSpentProp: SETTINGS_DEFAULTS.HOURS_SPENT_PROP,
+		periodTypeProp: SETTINGS_DEFAULTS.PERIOD_TYPE_PROP,
+		periodStartProp: SETTINGS_DEFAULTS.PERIOD_START_PROP,
+		periodEndProp: SETTINGS_DEFAULTS.PERIOD_END_PROP,
+	},
+	generation: {
+		autoGenerateOnLoad: false,
+		generatePeriodsAhead: 1,
+		enableDaily: true,
+		enableWeekly: true,
+		enableMonthly: true,
+		enableQuarterly: true,
+		enableYearly: true,
+		includePdfFrontmatter: false,
+		includePdfContent: false,
+		pdfNoteProp: "Note",
+		pdfContentHeader: "## Note",
+		autoInsertCodeBlock: true,
+		includePlanHeading: true,
+		planHeadingContent: "## Plan",
+	},
+	ui: {
+		warningThresholdPercent: 80,
+		overBudgetThresholdPercent: 100,
+	},
+	activityWatch: {
+		enabled: true,
+		apiUrl: "http://localhost:5600",
+		heading: "## ActivityWatch",
+	},
+	categories: [],
+	...overrides,
+});

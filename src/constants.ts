@@ -84,6 +84,11 @@ export const SETTINGS_DEFAULTS = {
 
 	// ===== Auto-Inherit Settings =====
 	AUTO_INHERIT_PARENT_PERCENTAGES: false,
+
+	// ===== ActivityWatch Settings =====
+	ENABLE_ACTIVITY_WATCH: false,
+	ACTIVITY_WATCH_URL: "http://localhost:5600",
+	ACTIVITY_WATCH_HEADING: "## ActivityWatch",
 } as const;
 
 /**

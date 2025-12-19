@@ -74,6 +74,11 @@ describe("Note Utilities", () => {
 			warningThresholdPercent: SETTINGS_DEFAULTS.WARNING_THRESHOLD_PERCENT,
 			overBudgetThresholdPercent: 100,
 		},
+		activityWatch: {
+			enabled: false,
+			apiUrl: SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL,
+			heading: SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING,
+		},
 		categories: [],
 	});
 
