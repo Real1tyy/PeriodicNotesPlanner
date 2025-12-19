@@ -13,14 +13,19 @@ All notable changes to this project will be documented here.
 ### New Features
 
 - **ActivityWatch Integration**: Automatically track and visualize computer usage in daily notes. [Learn more](/integrations#activitywatch)
-  - Connect to your local ActivityWatch server to fetch daily activity data
-  - Automatic data injection into past daily notes during indexing
-  - Application usage breakdown with time and percentages
-  - Privacy-first: all data stays local on your machine
-  - Smart filtering: only tracks active time (excludes AFK periods)
-  - Manual bulk processing available via "Process now" button
-  - Configurable API URL and heading text
-  - Desktop only (ActivityWatch doesn't run on mobile)
+  - **Interactive Visualizations**: Pie charts and sortable tables render from JSON code blocks
+  - **Automatic Injection**: Activity data added to past daily notes during indexing
+  - **Code Fence Format**: `periodic-planner-activity-watch` blocks store structured JSON data
+  - **Sortable Table**: Click headers to sort by application name or duration
+  - **Duration Formatting**: Shows hours and minutes (e.g., "3h 49m")
+  - **Enlarge View**: Full-screen pie chart modal with detailed breakdowns
+  - **Zod Validation**: Runtime validation of all API responses for type safety
+  - **Parallel Processing**: Bulk file processing for fast retroactive updates
+  - **Smart Filtering**: Only tracks active time (excludes AFK periods)
+  - **Privacy-First**: All data stays local - ActivityWatch runs on your machine
+  - **Single API Call**: Optimized bucket discovery with parallel processing
+  - **Configurable**: Custom API URL, heading text, and code fence name
+  - **Desktop Only**: Requires locally-running ActivityWatch server
 
 ---
 

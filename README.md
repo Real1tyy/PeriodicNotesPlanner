@@ -133,6 +133,16 @@ Powerful modal for editing time allocations:
 - Undo/redo support
 - Keyboard shortcuts
 
+### **ActivityWatch Integration**
+
+Automatically track and visualize your computer usage in daily notes:
+- **Automatic data collection** from ActivityWatch API
+- **Interactive visualizations** with pie charts and sortable tables
+- **Privacy-first** - all data stays local
+- **Desktop only** - works with locally-running ActivityWatch
+
+[Learn more about integrations →](https://real1tyy.github.io/Periodix-Planner/integrations)
+
 ## Quick Start
 
 1. **Install** the plugin from Obsidian Community Plugins or BRAT

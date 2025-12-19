@@ -42,19 +42,23 @@ When creating a new periodic note:
 
 ## ActivityWatch
 
-Track and visualize your computer usage automatically in daily notes.
+![ActivityWatch integration screenshot](/img/features/activity-watch.png)
+
+Track and visualize your computer usage automatically in daily notes with interactive charts and detailed breakdowns.
 
 ### Overview
 
-[ActivityWatch](https://activitywatch.net) is a free, open-source, privacy-focused time tracker that runs locally on your computer. Periodix-Planner can automatically fetch your daily activity data and embed it in past daily notes.
+[ActivityWatch](https://activitywatch.net) is a free, open-source, privacy-focused time tracker that runs locally on your computer. Periodix-Planner automatically fetches your daily activity data and renders it as interactive visualizations in past daily notes.
 
 ### Features
 
-- **Automatic Data Injection**: Activity data is automatically added to past daily notes during indexing
-- **Privacy-First**: All data stays local - ActivityWatch runs on your machine
+- **Interactive Visualizations**: Pie charts and sortable tables show your app usage
+- **Automatic Injection**: Activity data is automatically added to past daily notes during indexing
+- **Code Fence Rendering**: Data stored in JSON format, rendered as beautiful charts
+- **Enlarge View**: Click to see full-screen pie chart visualization
 - **Smart Filtering**: Only tracks active time (excludes AFK periods)
-- **Application Breakdown**: See which applications you used and for how long
-- **Visual Summaries**: Data is formatted as tables with time and percentages
+- **Sortable Table**: Click headers to sort by application name or duration
+- **Privacy-First**: All data stays local on your machine
 
 ### Setup
 
@@ -64,10 +68,11 @@ Track and visualize your computer usage automatically in daily notes.
    - Verify it's running at `http://localhost:5600`
 
 2. **Enable in Periodix-Planner**
-   - Go to **Settings** → **Periodix-Planner** → **Integrations**
+   - Go to **Settings** → **Periodix-Planner** → **Integrations** → **ActivityWatch**
    - Toggle **Enable ActivityWatch** on
-   - Verify the **API URL** (default: `http://localhost:5600`)
-   - Customize the **heading** if desired (default: `## ActivityWatch`)
+   - Configure the **API URL** (default: `http://localhost:5600`)
+   - Customize the **heading** (default: `## ActivityWatch`)
+   - Customize the **code fence name** if desired (default: `periodic-planner-activity-watch`)
 
 3. **Process Existing Notes** (Optional)
    - Click **Process now** to add ActivityWatch data to all past daily notes
@@ -75,27 +80,37 @@ Track and visualize your computer usage automatically in daily notes.
 
 ### How It Works
 
-**Automatic Mode**: When enabled, Periodix-Planner automatically adds ActivityWatch data to past daily notes during the normal indexing process.
+**Automatic Injection**: When enabled, the plugin automatically adds ActivityWatch code blocks to past daily notes during indexing. The data is stored in JSON format and rendered as interactive visualizations.
 
-**Manual Mode**: Use the "Process now" button to bulk process all past daily notes at once.
+**Bulk Processing**: Use the "Process now" button in settings to retroactively process all past daily notes at once.
 
-**Smart Detection**: The plugin won't duplicate data - it checks for the ActivityWatch heading before adding content to avoid re-processing notes.
+**Smart Detection**: Won't duplicate data - checks for the ActivityWatch heading before adding content.
 
-### Example Output
-
-When enabled, past daily notes will automatically include a section like this:
+**Code Fence Format**: Data is stored as structured JSON in code blocks for easy parsing and rendering:
 
 ```markdown
 ## ActivityWatch
 
-**Total Active Time:** 6.75 hours
-
-| Application | Time | Percentage |
-|-------------|------|------------|
-| obsidian | 3h 45m | 55.6% |
-| chrome | 2h 10m | 32.1% |
-| vscode | 50m | 12.3% |
+```periodic-planner-activity-watch
+{
+  "totalActiveTime": 16528,
+  "apps": [
+    { "name": "Brave", "duration": 13779 },
+    { "name": "Cursor", "duration": 1709 },
+    { "name": "obsidian", "duration": 778 }
+  ]
+}
 ```
+```
+
+This renders as an interactive block with:
+- **Header**: Total active time summary
+- **Sortable Table**: Application | Duration | Percentage
+  - Click column headers to sort by name or duration
+  - Duration shown in hours and minutes (e.g., "3h 49m")
+  - Percentage relative to total active time
+- **Pie Chart**: Color-coded visualization of app distribution
+- **Enlarge Button**: Open full-screen chart view
 
 ### Configuration
 
@@ -104,6 +119,7 @@ When enabled, past daily notes will automatically include a section like this:
 | **Enable ActivityWatch** | Turn integration on/off | `false` |
 | **API URL** | ActivityWatch server address | `http://localhost:5600` |
 | **Heading** | Heading text for ActivityWatch sections | `## ActivityWatch` |
+| **Code fence name** | Code block language identifier | `periodic-planner-activity-watch` |
 
 ### Requirements
 
