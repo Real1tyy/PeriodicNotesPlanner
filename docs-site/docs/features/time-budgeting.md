@@ -144,117 +144,28 @@ Detailed table showing:
 - Budget status indicators
 - Sortable columns
 
-## 💡 Best Practices
-
-### 1. Start with Yearly Planning
-
-Define your yearly time pool first:
-- Total hours available per year
-- Category priorities
-- High-level allocations
-
-### 2. Break Down Quarterly
-
-Allocate yearly budgets to quarters:
-- Consider seasonal variations
-- Account for planned time off
-- Leave buffer for adjustments
-
-### 3. Refine Monthly
-
-Adjust monthly allocations based on:
-- Quarterly goals
-- Upcoming commitments
-- Previous month's actuals
-
-### 4. Plan Weekly
-
-Set weekly allocations aligned with:
-- Monthly goals
-- Current priorities
-- Available time
-
-### 5. Track Daily
-
-Use daily notes to:
-- See available time
-- Track actual time spent
-- Adjust future allocations
-
 ## 🔧 Advanced Features
 
 ### Auto-Inherit Parent Percentages {#auto-inherit-parent-percentages}
 
-Periodix-Planner can automatically inherit time allocations from parent periods based on their percentage distribution. This feature helps maintain consistent allocation patterns across your hierarchical periods.
+Auto-fill empty child periods (weekly/monthly/etc.) based on the **parent period’s percentage split**.
 
-#### How It Works
+- **Enable**: Settings → **Periodix-Planner** → **Time budget** → **Automatically inherit parent percentages**
+- **Manual**: In the Allocation Editor, click **Fill parent** to apply the parent split on demand
 
-When a child period has no categories allocated and the setting is enabled, the plugin automatically fills allocations using the parent's percentage distribution:
-
-**Example:**
-- **Parent (Monthly)**: 80h Work (50%), 48h Study (30%), 32h Exercise (20%)
-- **Child (Weekly)**: 40h available → automatically gets 20h Work, 12h Study, 8h Exercise
-
-#### Enabling Auto-Inherit
-
-Go to **Settings** → **Periodix-Planner** → **Time budget** tab:
-
-Enable **"Automatically inherit parent percentages"** to:
-- Auto-fill empty child periods when time budget block renders
-- Inherit parent's percentage distribution instantly
-- Save time on repetitive allocations
-
-#### Manual Fill from Parent
-
-In the allocation editor, click the **"Fill parent"** button to:
-- Manually inherit parent allocations at any time
-- Override existing allocations with parent percentages
-- Works even if auto-inherit is disabled
-
-**Benefits:**
-- One-click inheritance of parent allocations
-- Maintains proportional distribution perfectly
-- Uses precise integer arithmetic (zero rounding errors)
-- Saves time on repetitive allocations
+Example: Parent is 50/30/20 → child gets the same 50/30/20 of its own total hours.
 
 ### Fill from Parent {#fill-from-parent}
 
-Each category in the allocation editor has a **"Fill from parent"** checkbox that provides per-category control:
+Per-category option in the Allocation Editor that changes how percentage actions are calculated:
 
-**How it works:**
-- When enabled, quick-fill buttons (10%, 25%, 50%) calculate based on **parent's budget** instead of child's total
-- Custom percentage input also uses parent budget
-- Allows mixing parent-based and independent allocations
+- When enabled, **10% / 25% / 50% / custom %** use the **parent’s category budget** (not the child’s total)
+- Mix and match: some categories can follow the parent, others can be independent
 
-**Example:**
-- Parent Work budget: 100 hours
-- Child total available: 40 hours
-- With "Fill from parent" checked for Work:
-  - 50% button → 50h (50% of parent's 100h), not 20h (50% of child's 40h)
-  - Max button → Uses parent's remaining budget
+### Editing shortcuts
 
-**Use case:** Useful when you want some categories to follow parent allocations while keeping others independent.
-
-### Custom Percentage Input
-
-Enter exact percentages:
-1. Type percentage in custom input field
-2. Click **Set** or press Enter
-3. Allocation updates automatically
-
-### Undo/Redo
-
-The allocation editor supports:
-- **Undo** (Ctrl/Cmd + Z) - Revert changes
-- **Redo** (Ctrl/Cmd + Shift + Z) - Restore changes
-- Visual undo/redo buttons
-
-### Keyboard Shortcuts
-
-- **Ctrl/Cmd + Z** - Undo
-- **Ctrl/Cmd + Shift + Z** - Redo
-- **Enter** - Apply custom percentage
-- **Tab** - Navigate between inputs
+- **Undo**: Ctrl/Cmd + Z
+- **Redo**: Ctrl/Cmd + Shift + Z
 
 ---
 
