@@ -251,7 +251,8 @@
 }
 
 /* ===== Time Budget Block ===== */
-.periodic-planner-time-budget-block {
+.periodic-planner-time-budget-block,
+.periodic-planner-activity-watch-block {
 	background: var(--background-secondary);
 	border-radius: 12px;
 	padding: 20px;
@@ -460,6 +461,15 @@
 .periodic-planner-pie-chart-container {
 	max-width: 400px;
 	margin: 20px auto;
+}
+
+.periodic-planner-clickable {
+	cursor: pointer;
+	transition: opacity 0.15s ease;
+}
+
+.periodic-planner-clickable:hover {
+	opacity: 0.9;
 }
 
 .periodic-planner-pie-chart-canvas {
