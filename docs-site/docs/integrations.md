@@ -101,7 +101,6 @@ Track and visualize your computer usage automatically in daily notes with intera
   ]
 }
 ```
-```
 
 This renders as an interactive block with:
 - **Header**: Total active time summary
