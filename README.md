@@ -123,7 +123,7 @@ Time budgets flow down through the hierarchy:
 - **Tables** → Detailed breakdown with allocated vs. remaining
 - **Progress bars** → Visual tracking of time consumption
 
-### ✏️ **Interactive Allocation Editor**
+### **Interactive Allocation Editor**
 
 Powerful modal for editing time allocations:
 - Drag-to-adjust percentage bars
@@ -133,7 +133,7 @@ Powerful modal for editing time allocations:
 - Undo/redo support
 - Keyboard shortcuts
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Install** the plugin from Obsidian Community Plugins or BRAT
 2. **Configure** your folder structure and naming preferences in settings
@@ -148,7 +148,7 @@ See the [Installation Guide](https://real1tyy.github.io/Periodix-Planner/install
 - **Installation**: https://real1tyy.github.io/Periodix-Planner/installation
 - **Quick Start**: https://real1tyy.github.io/Periodix-Planner/quickstart
 
-## 💡 Use Cases
+## Use Cases
 
 ### Personal Productivity
 - Plan your year with clear time investments
@@ -178,15 +178,15 @@ Comprehensive documentation is available at: **[docs.periodix-planner.com](https
 - [FAQ](https://real1tyy.github.io/Periodix-Planner/faq)
 - [Troubleshooting](https://real1tyy.github.io/Periodix-Planner/troubleshooting)
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please see our [Contributing Guide](https://real1tyy.github.io/Periodix-Planner/contributing) for details.
 
-- 🐛 [Report Bugs](https://github.com/Real1tyy/Periodix-Planner/issues)
-- 💡 [Request Features](https://github.com/Real1tyy/Periodix-Planner/issues)
-- 📝 [Improve Documentation](https://github.com/Real1tyy/Periodix-Planner/tree/main/docs-site/docs)
+- [Report Bugs](https://github.com/Real1tyy/Periodix-Planner/issues)
+- [Request Features](https://github.com/Real1tyy/Periodix-Planner/issues)
+- [Improve Documentation](https://github.com/Real1tyy/Periodix-Planner/tree/main/docs-site/docs)
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 

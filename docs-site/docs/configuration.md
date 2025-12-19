@@ -103,16 +103,38 @@ Customize frontmatter property names used for note interconnection.
 
 ## Generation Tab
 
-Control automatic note generation behavior.
+Control automatic note generation behavior and which period types to enable.
+
+### Note Generation
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **Auto-generate future periods** | Automatically generate notes on startup | `true` |
-| **Generate next period in advance** | Always generate next period | `true` |
+| **Auto-generate on load** | Automatically generate the next period's note when Obsidian loads | `true` |
+| **Generate periods ahead** | How many periods into the future to generate (1-5) | `1` |
 
-When enabled, the plugin generates notes when Obsidian opens and creates next periods automatically while respecting existing notes.
+When enabled, the plugin generates notes when Obsidian opens and creates future periods automatically while respecting existing notes.
 
-[Learn more about note generation](/features/note-generation)
+### Enabled Period Types
+
+Select which period types to generate and track. Disabled periods will be skipped in navigation and time budget calculations.
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Enable daily notes** | Generate and track daily periodic notes | `true` |
+| **Enable weekly notes** | Generate and track weekly periodic notes | `true` |
+| **Enable monthly notes** | Generate and track monthly periodic notes | `true` |
+| **Enable quarterly notes** | Generate and track quarterly periodic notes | `true` |
+| **Enable yearly notes** | Generate and track yearly periodic notes | `true` |
+
+**How it works:**
+- Disabled period types are completely skipped in the hierarchy
+- Navigation automatically jumps to the next enabled period type
+- Time budget calculations adjust based on enabled periods
+- Parent/child relationships adapt to your enabled periods
+
+**Example:** If you disable weekly notes, daily notes will link directly to monthly notes as their parent, and monthly notes will show daily notes as children.
+
+[Learn more about note generation](/features/note-generation) and [note interconnection](/features/note-interconnection)
 
 ---
 
