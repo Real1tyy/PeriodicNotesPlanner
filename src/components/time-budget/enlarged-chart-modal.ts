@@ -1,7 +1,7 @@
 import { type App, Modal } from "obsidian";
 import type { Category, TimeAllocation } from "../../types";
 import { cls } from "../../utils/css";
-import { PieChartRenderer } from "./pie-chart-renderer";
+import { type PieChartRenderer, renderTimeBudgetPieChart } from "./pie-chart-renderer";
 
 export class EnlargedChartModal extends Modal {
 	private pieChartRenderer: PieChartRenderer | null = null;
@@ -24,8 +24,7 @@ export class EnlargedChartModal extends Modal {
 		header.createEl("h2", { text: this.periodLabel });
 
 		const chartContainer = contentEl.createDiv({ cls: cls("enlarged-chart-container") });
-		this.pieChartRenderer = new PieChartRenderer(chartContainer);
-		this.pieChartRenderer.render(this.allocations, this.categories);
+		this.pieChartRenderer = renderTimeBudgetPieChart(chartContainer, this.allocations, this.categories);
 	}
 
 	onClose(): void {

@@ -74,8 +74,10 @@ export function serializeActivityWatchData(data: ActivityWatchData): string {
 
 export {
 	ActivityWatchBucketSchema,
-	ActivityWatchBucketsResponseSchema, ActivityWatchDataSchema, ActivityWatchEventSchema,
+	ActivityWatchBucketsResponseSchema,
+	ActivityWatchDataSchema,
+	ActivityWatchEventSchema,
 	ActivityWatchQueryResponseSchema,
 	AppTimeDataSchema,
-	BucketIdsSchema
+	BucketIdsSchema,
 };

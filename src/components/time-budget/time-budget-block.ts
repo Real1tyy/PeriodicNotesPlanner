@@ -15,7 +15,7 @@ import {
 import { getChildBudgetsFromIndex } from "./child-budget-calculator";
 import { EnlargedChartModal } from "./enlarged-chart-modal";
 import { type CategoryBudgetInfo, getParentBudgets } from "./parent-budget-tracker";
-import { PieChartRenderer } from "./pie-chart-renderer";
+import { type PieChartRenderer, renderTimeBudgetPieChart } from "./pie-chart-renderer";
 
 type SortColumn = "name" | "hours" | "parentBudget" | "childAllocated";
 type SortDirection = "asc" | "desc";
@@ -437,8 +437,7 @@ export class TimeBudgetBlockRenderer extends MarkdownRenderChild {
 	private renderPieChart(container: HTMLElement, allocations: TimeAllocation[], categories: Category[]): void {
 		if (allocations.length === 0) return;
 
-		this.pieChartRenderer = new PieChartRenderer(container);
-		this.pieChartRenderer.render(allocations, categories);
+		this.pieChartRenderer = renderTimeBudgetPieChart(container, allocations, categories);
 	}
 
 	private renderEditButton(
