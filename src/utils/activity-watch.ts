@@ -34,10 +34,8 @@ export async function injectActivityWatchContent(
 
 		const currentContent = await app.vault.read(file);
 		await app.vault.modify(file, currentContent + content);
-
-		console.log(`ActivityWatch data injected into ${file.path}`);
 	} catch (error) {
-		console.error(`Failed to inject ActivityWatch data for ${file.path}:`, error);
+		console.error(`[ActivityWatch] Failed to inject data for ${file.path}:`, error);
 	}
 }
 
@@ -48,7 +46,7 @@ export async function processAllDailyNotesForActivityWatch(app: App, settings: P
 	const allFiles = app.vault.getMarkdownFiles();
 	const dailyFiles = allFiles.filter((file) => file.path.startsWith(dailyFolder));
 
-	console.log(`Processing ${dailyFiles.length} daily notes for ActivityWatch integration...`);
+	let processed = 0;
 
 	for (const file of dailyFiles) {
 		try {
@@ -66,10 +64,11 @@ export async function processAllDailyNotesForActivityWatch(app: App, settings: P
 			if (!date.isValid) continue;
 
 			await injectActivityWatchContent(app, file, date, settings);
+			processed++;
 		} catch (error) {
-			console.error(`Error processing ${file.path}:`, error);
+			console.error(`[ActivityWatch] Error processing ${file.path}:`, error);
 		}
 	}
 
-	console.log("ActivityWatch processing complete.");
+	console.log(`[ActivityWatch] Processed ${processed} of ${dailyFiles.length} daily notes`);
 }

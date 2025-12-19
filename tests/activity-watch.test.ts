@@ -238,7 +238,7 @@ describe("ActivityWatch Utils", () => {
 
 			expect(app.vault.modify).not.toHaveBeenCalled();
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				expect.stringContaining("Failed to inject ActivityWatch data"),
+				expect.stringContaining("[ActivityWatch] Failed to inject data"),
 				expect.any(Error)
 			);
 
