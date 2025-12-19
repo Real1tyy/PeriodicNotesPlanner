@@ -1,42 +1,21 @@
 import type { DateTime } from "luxon";
-import type { App } from "obsidian";
 import { requestUrl } from "obsidian";
+import {
+	ActivityWatchBucketsResponseSchema,
+	type ActivityWatchQueryResponse,
+	ActivityWatchQueryResponseSchema,
+	type AppTimeData,
+	type BucketIds,
+} from "../types/activity-watch";
 
-export interface ActivityWatchBucket {
-	id: string;
-	name: string;
-	type: string;
-	client: string;
-	hostname: string;
-	created: string;
-	last_updated: string;
-}
-
-export interface ActivityWatchEvent {
-	id?: number;
-	timestamp: string;
-	duration: number;
-	data: Record<string, unknown>;
-}
-
-export interface ActivityWatchQueryResult {
-	[key: string]: ActivityWatchEvent[];
-}
-
-export interface AppTimeData {
-	app: string;
-	duration: number;
-}
 export class ActivityWatchService {
 	private apiUrl: string;
-	private app: App;
 
-	constructor(app: App, apiUrl: string) {
-		this.app = app;
+	constructor(apiUrl: string) {
 		this.apiUrl = apiUrl.replace(/\/$/, "");
 	}
 
-	async listBuckets(): Promise<Record<string, ActivityWatchBucket>> {
+	async listBuckets(): Promise<Record<string, unknown>> {
 		const url = `${this.apiUrl}/api/0/buckets/`;
 
 		try {
@@ -44,38 +23,31 @@ export class ActivityWatchService {
 				url,
 				method: "GET",
 			});
-			return response.json;
+			return ActivityWatchBucketsResponseSchema.parse(response.json);
 		} catch (error) {
 			console.error("[ActivityWatch] Failed to fetch buckets from", url);
 			throw error;
 		}
 	}
 
-	async getWindowBucketId(): Promise<string | null> {
+	async getBucketIds(): Promise<BucketIds> {
 		const buckets = await this.listBuckets();
 		const bucketIds = Object.keys(buckets);
-		const windowBucket = bucketIds.find((id) => id.startsWith("aw-watcher-window_"));
 
-		if (!windowBucket) {
-			console.warn("[ActivityWatch] No window watcher bucket found. Available:", bucketIds.join(", "));
+		const windowBucket = bucketIds.find((id) => id.startsWith("aw-watcher-window_")) ?? null;
+		const afkBucket = bucketIds.find((id) => id.startsWith("aw-watcher-afk_")) ?? null;
+
+		if (!windowBucket || !afkBucket) {
+			const missing = [];
+			if (!windowBucket) missing.push("window watcher");
+			if (!afkBucket) missing.push("AFK watcher");
+			console.warn(`[ActivityWatch] Missing ${missing.join(", ")} bucket(s). Available:`, bucketIds.join(", "));
 		}
 
-		return windowBucket ?? null;
+		return { windowBucket, afkBucket };
 	}
 
-	async getAfkBucketId(): Promise<string | null> {
-		const buckets = await this.listBuckets();
-		const bucketIds = Object.keys(buckets);
-		const afkBucket = bucketIds.find((id) => id.startsWith("aw-watcher-afk_"));
-
-		if (!afkBucket) {
-			console.warn("[ActivityWatch] No AFK watcher bucket found. Available:", bucketIds.join(", "));
-		}
-
-		return afkBucket ?? null;
-	}
-
-	async queryTimeperiod(timeperiods: string[], query: string[]): Promise<ActivityWatchQueryResult[]> {
+	async queryTimeperiod(timeperiods: string[], query: string[]): Promise<ActivityWatchQueryResponse> {
 		const url = `${this.apiUrl}/api/0/query`;
 
 		try {
@@ -88,7 +60,7 @@ export class ActivityWatchService {
 				body: JSON.stringify({ timeperiods, query }),
 			});
 
-			return response.json;
+			return ActivityWatchQueryResponseSchema.parse(response.json);
 		} catch (error) {
 			console.error("[ActivityWatch] Query failed:", error);
 			throw error;
@@ -96,11 +68,10 @@ export class ActivityWatchService {
 	}
 
 	async getDailyAppUsage(date: DateTime): Promise<AppTimeData[]> {
-		const windowBucketId = await this.getWindowBucketId();
-		const afkBucketId = await this.getAfkBucketId();
+		const { windowBucket, afkBucket } = await this.getBucketIds();
 
-		if (!windowBucketId || !afkBucketId) {
-			throw new Error(`Could not find required ActivityWatch buckets (window: ${windowBucketId}, afk: ${afkBucketId})`);
+		if (!windowBucket || !afkBucket) {
+			throw new Error(`Could not find required ActivityWatch buckets (window: ${windowBucket}, afk: ${afkBucket})`);
 		}
 
 		const startOfDay = date.startOf("day");
@@ -108,8 +79,8 @@ export class ActivityWatchService {
 		const timeperiod = `${startOfDay.toISO()}/${startOfNextDay.toISO()}`;
 
 		const query = [
-			`window = query_bucket("${windowBucketId}");`,
-			`afk = query_bucket("${afkBucketId}");`,
+			`window = query_bucket("${windowBucket}");`,
+			`afk = query_bucket("${afkBucket}");`,
 			`afk = filter_keyvals(afk, "status", ["not-afk"]);`,
 			`window = filter_period_intersect(window, afk);`,
 			`merged = merge_events_by_keys(window, ["app"]);`,
@@ -120,19 +91,9 @@ export class ActivityWatchService {
 		const appData: Map<string, number> = new Map();
 
 		if (results.length > 0) {
-			const resultData = results[0];
-			let events: ActivityWatchEvent[] = [];
-
-			if (Array.isArray(resultData)) {
-				events = resultData;
-			} else if (resultData.RETURN && Array.isArray(resultData.RETURN)) {
-				events = resultData.RETURN;
-			}
-
-			for (const event of events) {
-				const app = (event.data.app as string) ?? "Unknown";
-				const duration = event.duration;
-				appData.set(app, (appData.get(app) ?? 0) + duration);
+			for (const event of results[0]) {
+				const app = event.data.app ?? "Unknown";
+				appData.set(app, (appData.get(app) ?? 0) + event.duration);
 			}
 		}
 
@@ -141,17 +102,7 @@ export class ActivityWatchService {
 			.sort((a, b) => b.duration - a.duration);
 	}
 
-	static formatDuration(seconds: number): string {
-		const hours = Math.floor(seconds / 3600);
-		const minutes = Math.floor((seconds % 3600) / 60);
-
-		if (hours > 0) {
-			return `${hours}h ${minutes}m`;
-		}
-		return `${minutes}m`;
-	}
-
-	static generatePieChartMarkdown(appData: AppTimeData[]): string {
+	static generateAppUsageMarkdown(appData: AppTimeData[]): string {
 		if (appData.length === 0) {
 			return "No activity data available for this day.";
 		}

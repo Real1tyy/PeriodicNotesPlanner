@@ -190,13 +190,12 @@ describe("ActivityWatch Utils", () => {
 				getDailyAppUsage: vi.fn().mockResolvedValue(mockAppData),
 			};
 			vi.mocked(ActivityWatchService).mockImplementation(() => mockService as any);
-			vi.spyOn(ActivityWatchService, "generatePieChartMarkdown").mockReturnValue(
-				"**Total Active Time:** 3.00 hours\n\n| Application | Time | Percentage |\n|---|---|---|\n| obsidian | 2h 0m | 66.7% |"
+			vi.spyOn(ActivityWatchService, "generateAppUsageMarkdown").mockReturnValue(
+				"**Total Active Time:** 3.00 hours\n\n```\nobsidian    7200s\n```"
 			);
 
 			await injectActivityWatchContent(app, file, yesterday, settings);
 
-			expect(ActivityWatchService).toHaveBeenCalledWith(app, "http://localhost:5600");
 			expect(mockService.getDailyAppUsage).toHaveBeenCalledWith(yesterday);
 			expect(app.vault.modify).toHaveBeenCalledWith(file, expect.stringContaining("## ActivityWatch"));
 		});
@@ -213,7 +212,7 @@ describe("ActivityWatch Utils", () => {
 				getDailyAppUsage: vi.fn().mockResolvedValue([]),
 			};
 			vi.mocked(ActivityWatchService).mockImplementation(() => mockService as any);
-			vi.spyOn(ActivityWatchService, "generatePieChartMarkdown").mockReturnValue("No data");
+			vi.spyOn(ActivityWatchService, "generateAppUsageMarkdown").mockReturnValue("No data");
 
 			await injectActivityWatchContent(app, file, yesterday, settings);
 
@@ -358,7 +357,7 @@ describe("ActivityWatch Utils", () => {
 				getDailyAppUsage: vi.fn().mockResolvedValue([]),
 			};
 			vi.mocked(ActivityWatchService).mockImplementation(() => mockService as any);
-			vi.spyOn(ActivityWatchService, "generatePieChartMarkdown").mockReturnValue("No data");
+			vi.spyOn(ActivityWatchService, "generateAppUsageMarkdown").mockReturnValue("No data");
 
 			await processAllDailyNotesForActivityWatch(app, settings);
 
@@ -392,7 +391,7 @@ describe("ActivityWatch Utils", () => {
 				getDailyAppUsage: vi.fn().mockResolvedValue([]),
 			};
 			vi.mocked(ActivityWatchService).mockImplementation(() => mockService as any);
-			vi.spyOn(ActivityWatchService, "generatePieChartMarkdown").mockReturnValue("No data");
+			vi.spyOn(ActivityWatchService, "generateAppUsageMarkdown").mockReturnValue("No data");
 
 			await processAllDailyNotesForActivityWatch(app, settings);
 
