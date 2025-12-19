@@ -18,11 +18,6 @@ const mockSettings = createMockSettings({
 		quarterlyFormat: "'Q'q-yyyy",
 		yearlyFormat: "yyyy",
 	},
-	activityWatch: {
-		enabled: false,
-		apiUrl: "http://localhost:5600",
-		heading: "## ActivityWatch",
-	},
 });
 
 function createMockFile(path: string, basename: string) {

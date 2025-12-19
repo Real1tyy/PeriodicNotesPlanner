@@ -76,6 +76,24 @@ export class IntegrationSettings {
 					});
 			});
 
+		new Setting(containerEl)
+			.setName("Code fence name")
+			.setDesc("The code fence language identifier for ActivityWatch blocks (requires plugin reload to take effect)")
+			.addText((text) => {
+				text
+					.setPlaceholder(SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE)
+					.setValue(this.settingsStore.currentSettings.activityWatch.codeFence)
+					.onChange(async (value) => {
+						await this.settingsStore.updateSettings((s) => ({
+							...s,
+							activityWatch: {
+								...s.activityWatch,
+								codeFence: value || SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE,
+							},
+						}));
+					});
+			});
+
 		new Setting(containerEl).setName("Templater").setHeading();
 
 		containerEl.createEl("p", {

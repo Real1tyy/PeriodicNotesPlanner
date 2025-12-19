@@ -135,6 +135,7 @@ export const ActivityWatchSettingsSchema = z.object({
 	enabled: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_ACTIVITY_WATCH),
 	apiUrl: z.url().default(SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL),
 	heading: z.string().default(SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING),
+	codeFence: z.string().default(SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE),
 });
 
 export type ActivityWatchSettings = z.infer<typeof ActivityWatchSettingsSchema>;

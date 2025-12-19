@@ -89,6 +89,7 @@ export const SETTINGS_DEFAULTS = {
 	ENABLE_ACTIVITY_WATCH: false,
 	ACTIVITY_WATCH_URL: "http://localhost:5600",
 	ACTIVITY_WATCH_HEADING: "## ActivityWatch",
+	ACTIVITY_WATCH_CODE_FENCE: "periodic-planner-activity-watch",
 
 	// ===== Templater Settings =====
 	ENABLE_TEMPLATER: false,

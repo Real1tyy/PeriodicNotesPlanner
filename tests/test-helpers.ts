@@ -59,6 +59,7 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 		enabled: false,
 		apiUrl: "http://localhost:5600",
 		heading: "## ActivityWatch",
+		codeFence: "periodic-planner-activity-watch",
 	},
 	templater: {
 		enabled: false,
