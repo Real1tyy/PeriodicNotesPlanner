@@ -279,9 +279,23 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private registerCodeBlockProcessor(): void {
-		this.registerMarkdownCodeBlockProcessor("periodic-planner", async (source, el, ctx) => {
-			const renderer = new TimeBudgetBlockRenderer(this.app, this.settingsStore.currentSettings, this.periodIndex);
-			await renderer.render(source, el, ctx);
+		this.registerMarkdownCodeBlockProcessor("periodic-planner", (source, el, ctx) => {
+			if (el.hasClass("periodic-planner-initialized")) {
+				return;
+			}
+
+			el.empty();
+			el.addClass("periodic-planner-initialized");
+
+			const renderer = new TimeBudgetBlockRenderer(
+				el,
+				this.app,
+				this.settingsStore.currentSettings,
+				this.periodIndex,
+				source,
+				ctx
+			);
+			ctx.addChild(renderer);
 		});
 	}
 }

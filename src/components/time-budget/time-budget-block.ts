@@ -1,4 +1,4 @@
-import { type App, type MarkdownPostProcessorContext, TFile } from "obsidian";
+import { type App, type MarkdownPostProcessorContext, MarkdownRenderChild, TFile } from "obsidian";
 import type { Subscription } from "rxjs";
 import type { PeriodType } from "../../constants";
 import type { PeriodIndex } from "../../core/period-index";
@@ -20,7 +20,7 @@ import { PieChartRenderer } from "./pie-chart-renderer";
 type SortColumn = "name" | "hours" | "parentBudget" | "childAllocated";
 type SortDirection = "asc" | "desc";
 
-export class TimeBudgetBlockRenderer {
+export class TimeBudgetBlockRenderer extends MarkdownRenderChild {
 	private pieChartRenderer: PieChartRenderer | null = null;
 	private sortColumn: SortColumn = "name";
 	private sortDirection: SortDirection = "asc";
@@ -34,131 +34,142 @@ export class TimeBudgetBlockRenderer {
 	} | null = null;
 	private tableContainer: HTMLElement | null = null;
 	private tableInsertBefore: HTMLElement | null = null;
-	private filePath: string | null = null;
 	private indexSubscription: Subscription | null = null;
-	private rootElement: HTMLElement | null = null;
-	private sourceContent: string | null = null;
-	private context: MarkdownPostProcessorContext | null = null;
+	private isRendering: boolean = false;
 
 	constructor(
+		containerEl: HTMLElement,
 		private app: App,
 		private settings: PeriodicPlannerSettings,
-		private periodIndex: PeriodIndex
-	) {}
+		private periodIndex: PeriodIndex,
+		private sourceContent: string,
+		private context: MarkdownPostProcessorContext
+	) {
+		super(containerEl);
+	}
 
-	async render(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<void> {
-		this.filePath = ctx.sourcePath;
-		this.rootElement = el;
-		this.sourceContent = source;
-		this.context = ctx;
-
+	onload(): void {
 		this.setupIndexListener();
+		void this.renderContent();
+	}
 
-		await this.renderContent();
+	onunload(): void {
+		if (this.pieChartRenderer) {
+			this.pieChartRenderer.destroy();
+			this.pieChartRenderer = null;
+		}
+		if (this.indexSubscription) {
+			this.indexSubscription.unsubscribe();
+			this.indexSubscription = null;
+		}
+		this.containerEl.removeClass("periodic-planner-initialized");
 	}
 
 	private setupIndexListener(): void {
-		if (this.indexSubscription) {
-			this.indexSubscription.unsubscribe();
-		}
+		const filePath = this.context.sourcePath;
 
 		this.indexSubscription = this.periodIndex.events$.subscribe((event) => {
-			if (event.type === "period-updated" && event.filePath === this.filePath) {
+			if (event.type === "period-updated" && event.filePath === filePath) {
 				void this.renderContent();
 			}
 		});
 	}
 
 	private async renderContent(): Promise<void> {
-		// Allow empty source content (empty code block should still render)
-		if (
-			!this.rootElement ||
-			this.sourceContent === null ||
-			this.sourceContent === undefined ||
-			!this.context ||
-			!this.filePath
-		) {
+		// Prevent concurrent renders
+		if (this.isRendering) {
 			return;
 		}
 
-		const el = this.rootElement;
+		// Allow empty source content (empty code block should still render)
+		if (this.sourceContent === null || this.sourceContent === undefined || !this.context) {
+			return;
+		}
+
+		this.isRendering = true;
+
+		const el = this.containerEl;
 		const source = this.sourceContent;
 		const ctx = this.context;
 
-		el.empty();
-		el.addClass(cls("time-budget-block"));
+		try {
+			el.empty();
+			el.addClass(cls("time-budget-block"));
 
-		const file = this.app.vault.getAbstractFileByPath(ctx.sourcePath);
-		if (!(file instanceof TFile)) {
-			this.renderError(el, "Cannot find file");
-			return;
-		}
-		const entry = await this.retryGetEntryForFile(file);
-		if (!entry) {
-			this.renderError(el, "This note is not indexed yet. Please wait for indexing to complete.");
-			return;
-		}
-
-		const { periodType, hoursAvailable: totalHours } = entry;
-
-		const parsed = parseAllocationBlock(source);
-		const { unresolved, resolved: allocations } = resolveAllocations(parsed.allocations, this.settings.categories);
-
-		if (unresolved.length > 0) {
-			this.renderWarnings(el, unresolved);
-		}
-
-		const parentBudgets = await getParentBudgets(entry, this.settings, this.periodIndex);
-
-		let finalAllocations = allocations;
-		if (
-			this.settings.timeBudget.autoInheritParentPercentages &&
-			allocations.length === 0 &&
-			parentBudgets.budgets.size > 0
-		) {
-			const inheritedAllocations = fillAllocationsFromParent(parentBudgets.budgets, totalHours);
-			if (inheritedAllocations.length > 0) {
-				await this.updateCodeBlock(file, inheritedAllocations, ctx);
-				finalAllocations = inheritedAllocations;
+			const file = this.app.vault.getAbstractFileByPath(ctx.sourcePath);
+			if (!(file instanceof TFile)) {
+				this.renderError(el, "Cannot find file");
+				return;
 			}
+			const entry = await this.retryGetEntryForFile(file);
+			if (!entry) {
+				this.renderError(el, "This note is not indexed yet. Please wait for indexing to complete.");
+				return;
+			}
+
+			const { periodType, hoursAvailable: totalHours } = entry;
+
+			const parsed = parseAllocationBlock(source);
+			const { unresolved, resolved: allocations } = resolveAllocations(parsed.allocations, this.settings.categories);
+
+			if (unresolved.length > 0) {
+				this.renderWarnings(el, unresolved);
+			}
+
+			const parentBudgets = await getParentBudgets(entry, this.settings, this.periodIndex);
+
+			let finalAllocations = allocations;
+			if (
+				this.settings.timeBudget.autoInheritParentPercentages &&
+				allocations.length === 0 &&
+				parentBudgets.budgets.size > 0
+			) {
+				const inheritedAllocations = fillAllocationsFromParent(parentBudgets.budgets, totalHours);
+				if (inheritedAllocations.length > 0) {
+					await this.updateCodeBlock(file, inheritedAllocations, ctx);
+					finalAllocations = inheritedAllocations;
+				}
+			}
+
+			const childBudgets = getChildBudgetsFromIndex(
+				file,
+				periodType,
+				finalAllocations,
+				this.periodIndex,
+				this.settings.categories,
+				this.settings.generation
+			);
+
+			this.renderHeader(el, totalHours, finalAllocations, periodType, childBudgets.totalChildrenAllocated);
+
+			this.tableData = {
+				allocations: finalAllocations,
+				categories: this.settings.categories,
+				periodType,
+				parentBudgets: parentBudgets.budgets,
+				childBudgets: childBudgets.budgets,
+				totalHours,
+			};
+			this.tableContainer = el;
+
+			const pieChartContainer = el.createDiv({ cls: cls("pie-chart-container") });
+			this.tableInsertBefore = pieChartContainer;
+
+			this.renderAllocationTable();
+			this.renderPieChart(pieChartContainer, finalAllocations, this.settings.categories);
+			this.renderEditButton(
+				el,
+				file,
+				periodType,
+				finalAllocations,
+				totalHours,
+				parentBudgets.budgets,
+				childBudgets.budgets,
+				ctx
+			);
+		} finally {
+			this.isRendering = false;
 		}
-
-		const childBudgets = getChildBudgetsFromIndex(
-			file,
-			periodType,
-			finalAllocations,
-			this.periodIndex,
-			this.settings.categories,
-			this.settings.generation
-		);
-
-		this.renderHeader(el, totalHours, finalAllocations, periodType, childBudgets.totalChildrenAllocated);
-
-		this.tableData = {
-			allocations: finalAllocations,
-			categories: this.settings.categories,
-			periodType,
-			parentBudgets: parentBudgets.budgets,
-			childBudgets: childBudgets.budgets,
-			totalHours,
-		};
-		this.tableContainer = el;
-
-		const pieChartContainer = el.createDiv({ cls: cls("pie-chart-container") });
-		this.tableInsertBefore = pieChartContainer;
-
-		this.renderAllocationTable();
-		this.renderPieChart(pieChartContainer, finalAllocations, this.settings.categories);
-		this.renderEditButton(
-			el,
-			file,
-			periodType,
-			finalAllocations,
-			totalHours,
-			parentBudgets.budgets,
-			childBudgets.budgets,
-			ctx
-		);
 	}
 
 	private renderError(el: HTMLElement, message: string): void {
@@ -510,15 +521,5 @@ export class TimeBudgetBlockRenderer {
 		}
 
 		return undefined;
-	}
-
-	destroy(): void {
-		if (this.pieChartRenderer) {
-			this.pieChartRenderer.destroy();
-		}
-		if (this.indexSubscription) {
-			this.indexSubscription.unsubscribe();
-			this.indexSubscription = null;
-		}
 	}
 }

@@ -2,6 +2,7 @@ import type { TFile } from "obsidian";
 import { Subject, type Subscription } from "rxjs";
 import type { IndexedPeriodNote, PeriodChildren } from "../types";
 import { getParentFilePathsFromLinks } from "../utils/note-utils";
+import { noteDataChanged } from "../utils/period";
 import type { PeriodicNoteIndexer } from "./periodic-note-indexer";
 
 export type PeriodIndexEvent = {
@@ -52,6 +53,8 @@ export class PeriodIndex {
 
 	private addOrUpdateNote(note: IndexedPeriodNote): void {
 		const existingNote = this.notesByPath.get(note.filePath);
+		const hasChanged = noteDataChanged(existingNote, note);
+
 		if (existingNote) {
 			this.removeFromParentsCaches(existingNote);
 		}
@@ -59,10 +62,14 @@ export class PeriodIndex {
 		this.notesByPath.set(note.filePath, note);
 		const affectedParents = this.addToParentsCaches(note);
 
-		this.eventsSubject.next({ type: "period-updated", filePath: note.filePath });
+		// Only emit events if the note's data actually changed
+		if (hasChanged) {
+			this.eventsSubject.next({ type: "period-updated", filePath: note.filePath });
 
-		for (const parentPath of affectedParents) {
-			this.eventsSubject.next({ type: "period-updated", filePath: parentPath });
+			// Also emit for affected parents since child allocations changed
+			for (const parentPath of affectedParents) {
+				this.eventsSubject.next({ type: "period-updated", filePath: parentPath });
+			}
 		}
 	}
 

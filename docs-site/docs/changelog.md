@@ -41,6 +41,11 @@ All notable changes to this project will be documented here.
   - **Filtered note generation**: Auto-generation and manual generation commands respect enabled period settings
   - **Period children modal**: Only displays enabled period types when viewing child notes
 
+### Bug Fixes
+
+- **Fixed duplicate time budget block rendering**: Resolved issue where time budget blocks would render multiple times on initial note load
+  - Added render guard to prevent concurrent rendering during initialization
+
 ---
 
 ## 1.1.1
