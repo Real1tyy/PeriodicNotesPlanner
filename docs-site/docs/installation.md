@@ -64,7 +64,7 @@ BRAT will automatically check for updates. You can manually check by:
 ### Manual Installation
 Download the latest release files and replace the existing files in your plugin folder.
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 If you encounter issues during installation:
 

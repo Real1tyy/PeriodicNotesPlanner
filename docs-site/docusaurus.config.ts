@@ -80,7 +80,7 @@ const config: Config = {
 				},
 				{
 					to: "/video",
-					label: "📺 Video",
+					label: "Video",
 					position: "left",
 				},
 				{
