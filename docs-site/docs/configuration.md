@@ -6,7 +6,7 @@ sidebar_position: 7
 
 Periodix-Planner offers comprehensive configuration options to customize the plugin to your workflow and preferences.
 
-## ⚙️ Settings Overview
+## Settings Overview
 
 Access settings via **Settings** → **Periodix-Planner**. The settings are organized into tabs:
 
@@ -17,11 +17,9 @@ Access settings via **Settings** → **Periodix-Planner**. The settings are orga
 - **Properties** - Customize frontmatter property names
 - **Generation** - Control auto-generation behavior
 
-## 📁 Folders Tab
+## Folders Tab
 
 Configure where periodic notes are stored in your vault.
-
-### Settings
 
 | Setting | Description | Default |
 |---------|-------------|---------|
@@ -31,18 +29,13 @@ Configure where periodic notes are stored in your vault.
 | **Quarterly Folder** | Where quarterly notes are stored | `Periodic/Quarterly` |
 | **Yearly Folder** | Where yearly notes are stored | `Periodic/Yearly` |
 
-### Tips
+**Note:** Folders are created automatically if they don't exist.
 
-- Use consistent folder structure
-- Keep folders organized
-- Consider your vault's organization system
-- Folders are created automatically if they don't exist
+[Learn more about note generation](/features/note-generation)
 
-## 🏷️ Naming Tab
+## Naming Tab
 
-Customize how periodic notes are named.
-
-### Format Strings
+Customize how periodic notes are named using [Luxon format tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens).
 
 | Period | Setting | Default Format | Example |
 |--------|---------|----------------|---------|
@@ -52,66 +45,48 @@ Customize how periodic notes are named.
 | Quarterly | **Quarterly Format** | `YYYY-[Q]Q` | `2025-Q1` |
 | Yearly | **Yearly Format** | `YYYY` | `2025` |
 
-### Format Syntax
-
-Uses [Luxon format tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens):
-
+**Common format tokens:**
 - `YYYY` - 4-digit year
 - `MM` - 2-digit month
 - `DD` - 2-digit day
 - `[W]WW` - Week number with "W" prefix
 - `[Q]Q` - Quarter number with "Q" prefix
 
-## ⏱️ Time Budget Tab
+## Time Budget Tab
 
 Configure available hours for each period type and inheritance behavior.
-
-### Settings
 
 | Setting | Description | Default |
 |---------|-------------|---------|
 | **Hours per Week** | Base weekly hour budget for planning | `40` |
 | **Automatically inherit parent percentages** | Auto-fill child periods with parent's allocation distribution | `false` |
 
-### Hours Calculations
+**Hours calculations:**
+- Monthly = Weekly × 4.33
+- Quarterly = Monthly × 3
+- Yearly = Quarterly × 4
 
-- **Monthly** = Weekly × 4.33
-- **Quarterly** = Monthly × 3
-- **Yearly** = Quarterly × 4
+Enable auto-inherit to fill child periods based on parent percentages. [Learn more](/features/time-budgeting#auto-inherit-parent-percentages)
 
-### Auto-Inherit Parent Percentages
+## Categories Tab
 
-When enabled, child periods with empty allocations are automatically filled based on the parent period's percentage distribution. This maintains consistent allocation patterns across your hierarchy and saves time on repetitive allocations.
+Define your time investment categories for budget tracking.
 
-**Learn more:** [Auto-Inherit Parent Percentages](/features/time-budgeting#auto-inherit-parent-percentages)
-
-## 🎨 Categories Tab
-
-Define your time investment categories.
-
-### Adding Categories
-
+**Adding categories:**
 1. Click **Add Category**
 2. Enter category name
-3. Choose color
+3. Choose color (hex format)
 4. Click **Save**
 
-### Category Properties
+**Managing categories:**
+- Click category to edit
+- Delete removes category from all allocations
 
-- **Name**: Category identifier
-- **Color**: Visual identification (hex color)
-- **ID**: Auto-generated unique identifier
+[Learn more about categories](/features/categories)
 
-### Managing Categories
+## Properties Tab
 
-- **Edit**: Click category to modify
-- **Delete**: Remove category (removes from all allocations)
-
-## 📋 Properties Tab
-
-Customize frontmatter property names.
-
-### Settings
+Customize frontmatter property names used for note interconnection.
 
 | Setting | Description | Default |
 |---------|-------------|---------|
@@ -124,24 +99,20 @@ Customize frontmatter property names.
 | **Year Property** | Property name for year link | `Year` |
 | **Hours Available Property** | Property name for available hours | `Hours Available` |
 
-## 🚀 Generation Tab
+[Learn more about note interconnection](/features/note-interconnection)
 
-Control auto-generation behavior.
+## Generation Tab
 
-### Settings
+Control automatic note generation behavior.
 
 | Setting | Description | Default |
 |---------|-------------|---------|
 | **Auto-generate future periods** | Automatically generate notes on startup | `true` |
 | **Generate next period in advance** | Always generate next period | `true` |
 
-### Auto-Generation
+When enabled, the plugin generates notes when Obsidian opens and creates next periods automatically while respecting existing notes.
 
-When enabled:
-- Generates notes when Obsidian opens
-- Creates next periods automatically
-- Respects existing notes
-- Updates frontmatter if needed
+[Learn more about note generation](/features/note-generation)
 
 ---
 

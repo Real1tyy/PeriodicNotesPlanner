@@ -8,7 +8,7 @@ sidebar_position: 5
 
 All periodic notes in Periodix-Planner are intelligently linked through frontmatter properties, creating a navigable web of time that lets you zoom in and out of your planning horizon effortlessly.
 
-## 🔗 Link Structure
+## Link Structure
 
 Each periodic note contains links to:
 
@@ -17,7 +17,7 @@ Each periodic note contains links to:
 - **Parent period** - The period that contains this one
 - **Ancestor periods** - All periods above in the hierarchy
 
-## 📊 Hierarchy
+## Hierarchy
 
 ```
 Year (2025)
@@ -32,19 +32,19 @@ Year (2025)
 └── Quarter (2025-Q2)
 ```
 
-## 🔍 Frontmatter Properties
+## Frontmatter Properties
 
 ### Daily Note Example
 
 ```yaml
 ---
-previous: "[[2025-01-14]]"
-next: "[[2025-01-16]]"
-week: "[[2025-W03]]"
-month: "[[2025-01]]"
-quarter: "[[2025-Q1]]"
-year: "[[2025]]"
-hours_available: 24
+Previous: "[[2025-01-14]]"
+Next: "[[2025-01-16]]"
+Week: "[[2025-W03]]"
+Month: "[[2025-01]]"
+Quarter: "[[2025-Q1]]"
+Year: "[[2025]]"
+Hours Available: 24
 ---
 ```
 
@@ -52,12 +52,12 @@ hours_available: 24
 
 ```yaml
 ---
-previous: "[[2025-W02]]"
-next: "[[2025-W04]]"
-month: "[[2025-01]]"
-quarter: "[[2025-Q1]]"
-year: "[[2025]]"
-hours_available: 168
+Previous: "[[2025-W02]]"
+Next: "[[2025-W04]]"
+Month: "[[2025-01]]"
+Quarter: "[[2025-Q1]]"
+Year: "[[2025]]"
+Hours Available: 168
 ---
 ```
 
@@ -65,78 +65,32 @@ hours_available: 168
 
 ```yaml
 ---
-previous: "[[2024-12]]"
-next: "[[2025-02]]"
-quarter: "[[2025-Q1]]"
-year: "[[2025]]"
-hours_available: 730
+Previous: "[[2024-12]]"
+Next: "[[2025-02]]"
+Quarter: "[[2025-Q1]]"
+Year: "[[2025]]"
+Hours Available: 730
 ---
 ```
 
-## 🧭 Navigation
+## Navigation
 
-### Using Commands
+You can navigate between periods using frontmatter links or commands. Click any link in the frontmatter to jump to that period, or use keyboard shortcuts for quick navigation.
 
-**Go to Previous Period**
-- Command: "Go to previous period"
-- Navigates to the previous period of the same type
-- Creates note if it doesn't exist
+[Learn more about Navigation](/features/navigation)
 
-**Go to Next Period**
-- Command: "Go to next period"
-- Navigates to the next period of the same type
-- Creates note if it doesn't exist
+## Automatic Updates
 
-**Go to Parent Period**
-- Command: "Go to parent period"
-- Navigates to the parent period
-- Creates note if it doesn't exist
+The plugin automatically updates links when notes are generated, maintains consistency across all notes, and creates missing links when needed.
 
-**Open Current Period**
-- Commands: "Open today's daily note", "Open current weekly note", etc.
-- Opens or creates the current period note
+## Use Cases
 
-### Using Links
+**Chronological Navigation:** Move forward/backward through time (days, weeks, months, quarters, years).
 
-Click any link in frontmatter to:
-- Navigate to that period
-- Create the note if it doesn't exist
-- Open the note in the current view
+**Hierarchical Navigation:** Zoom in and out between period levels (Daily → Weekly → Monthly → Quarterly → Yearly).
 
-## 🔄 Automatic Updates
-
-The plugin automatically:
-
-- **Updates links** when notes are generated
-- **Maintains consistency** across all notes
-- **Creates missing links** when notes are opened
-- **Preserves existing links** when updating frontmatter
-
-## 🎯 Use Cases
-
-### Chronological Navigation
-
-Navigate through time:
-- Move forward/backward through days
-- Jump to specific weeks
-- Review monthly progress
-- Plan quarterly goals
-
-### Hierarchical Navigation
-
-Zoom in and out:
-- Daily → Weekly → Monthly → Quarterly → Yearly
-- See the big picture (yearly)
-- Drill down to details (daily)
-
-### Context Switching
-
-Quick context switching:
-- See what week a day belongs to
-- See what month a week belongs to
-- See what quarter a month belongs to
-- See what year everything belongs to
+**Context Switching:** Quickly see what larger period a note belongs to (e.g., which week contains a specific day).
 
 ---
 
-**Related:** Learn about [Navigation Commands](/features/navigation) and [Note Generation](/features/note-generation).
+**Related:** [Navigation Commands](/features/navigation) • [Note Generation](/features/note-generation)

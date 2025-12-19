@@ -6,19 +6,19 @@ sidebar_position: 9
 
 ![Time budget blocks screenshot](/img/features/time-budget-blocks.png)
 
-Time budget blocks are interactive code blocks that display visual time allocation statistics directly in your periodic notes.
+Time budget blocks are interactive visualizations that display time allocation statistics directly in your periodic notes.
 
-## 🎯 Overview
+## Overview
 
-Time budget blocks render as interactive visualizations showing:
+The plugin **automatically adds** time budget blocks to generated periodic notes. These blocks render as interactive visualizations showing:
 - Pie chart of category distribution
 - Detailed allocation table
 - Budget status indicators
 - Edit button for quick adjustments
 
-## 📝 Adding a Time Budget Block
+## How It Works
 
-Add a code block with the language `periodic-planner`:
+When the plugin generates a periodic note, it automatically inserts a `periodic-planner` code block:
 
 ````markdown
 ```periodic-planner
@@ -28,71 +28,31 @@ learning: 1h
 ```
 ````
 
-The plugin automatically renders this as an interactive time budget interface.
+This code block renders as an interactive time budget interface. **You don't need to create these manually** — the plugin handles it automatically.
 
-## ✍️ Block Syntax
+## Editing Allocations
 
-### Basic Format
+To allocate time to your categories:
 
-```
-categoryId: hours
-```
+1. Open a periodic note (daily, weekly, monthly, etc.)
+2. Click the **Edit allocations** button
+3. Use the allocation editor to distribute hours across categories
+4. Click **Save** to update the note
 
-**Examples:**
+The allocation editor provides multiple ways to set values.
 
-````markdown
-```periodic-planner
-work: 40h
-health: 10h
-learning: 5h
-relationships: 5h
-```
-````
+[Learn more about the Allocation Editor](/features/allocation-editor)
 
-## 🎨 Rendered Interface
+## Configuration
 
-When rendered, the block displays:
-
-### Header Section
-
-- **Total hours available** - Hours in the current period
-- **Total allocated** - Sum of all category allocations
-- **Remaining hours** - Hours still available
-- **Status indicators** - Color-coded budget status
-
-### Pie Chart
-
-- Visual representation of category distribution
-- Color-coded by category
-- Click to enlarge
-- Shows percentages
-
-### Allocation Table
-
-- Category name and color
-- Allocated hours
-- Percentage of total
-- Parent budget status (if applicable)
-- Child allocations (if applicable)
-
-### Edit Button
-
-- Opens allocation editor modal
-- Quick access to edit allocations
-- Saves changes to frontmatter
-
-## 🔄 Auto-Insertion
-
-The plugin can automatically add time budget blocks to generated notes:
+Customize how time budget blocks are inserted:
 
 1. Go to **Settings** → **Periodix-Planner** → **Generation**
-2. Configure time budget block settings
-3. Blocks are added when notes are generated
+2. Configure block insertion options:
+   - **Add heading above code block** - Include markdown heading
+   - **Plan heading content** - Customize heading text
 
-### Configuration Options
-
-- **Add heading above code block** - Include markdown heading
-- **Plan heading content** - Customize heading text
+The plugin automatically adds blocks to all generated periodic notes based on these settings.
 
 ---
 

@@ -128,7 +128,7 @@ Automatic note generation when you open Obsidian:
 - Respects existing notes
 - Configurable generation rules
 
-**Learn more:** [Auto-Generation](/features/auto-generation)
+**Learn more:** [Note Generation](/features/note-generation)
 
 ## 📋 Period Children View
 

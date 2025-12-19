@@ -6,9 +6,9 @@ sidebar_position: 2
 
 ![Time budgeting screenshot](/img/features/time-budgeting.png)
 
-The time budgeting system in Periodix-Planner allows you to allocate and track time across categories with hierarchical tracking from yearly down to daily periods.
+The time budgeting system allows you to allocate and track time across categories with hierarchical tracking from yearly down to daily periods.
 
-## 🎯 Overview
+## Overview
 
 Time budgets flow down through the hierarchy:
 
@@ -20,153 +20,65 @@ Yearly (10,000 hours)
 │   │   │   └── Daily (24 hours)
 ```
 
-Each level tracks:
-- **Total hours available** in the period
-- **Allocated hours** per category
-- **Remaining hours** after allocations
-- **Parent budget status** (if over/under parent allocation)
+Each level tracks total hours available, allocated hours per category, remaining hours, and parent budget status.
 
-## 📊 Setting Up Time Budgets
+## Setup
 
-### 1. Configure Base Hours
+**Configure base hours:** Set your weekly hours in Settings → Time budget. The plugin automatically calculates monthly, quarterly, and yearly hours. [Learn more](/configuration#time-budget-tab)
 
-Go to **Settings** → **Periodix-Planner** → **Time budget** tab:
+**Define categories:** Add your time investment categories (Work, Health, Learning, etc.) with custom colors. [Learn more](/features/categories)
 
-- **Hours per Week**: Base weekly hour budget (default: 40)
-
-The plugin automatically calculates:
-- Monthly = Weekly × 4.33
-- Quarterly = Monthly × 3
-- Yearly = Quarterly × 4
-
-### 2. Define Categories
-
-Go to **Settings** → **Periodix-Planner** → **Categories** tab:
-
-1. Click **Add Category**
-2. Enter a name (e.g., "Work", "Health", "Learning")
-3. Choose a color for visual identification
-4. Repeat for all categories
-
-## 💰 Allocating Time
-
-### Using the Allocation Editor
+## Allocating Time
 
 1. Open any periodic note
 2. Click **Edit allocations** button
-4. Use the allocation editor to:
-   - Set hours for each category
-   - Use quick-fill buttons (10%, 25%, 50%, Max)
-   - Drag percentage bars
-   - Enter custom percentages
-   - See parent budget warnings
+3. Use the allocation editor to distribute hours across categories
 
-## 🔍 Budget Tracking
+[Learn more about the Allocation Editor](/features/allocation-editor)
 
-### Visual Indicators
+## Budget Tracking
 
-The plugin provides visual feedback on budget status:
+**Visual indicators:**
+- 🟢 Green - Within budget
+- 🟡 Yellow - Approaching limit (80-100%)
+- 🔴 Red - Over budget or exceeds parent allocation
 
-- 🟢 **Green** - Within budget, healthy allocation
-- 🟡 **Yellow** - Approaching limit (80-100% allocated)
-- 🔴 **Red** - Over budget or over parent allocation
+**Parent budget tracking:** Child periods (daily, weekly, monthly, quarterly) are tracked against their parent period's budget. Warnings appear when allocations exceed parent limits.
 
-### Parent Budget Warnings
+**Remaining hours:** The allocation editor shows allocated hours, remaining hours, and allocation percentage.
 
-When allocating time in child periods, the plugin tracks parent budgets:
+## Hierarchical Budget Flow
 
-- **Quarterly** allocations are tracked against **Yearly** budgets
-- **Monthly** allocations are tracked against **Quarterly** budgets
-- **Weekly** allocations are tracked against **Monthly** budgets
-- **Daily** allocations are tracked against **Weekly** budgets
+Time budgets cascade through the hierarchy:
 
-**Warning indicators:**
-- ⚠️ Shows when over parent budget
-- Displays parent allocation percentage
-- Highlights over-budget items in red
+1. **Yearly → Quarterly:** Set yearly budgets, allocate quarterly portions, track remaining
+2. **Quarterly → Monthly:** Monthly allocations tracked against quarterly limits
+3. **Monthly → Weekly:** Weekly allocations tracked against monthly limits
+4. **Weekly → Daily:** Daily allocations tracked against weekly limits
 
-### Remaining Hours
+Warnings appear when child allocations exceed parent budgets.
 
-The allocation editor shows:
-- **Allocated**: Total hours allocated across all categories
-- **Remaining**: Hours still available
-- **Percentage**: Allocation percentage of total available
+## Visual Statistics
 
-## 📈 Hierarchical Budget Flow
+The time budget block displays pie charts and allocation tables showing category distribution, allocated hours, percentages, and parent budget status.
 
-### Yearly → Quarterly
+[Learn more about Visual Statistics](/features/visual-statistics)
 
-1. Set yearly category budgets (e.g., Work: 2,000 hours)
-2. Allocate quarterly portions (e.g., Q1 Work: 500 hours)
-3. Plugin tracks remaining yearly budget (1,500 hours left)
-
-### Quarterly → Monthly
-
-1. Quarterly allocation sets the limit for monthly allocations
-2. Monthly allocations are tracked against quarterly budget
-3. Warnings appear if monthly total exceeds quarterly budget
-
-### Monthly → Weekly
-
-1. Monthly allocation sets the limit for weekly allocations
-2. Weekly allocations are tracked against monthly budget
-3. Plugin calculates remaining monthly hours
-
-### Weekly → Daily
-
-1. Weekly allocation sets the limit for daily allocations
-2. Daily allocations are tracked against weekly budget
-3. Visual feedback shows daily progress
-
-## 🎨 Visual Statistics
-
-### Pie Chart
-
-The time budget block displays a pie chart showing:
-- Category distribution
-- Color-coded segments
-- Percentage labels
-- Click to enlarge
-
-### Allocation Table
-
-Detailed table showing:
-- Category name and color
-- Allocated hours
-- Percentage of total
-- Parent budget status
-- Child allocations (if applicable)
-
-### Progress Tracking
-
-- Visual progress bars
-- Remaining hours display
-- Budget status indicators
-- Sortable columns
-
-## 🔧 Advanced Features
+## Advanced Features
 
 ### Auto-Inherit Parent Percentages {#auto-inherit-parent-percentages}
 
-Auto-fill empty child periods (weekly/monthly/etc.) based on the **parent period’s percentage split**.
+Automatically fill child periods based on the parent period's percentage distribution.
 
-- **Enable**: Settings → **Periodix-Planner** → **Time budget** → **Automatically inherit parent percentages**
-- **Manual**: In the Allocation Editor, click **Fill parent** to apply the parent split on demand
+- **Enable globally:** Settings → Time budget → "Automatically inherit parent percentages"
+- **Manual per-note:** Click "Fill parent" button in the Allocation Editor
 
-Example: Parent is 50/30/20 → child gets the same 50/30/20 of its own total hours.
+Example: If parent is 50/30/20, child gets the same 50/30/20 split of its own total hours.
 
 ### Fill from Parent {#fill-from-parent}
 
-Per-category option in the Allocation Editor that changes how percentage actions are calculated:
-
-- When enabled, **10% / 25% / 50% / custom %** use the **parent’s category budget** (not the child’s total)
-- Mix and match: some categories can follow the parent, others can be independent
-
-### Editing shortcuts
-
-- **Undo**: Ctrl/Cmd + Z
-- **Redo**: Ctrl/Cmd + Shift + Z
+Per-category option in the Allocation Editor that calculates percentages based on the parent's category budget instead of the child's total hours. Mix and match: some categories can follow the parent, others can be independent.
 
 ---
 
-**Next:** Learn about the [Allocation Editor](/features/allocation-editor) for detailed editing features.
+**Related:** [Allocation Editor](/features/allocation-editor) • [Visual Statistics](/features/visual-statistics) • [Configuration](/configuration#time-budget-tab)

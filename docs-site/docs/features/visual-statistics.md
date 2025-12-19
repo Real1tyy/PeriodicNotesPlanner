@@ -17,7 +17,7 @@ Visual statistics are displayed in the time budget code block, showing:
 - **Progress bars** - Visual tracking of budget consumption
 - **Budget status** - Color-coded indicators (green/yellow/red)
 
-## 🥧 Pie Chart Visualization
+## Pie Chart Visualization
 
 The pie chart shows the distribution of allocated time across categories:
 
@@ -66,14 +66,6 @@ Visual progress indicators show:
 - **🟢 Green** - Within budget, healthy allocation
 - **🟡 Yellow** - Approaching limit (80-100% allocated)
 - **🔴 Red** - Over budget or over parent allocation
-
-## 💡 Tips
-
-- Use pie charts for quick visual overview
-- Use tables for detailed analysis
-- Sort columns to find patterns
-- Check parent budget warnings regularly
-- Monitor child allocations for cascading effects
 
 ---
 

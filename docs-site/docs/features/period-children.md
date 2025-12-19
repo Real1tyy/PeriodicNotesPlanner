@@ -8,7 +8,7 @@ sidebar_position: 11
 
 The Period Children view shows all child periods for a given period, helping you navigate and understand the hierarchical structure of your periodic notes.
 
-## 🎯 Overview
+## Overview
 
 Period Children view displays:
 - All days in a week
@@ -16,7 +16,7 @@ Period Children view displays:
 - All months in a quarter
 - All quarters in a year
 
-## 🚀 Opening the View
+## Opening the View
 
 ### From Commands
 

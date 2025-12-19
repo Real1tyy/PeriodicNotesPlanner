@@ -34,14 +34,6 @@ Categories are the foundation of the time budgeting system. They represent diffe
 - **Color** - Hex color code (e.g., `#3B82F6`)
 - **ID** - Auto-generated unique identifier
 
-## 🎨 Color Coding
-
-Colors help visually distinguish categories:
-
-- **Choose distinct colors** - Make categories easily identifiable
-- **Use consistent colors** - Maintain same colors across periods
-- **Consider accessibility** - Ensure sufficient contrast
-
 ## 📊 Using Categories
 
 ### In Time Budgets

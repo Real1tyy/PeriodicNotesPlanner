@@ -9,7 +9,6 @@ const sidebars: SidebarsConfig = {
     },
     "installation",
     "quickstart",
-    "video",
     {
       type: "category",
       label: "Features",
@@ -24,7 +23,6 @@ const sidebars: SidebarsConfig = {
         "features/visual-statistics",
         "features/categories",
         "features/time-budget-blocks",
-        "features/auto-generation",
         "features/period-children"
       ]
     },

@@ -99,13 +99,6 @@ Commands automatically create notes if they don't exist:
 - Open commands create current period notes
 - Generation commands create all required notes
 
-### Error Handling
-
-If a command can't execute:
-- Shows a notice with error message
-- Doesn't break your workflow
-- Provides helpful feedback
-
 ---
 
 **Related:** Learn about [Note Interconnection](/features/note-interconnection) and [Configuration](/configuration).

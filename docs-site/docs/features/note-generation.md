@@ -2,13 +2,13 @@
 sidebar_position: 4
 ---
 
-# Automatic Note Generation
+# Note Generation
 
 ![Automatic note generation screenshot](/img/features/note-generation.png)
 
 Periodix-Planner automatically generates periodic notes for all time periods, ensuring you always have the notes you need when you need them.
 
-## 🎯 Overview
+## Overview
 
 The plugin generates notes for:
 
@@ -18,61 +18,28 @@ The plugin generates notes for:
 - **Quarterly notes** - Generated for this quarter and next
 - **Yearly notes** - Generated for this year and next
 
-## ⚙️ Generation Modes
+## Configuration
 
-### Auto-Generation
+Go to **Settings** → **Periodix-Planner** → **Generation** tab:
 
-Automatic generation when Obsidian opens:
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Auto-generate on load** | Generate notes when Obsidian opens | `true` |
+| **Generate periods ahead** | How many periods into the future to generate | `1` |
 
-1. Go to **Settings** → **Periodix-Planner** → **Generation** tab
-2. Enable **Auto-generate future periods**
-3. The plugin will automatically create notes on startup
+When enabled, the plugin automatically creates notes on Obsidian startup and generates the next period in advance.
 
-**Configuration:**
-- Generate next period in advance
-- Respect existing notes (won't overwrite)
-- Configurable generation rules
-
-## 📝 Generated Note Structure
+## Generated Note Structure
 
 Each generated note includes:
 
-### Frontmatter Properties
+**Frontmatter Properties:** Links to previous/next periods, parent period, and ancestor periods (week, month, quarter, year). [Learn more about note interconnection](/features/note-interconnection)
 
-```yaml
----
-previous: "[[2025-01-14]]"
-next: "[[2025-01-16]]"
-week: "[[2025-W03]]"
-month: "[[2025-01]]"
-quarter: "[[2025-Q1]]"
-year: "[[2025]]"
-hours_available: 24
----
-```
+**Time Budget Block:** An empty `periodic-planner` code block is automatically added. Click "Edit allocations" to distribute hours across categories. [Learn more about time budget blocks](/features/time-budget-blocks)
 
-### Navigation Links
+## File Organization
 
-- **previous** - Link to previous period of same type
-- **next** - Link to next period of same type
-- **parent** - Link to parent period (e.g., week for daily notes)
-- **ancestors** - Links to all ancestor periods (month, quarter, year)
-
-### Time Budget Block
-
-A time budget code block is automatically added:
-
-````markdown
-```periodic-planner
-
-```
-````
-
-You can add allocations to this block, or use the allocation editor.
-
-## 📁 File Organization
-
-Notes are organized in configured folders:
+Notes are organized in configured folders (customize in Settings → Folders):
 
 ```
 Periodic/
@@ -92,9 +59,9 @@ Periodic/
     └── 2025.md
 ```
 
-## 🎨 Naming Formats
+## Naming Formats
 
-Customize note names in **Settings** → **Naming**:
+Customize note names in **Settings** → **Naming** using [Luxon format tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens):
 
 - **Daily**: `YYYY-MM-DD` (e.g., `2025-01-15`)
 - **Weekly**: `YYYY-[W]WW` (e.g., `2025-W03`)
@@ -102,32 +69,21 @@ Customize note names in **Settings** → **Naming**:
 - **Quarterly**: `YYYY-[Q]Q` (e.g., `2025-Q1`)
 - **Yearly**: `YYYY` (e.g., `2025`)
 
-## 🔄 Generation Behavior
+## Generation Behavior
 
-### Existing Notes
+**Existing notes:**
+- Never overwrites existing content
+- Updates frontmatter if properties are missing
+- Adds time budget block if missing
+- Preserves all your content
 
-- **Won't overwrite** existing notes
-- **Updates frontmatter** if note exists but properties are missing
-- **Adds time budget block** if missing
-- **Preserves** your content
+**Missing notes:**
+- Creates note with all required frontmatter
+- Adds time budget block
+- Creates folder structure if needed
 
-### Missing Notes
-
-- **Creates** note if it doesn't exist
-- **Generates** all required frontmatter
-- **Adds** time budget block
-- **Creates** folder structure if needed
-
-### Next Period Generation
-
-The plugin always generates the **next period** in advance:
-
-- Today's note + tomorrow's note
-- This week's note + next week's note
-- This month's note + next month's note
-- This quarter's note + next quarter's note
-- This year's note + next year's note
+**Period generation:** With "Generate periods ahead" set to 1, the plugin generates today + tomorrow (daily), this week + next week (weekly), and so on for all period types.
 
 ---
 
-**Related:** Learn about [Note Interconnection](/features/note-interconnection) and [Configuration](/configuration).
+**Related:** [Note Interconnection](/features/note-interconnection) • [Time Budget Blocks](/features/time-budget-blocks) • [Configuration](/configuration)
