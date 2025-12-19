@@ -8,22 +8,80 @@ We welcome contributions and feedback from the community! Here's how you can hel
 
 ## 🐛 Found a Bug?
 
-If you encounter any issues, please **[create an issue on GitHub](https://github.com/Real1tyy/Periodix-Planner/issues/new)**.
+Before creating a new issue, please follow this process:
 
-**Before creating an issue, please:**
+### 1. Check for Existing Issues
 
-- Check if the issue already exists in our [issue tracker](https://github.com/Real1tyy/Periodix-Planner/issues)
-- Include your Obsidian version and operating system
-- Provide steps to reproduce the problem
-- Share relevant error messages or screenshots
+**Search first!** Your issue may already be reported:
+
+1. Go to [GitHub Issues](https://github.com/Real1tyy/Periodix-Planner/issues)
+2. Search for keywords related to your problem
+3. Check both **open** and **closed** issues
+
+**If the issue already exists:**
+
+- 👍 **Upvote it** by adding a 👍 reaction to raise its priority
+- 💬 **Add a comment** if you have additional information or context
+- 📎 **Share your specific case** if it differs from the original report
+
+**Don't create duplicates!** Upvoting existing issues helps us prioritize better.
+
+### 2. Verify You Have the Latest Version
+
+Before reporting, ensure you're using the latest version:
+
+1. Go to **Settings** → **Community plugins**
+2. Check for available updates
+3. Update the plugin if a newer version exists
+4. Test if the issue still occurs
+
+**Your issue may already be fixed in the latest release!**
+
+### 3. Create a New Issue
+
+If no existing issue matches and you're on the latest version, **[create a new bug report](https://github.com/Real1tyy/Periodix-Planner/issues/new/choose)**.
+
+Our bug report template will guide you through providing all necessary information:
+
+- Operating System (with version/build)
+- Obsidian Version
+- Plugin Version
+- Steps to reproduce
+- Expected vs actual behavior
+- Console errors/logs
+- Screenshots/videos
+- Severity level
 
 ## 💡 Feature Requests
 
-Have an idea for a new feature? We'd love to hear it! **[Submit a feature request](https://github.com/Real1tyy/Periodix-Planner/issues/new)** with:
+Have an idea for a new feature? We'd love to hear it!
 
-- Clear description of the feature
-- Use case or problem it solves
-- Any mockups or examples (if applicable)
+### Before Requesting
+
+1. **Search existing requests** - Your idea may already be proposed
+2. **Upvote existing requests** - Add 👍 to similar feature requests
+3. **Comment on existing requests** - Share your specific use case
+
+### Submit a New Feature Request
+
+**[Create a feature request](https://github.com/Real1tyy/Periodix-Planner/issues/new/choose)** using our structured template.
+
+Our feature request template will guide you through providing:
+
+- Feature title and problem statement
+- Proposed solution
+- Real-world use case
+- Alternatives you've considered
+- Examples/mockups
+- Priority and category
+- Willingness to contribute
+
+**Tips for Great Feature Requests:**
+
+- ✅ **Be specific**: "Add ability to sort periods by creation date"
+- ❌ **Too vague**: "Make sorting better"
+- ✅ **Explain the why**: Share your workflow and how it helps
+- ❌ **Just the what**: Don't only describe what you want
 
 ## 🔧 Contributing Code
 
@@ -47,7 +105,7 @@ Have an idea for a new feature? We'd love to hear it! **[Submit a feature reques
 
 ### Help Us Improve the Docs
 
-Periodix-Planner has **extensive documentation** covering a wide range of features and configurations. With such a large and complex project, it's challenging for one person to maintain complete accuracy across all pages. If you spot something that's incorrect, outdated, or unclear, **we'd love your help!**
+Periodix-Planner has documentation covering features and configurations. If you spot something that's incorrect, outdated, or unclear, **we'd love your help!**
 
 **How you can contribute:**
 
@@ -56,7 +114,7 @@ Periodix-Planner has **extensive documentation** covering a wide range of featur
 - **Missing information?** Add what's needed
 - **Better examples?** Share them with us
 
-Documentation contributions are **highly appreciated** and help everyone in the community. Together, we can keep improving the docs over time and ensure they stay accurate and helpful.
+Documentation contributions are **highly appreciated** and help everyone in the community.
 
 **Where to contribute:**
 

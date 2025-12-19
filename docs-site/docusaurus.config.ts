@@ -79,11 +79,6 @@ const config: Config = {
 					position: "left",
 				},
 				{
-					to: "/video",
-					label: "Video",
-					position: "left",
-				},
-				{
 					href: "https://www.youtube.com/watch?v=bIVNj6fkTc8",
 					label: "YouTube",
 					position: "right",
@@ -112,10 +107,6 @@ const config: Config = {
 						{
 							label: "Quick Start",
 							to: "/quickstart",
-						},
-						{
-							label: "Video Walkthrough",
-							to: "/video",
 						},
 						{
 							label: "Changelog",

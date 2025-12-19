@@ -171,7 +171,6 @@ Comprehensive documentation is available at: **[docs.periodix-planner.com](https
 
 - [Installation Guide](https://real1tyy.github.io/Periodix-Planner/installation)
 - [Quick Start](https://real1tyy.github.io/Periodix-Planner/quickstart)
-- [YouTube Video Breakdown](https://real1tyy.github.io/Periodix-Planner/video)
 - [Features Overview](https://real1tyy.github.io/Periodix-Planner/features/overview)
 - [Time Budgeting](https://real1tyy.github.io/Periodix-Planner/features/time-budgeting)
 - [Allocation Editor](https://real1tyy.github.io/Periodix-Planner/features/allocation-editor)
