@@ -8,9 +8,15 @@ All notable changes to this project will be documented here.
 
 ---
 
-## 1.3.0
+## 1.2.0
 
 ### New Features
+
+- **Optional Code Block Auto-Insertion**: Added a new setting to control whether the `periodic-planner` code block is automatically inserted into newly generated periodic notes
+  - New setting: "Auto-insert code block" in Settings → Generation → Time budget code block
+  - When enabled (default: `true`), the plugin automatically adds the time budget code block to new periodic notes
+  - When disabled, users can manually add the code block when needed using the standard markdown code fence syntax
+  - Provides flexibility for users who prefer to manage their own note structure or don't use the time budgeting features
 
 - **Flexible Period Type Enablement**: Users can now selectively enable or disable specific period types (daily, weekly, monthly, quarterly, yearly) to customize their workflow
   - New settings section: "Enabled period types" in Settings → Generation
@@ -24,18 +30,6 @@ All notable changes to this project will be documented here.
   - **Automatic link generation**: Frontmatter links (Previous, Next, Parent, Week, Month, Quarter, Year) only include enabled periods
   - **Filtered note generation**: Auto-generation and manual generation commands respect enabled period settings
   - **Period children modal**: Only displays enabled period types when viewing child notes
-
----
-
-## 1.2.0
-
-### New Features
-
-- **Optional Code Block Auto-Insertion**: Added a new setting to control whether the `periodic-planner` code block is automatically inserted into newly generated periodic notes
-  - New setting: "Auto-insert code block" in Settings → Generation → Time budget code block
-  - When enabled (default: `true`), the plugin automatically adds the time budget code block to new periodic notes
-  - When disabled, users can manually add the code block when needed using the standard markdown code fence syntax
-  - Provides flexibility for users who prefer to manage their own note structure or don't use the time budgeting features
 
 ---
 
