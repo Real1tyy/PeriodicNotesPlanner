@@ -1,8 +1,15 @@
 import { type App, Component, MarkdownRenderer, Modal } from "obsidian";
 import { PERIOD_TYPE_LABELS, type PeriodType } from "../../constants";
-import { type DirectorySettings, ORDERED_PERIOD_TYPES, PERIOD_CONFIG, type PropertySettings } from "../../types";
+import {
+	type DirectorySettings,
+	type GenerationSettings,
+	ORDERED_PERIOD_TYPES,
+	PERIOD_CONFIG,
+	type PropertySettings,
+} from "../../types";
 import type { IndexedPeriodNote } from "../../types/period";
 import { addCls, cls, removeCls } from "../../utils/css";
+import { isPeriodTypeEnabled } from "../../utils/period-navigation";
 
 type ChildPeriodType = Exclude<PeriodType, "yearly">;
 
@@ -23,7 +30,8 @@ export class PeriodChildrenBasesModal extends Modal {
 		app: App,
 		private parent: IndexedPeriodNote,
 		private directories: DirectorySettings,
-		private properties: PropertySettings
+		private properties: PropertySettings,
+		private generationSettings: GenerationSettings
 	) {
 		super(app);
 		this.component = new Component();
@@ -62,11 +70,13 @@ export class PeriodChildrenBasesModal extends Modal {
 
 		const childTypes = ORDERED_PERIOD_TYPES.slice(parentIndex + 1) as ChildPeriodType[];
 
-		return childTypes.map((type) => ({
-			type,
-			label: PERIOD_TYPE_LABELS[type],
-			folder: this.directories[PERIOD_CONFIG[type].folderKey],
-		}));
+		return childTypes
+			.filter((type) => isPeriodTypeEnabled(type, this.generationSettings))
+			.map((type) => ({
+				type,
+				label: PERIOD_TYPE_LABELS[type],
+				folder: this.directories[PERIOD_CONFIG[type].folderKey],
+			}));
 	}
 
 	private createViewSelector(): void {

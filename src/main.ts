@@ -10,13 +10,7 @@ import { SettingsStore } from "./core/settings-store";
 import { PeriodicPlannerSettingsTab } from "./settings/settings-tab";
 import type { PeriodLinks } from "./types";
 import { PERIOD_CONFIG } from "./types";
-import {
-	createPeriodInfo,
-	getAncestorPeriodTypes,
-	getNextPeriod,
-	getPreviousPeriod,
-	parseLinkToDateTime,
-} from "./utils/date-utils";
+import { createPeriodInfo, getNextPeriod, getPreviousPeriod, parseLinkToDateTime } from "./utils/date-utils";
 import {
 	assignPeriodPropertiesToFrontmatter,
 	getActiveFileCache,
@@ -25,6 +19,7 @@ import {
 	openNoteFile,
 	resolveNoteFile,
 } from "./utils/frontmatter-utils";
+import { getEnabledAncestorPeriodTypes, getEnabledParentPeriodType } from "./utils/period-navigation";
 import { getHoursForPeriodType } from "./utils/time-budget-utils";
 
 export default class PeriodicPlannerPlugin extends Plugin {
@@ -125,6 +120,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 	private buildPeriodLinks(dateTime: DateTime, periodType: PeriodType): PeriodLinks {
 		const noteGenerator = this.autoGenerator.getNoteGenerator();
+		const settings = this.settingsStore.currentSettings;
 		const prevDt = getPreviousPeriod(dateTime, periodType);
 		const nextDt = getNextPeriod(dateTime, periodType);
 
@@ -133,12 +129,12 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			next: noteGenerator.getNoteLink(nextDt, periodType),
 		};
 
-		const parentType = PERIOD_CONFIG[periodType].parent;
+		const parentType = getEnabledParentPeriodType(periodType, settings.generation);
 		if (parentType) {
 			links.parent = noteGenerator.getNoteLink(dateTime, parentType);
 		}
 
-		for (const ancestorType of getAncestorPeriodTypes(periodType)) {
+		for (const ancestorType of getEnabledAncestorPeriodTypes(periodType, settings.generation)) {
 			const { linkKey } = PERIOD_CONFIG[ancestorType];
 			if (linkKey) {
 				links[linkKey] = noteGenerator.getNoteLink(dateTime, ancestorType);
@@ -194,7 +190,13 @@ export default class PeriodicPlannerPlugin extends Plugin {
 				if (!entry || entry.periodType === "daily") return false;
 				if (!checking) {
 					const settings = this.settingsStore.currentSettings;
-					new PeriodChildrenBasesModal(this.app, entry, settings.directories, settings.properties).open();
+					new PeriodChildrenBasesModal(
+						this.app,
+						entry,
+						settings.directories,
+						settings.properties,
+						settings.generation
+					).open();
 				}
 				return true;
 			},
@@ -213,12 +215,14 @@ export default class PeriodicPlannerPlugin extends Plugin {
 				const context = getActiveFileCache(this.app);
 				if (!context) return false;
 
-				const props = this.settingsStore.currentSettings.properties;
+				const settings = this.settingsStore.currentSettings;
+				const props = settings.properties;
 				const link = getLinkFromFrontmatter(context.cache, props[propKey]);
 				const periodType = getPeriodTypeFromFrontmatter(context.cache, props);
 				if (!link || !periodType) return false;
 
-				const targetType = propKey === "parentProp" ? PERIOD_CONFIG[periodType].parent : periodType;
+				const targetType =
+					propKey === "parentProp" ? getEnabledParentPeriodType(periodType, settings.generation) : periodType;
 				if (!targetType) return false;
 
 				if (!checking) void this.navigateOrCreate(link, targetType);

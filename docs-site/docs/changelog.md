@@ -8,6 +8,25 @@ All notable changes to this project will be documented here.
 
 ---
 
+## 1.3.0
+
+### New Features
+
+- **Flexible Period Type Enablement**: Users can now selectively enable or disable specific period types (daily, weekly, monthly, quarterly, yearly) to customize their workflow
+  - New settings section: "Enabled period types" in Settings → Generation
+  - Five independent checkboxes to enable/disable each period type (all enabled by default)
+  - **Smart parent-child navigation**: When periods are disabled, the system automatically adjusts relationships
+    - Example: Disable monthly → weekly notes link directly to quarterly as parent
+    - Example: Disable weekly and monthly → daily notes link directly to quarterly
+  - **Intelligent time budget calculations**: Category allocations propagate correctly between enabled periods only
+    - Child budget calculations skip disabled periods and use the next enabled descendant
+    - Parent budget tracking uses the closest enabled ancestor
+  - **Automatic link generation**: Frontmatter links (Previous, Next, Parent, Week, Month, Quarter, Year) only include enabled periods
+  - **Filtered note generation**: Auto-generation and manual generation commands respect enabled period settings
+  - **Period children modal**: Only displays enabled period types when viewing child notes
+
+---
+
 ## 1.2.0
 
 ### New Features

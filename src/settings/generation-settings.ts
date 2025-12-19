@@ -47,6 +47,88 @@ export class GenerationSettings {
 					});
 			});
 
+		new Setting(containerEl).setName("Enabled period types").setHeading();
+
+		containerEl.createEl("p", {
+			text: "Select which period types to generate and track. Disabled periods will be skipped in navigation and time budget calculations.",
+			cls: "setting-item-description",
+		});
+
+		new Setting(containerEl)
+			.setName("Enable daily notes")
+			.setDesc("Generate and track daily periodic notes")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.enableDaily).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							enableDaily: value,
+						},
+					}));
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Enable weekly notes")
+			.setDesc("Generate and track weekly periodic notes")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.enableWeekly).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							enableWeekly: value,
+						},
+					}));
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Enable monthly notes")
+			.setDesc("Generate and track monthly periodic notes")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.enableMonthly).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							enableMonthly: value,
+						},
+					}));
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Enable quarterly notes")
+			.setDesc("Generate and track quarterly periodic notes")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.enableQuarterly).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							enableQuarterly: value,
+						},
+					}));
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Enable yearly notes")
+			.setDesc("Generate and track yearly periodic notes")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.enableYearly).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							enableYearly: value,
+						},
+					}));
+				});
+			});
+
 		new Setting(containerEl).setName("PDF note linking").setHeading();
 
 		containerEl.createEl("p", {

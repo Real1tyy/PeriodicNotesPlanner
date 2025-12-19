@@ -6,12 +6,13 @@ import type { IndexedPeriodNote, PeriodChildren, PeriodicPlannerSettings, Period
 import { PERIOD_CONFIG } from "../types";
 import type { PropertySettings } from "../types/schemas";
 import { FrontmatterSchema } from "../types/schemas";
-import { createPeriodInfo, getAncestorPeriodTypes, getNextPeriod, getPreviousPeriod } from "./date-utils";
+import { createPeriodInfo, getNextPeriod, getPreviousPeriod } from "./date-utils";
 import {
 	assignPeriodPropertiesToFrontmatter,
 	extractParentLinksFromFrontmatter,
 	resolveFilePath,
 } from "./frontmatter-utils";
+import { getEnabledAncestorPeriodTypes, getEnabledParentPeriodType } from "./period-navigation";
 import { getHoursForPeriodType } from "./time-budget-utils";
 
 export async function extractCategoryAllocations(vault: Vault, file: TFile): Promise<Map<string, number>> {
@@ -79,12 +80,12 @@ export function buildPeriodLinksForNote(
 		next: formatLink(nextDt, periodType),
 	};
 
-	const parentType = PERIOD_CONFIG[periodType].parent;
+	const parentType = getEnabledParentPeriodType(periodType, settings.generation);
 	if (parentType) {
 		links.parent = formatLink(dateTime, parentType);
 	}
 
-	for (const ancestorType of getAncestorPeriodTypes(periodType)) {
+	for (const ancestorType of getEnabledAncestorPeriodTypes(periodType, settings.generation)) {
 		const { linkKey } = PERIOD_CONFIG[ancestorType];
 		if (linkKey) {
 			links[linkKey] = formatLink(dateTime, ancestorType);

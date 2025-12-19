@@ -4,6 +4,7 @@ import type { Observable, Subscription } from "rxjs";
 import type { PeriodType } from "../constants";
 import { type NoteGenerationResult, ORDERED_PERIOD_TYPES, type PeriodicPlannerSettings } from "../types";
 import { getNextPeriod, getStartOfPeriod, now } from "../utils/date-utils";
+import { isPeriodTypeEnabled } from "../utils/period-navigation";
 import { NoteGenerator } from "./note-generator";
 
 export interface AutoGenerationSummary {
@@ -43,6 +44,10 @@ export class AutoGenerator {
 		};
 
 		for (const periodType of ORDERED_PERIOD_TYPES) {
+			if (!isPeriodTypeEnabled(periodType, this.settings.generation)) {
+				continue;
+			}
+
 			const results = await this.generatePeriodsForType(currentDt, periodType, generatePeriodsAhead);
 			summary.results.set(periodType, results);
 

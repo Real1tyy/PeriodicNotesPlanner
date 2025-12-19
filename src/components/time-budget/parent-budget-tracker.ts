@@ -2,6 +2,7 @@ import type { TFile } from "obsidian";
 import type { PeriodIndex } from "../../core/period-index";
 import type { Category, IndexedPeriodNote, PeriodicPlannerSettings, TimeAllocation } from "../../types";
 import { resolveFilePath } from "../../utils/frontmatter-utils";
+import { getEnabledParentPeriodType } from "../../utils/period-navigation";
 import { calculateChildAllocatedForNode } from "./child-budget-calculator";
 
 export interface CategoryBudgetInfo {
@@ -30,8 +31,9 @@ export async function getParentBudgets(
 		totalAllocatedInParent: 0,
 	};
 
+	const enabledParentType = getEnabledParentPeriodType(entry.periodType, settings.generation);
 	const parentLink = entry.parentLinks.parent;
-	if (!parentLink) {
+	if (!parentLink || !enabledParentType) {
 		return emptyResult;
 	}
 	const parentFilePath = resolveFilePath(parentLink);
@@ -55,7 +57,8 @@ export async function getParentBudgets(
 		parentNote.periodType,
 		parentAllocations,
 		periodIndex,
-		settings.categories
+		settings.categories,
+		settings.generation
 	);
 
 	const budgets = new Map<string, CategoryBudgetInfo>();

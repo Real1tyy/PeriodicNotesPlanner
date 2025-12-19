@@ -96,6 +96,13 @@ export const GenerationSettingsSchema = z.object({
 	autoGenerateOnLoad: z.boolean().default(SETTINGS_DEFAULTS.AUTO_GENERATE_ON_LOAD),
 	generatePeriodsAhead: z.number().int().min(1).max(5).default(SETTINGS_DEFAULTS.GENERATE_PERIODS_AHEAD),
 
+	// Period Enablement Settings
+	enableDaily: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_DAILY),
+	enableWeekly: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_WEEKLY),
+	enableMonthly: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_MONTHLY),
+	enableQuarterly: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_QUARTERLY),
+	enableYearly: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_YEARLY),
+
 	// PDF Link Settings
 	includePdfFrontmatter: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PDF_FRONTMATTER),
 	includePdfContent: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PDF_CONTENT),

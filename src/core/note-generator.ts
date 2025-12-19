@@ -18,7 +18,6 @@ import { ORDERED_PERIOD_TYPES, PERIOD_CONFIG } from "../types";
 import {
 	createPeriodInfo,
 	formatPeriodName,
-	getAncestorPeriodTypes,
 	getNextPeriod,
 	getPreviousPeriod,
 	getStartOfPeriod,
@@ -31,6 +30,11 @@ import {
 	extractLinkTarget,
 	resolveNoteFile,
 } from "../utils/frontmatter-utils";
+import {
+	getEnabledAncestorPeriodTypes,
+	getEnabledParentPeriodType,
+	isPeriodTypeEnabled,
+} from "../utils/period-navigation";
 import { getHoursForPeriodType, roundHours } from "../utils/time-budget-utils";
 
 type Frontmatter = Record<string, unknown>;
@@ -54,6 +58,16 @@ export class NoteGenerator {
 	}
 
 	async generateNote(dt: DateTime, periodType: PeriodType): Promise<NoteGenerationResult> {
+		if (!isPeriodTypeEnabled(periodType, this.settings.generation)) {
+			const filePath = this.getNotePath(dt, periodType);
+			return {
+				success: false,
+				filePath,
+				alreadyExists: false,
+				error: `Period type ${periodType} is disabled`,
+			};
+		}
+
 		const filePath = this.getNotePath(dt, periodType);
 
 		const existingFile = this.app.vault.getAbstractFileByPath(filePath);
@@ -83,6 +97,10 @@ export class NoteGenerator {
 		const results = new Map<PeriodType, NoteGenerationResult>();
 
 		for (const periodType of ORDERED_PERIOD_TYPES) {
+			if (!isPeriodTypeEnabled(periodType, this.settings.generation)) {
+				continue;
+			}
+
 			const result = await this.generateNote(dt, periodType);
 			results.set(periodType, result);
 		}
@@ -166,7 +184,7 @@ export class NoteGenerator {
 	}
 
 	private async getInheritedAllocations(file: TFile, periodType: PeriodType): Promise<TimeAllocation[]> {
-		const parentPeriodType = PERIOD_CONFIG[periodType].parent;
+		const parentPeriodType = getEnabledParentPeriodType(periodType, this.settings.generation);
 		if (!parentPeriodType) return [];
 
 		const cache = this.app.metadataCache.getFileCache(file);
@@ -278,12 +296,12 @@ export class NoteGenerator {
 			next: this.getNoteLink(nextDt, type),
 		};
 
-		const parentType = PERIOD_CONFIG[type].parent;
+		const parentType = getEnabledParentPeriodType(type, this.settings.generation);
 		if (parentType) {
 			links.parent = this.getNoteLink(dateTime, parentType);
 		}
 
-		for (const ancestorType of getAncestorPeriodTypes(type)) {
+		for (const ancestorType of getEnabledAncestorPeriodTypes(type, this.settings.generation)) {
 			const { linkKey } = PERIOD_CONFIG[ancestorType];
 			if (linkKey) {
 				links[linkKey] = this.getNoteLink(dateTime, ancestorType);

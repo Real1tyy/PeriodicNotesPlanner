@@ -128,7 +128,8 @@ export class TimeBudgetBlockRenderer {
 			periodType,
 			finalAllocations,
 			this.periodIndex,
-			this.settings.categories
+			this.settings.categories,
+			this.settings.generation
 		);
 
 		this.renderHeader(el, totalHours, finalAllocations, periodType, childBudgets.totalChildrenAllocated);

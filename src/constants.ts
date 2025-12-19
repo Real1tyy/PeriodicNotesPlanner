@@ -64,6 +64,13 @@ export const SETTINGS_DEFAULTS = {
 	AUTO_GENERATE_ON_LOAD: false,
 	GENERATE_PERIODS_AHEAD: 1, // Always generate 1 period into the future
 
+	// ===== Period Enablement Settings =====
+	ENABLE_DAILY: true,
+	ENABLE_WEEKLY: true,
+	ENABLE_MONTHLY: true,
+	ENABLE_QUARTERLY: true,
+	ENABLE_YEARLY: true,
+
 	// ===== PDF Link Settings =====
 	INCLUDE_PDF_FRONTMATTER: false,
 	INCLUDE_PDF_CONTENT: false,

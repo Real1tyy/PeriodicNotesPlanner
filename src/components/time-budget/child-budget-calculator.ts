@@ -1,8 +1,8 @@
 import type { TFile } from "obsidian";
 import type { PeriodType } from "../../constants";
 import type { PeriodIndex } from "../../core/period-index";
-import type { Category, TimeAllocation } from "../../types";
-import { PERIOD_CONFIG } from "../../types";
+import type { Category, GenerationSettings, TimeAllocation } from "../../types";
+import { getEnabledChildrenKey } from "../../utils/period-navigation";
 import { buildCategoryNameToIdMap, type CategoryBudgetInfo } from "./parent-budget-tracker";
 
 export interface ChildBudgetResult {
@@ -10,18 +10,13 @@ export interface ChildBudgetResult {
 	totalChildrenAllocated: number;
 }
 
-function getDirectChildrenKey(periodType: PeriodType): keyof import("../../types").PeriodChildren | null {
-	const directChildType = PERIOD_CONFIG[periodType].children[0];
-	if (!directChildType) return null;
-	return PERIOD_CONFIG[directChildType].childrenKey;
-}
-
 export function calculateChildAllocatedForNode(
 	file: TFile,
 	periodType: PeriodType,
 	allocations: TimeAllocation[],
 	periodIndex: PeriodIndex,
-	categories: Category[]
+	categories: Category[],
+	generationSettings: GenerationSettings
 ): Map<string, CategoryBudgetInfo> {
 	const budgets = new Map<string, CategoryBudgetInfo>();
 
@@ -34,7 +29,7 @@ export function calculateChildAllocatedForNode(
 		return budgets;
 	}
 
-	const directChildrenKey = getDirectChildrenKey(periodType);
+	const directChildrenKey = getEnabledChildrenKey(periodType, generationSettings);
 	if (!directChildrenKey) {
 		return budgets;
 	}
@@ -75,9 +70,17 @@ export function getChildBudgetsFromIndex(
 	periodType: PeriodType,
 	currentAllocations: TimeAllocation[],
 	periodIndex: PeriodIndex,
-	categories: Category[]
+	categories: Category[],
+	generationSettings: GenerationSettings
 ): ChildBudgetResult {
-	const budgets = calculateChildAllocatedForNode(file, periodType, currentAllocations, periodIndex, categories);
+	const budgets = calculateChildAllocatedForNode(
+		file,
+		periodType,
+		currentAllocations,
+		periodIndex,
+		categories,
+		generationSettings
+	);
 
 	const totalChildrenAllocated = Array.from(budgets.values()).reduce((sum, budget) => {
 		return sum + budget.allocated;
