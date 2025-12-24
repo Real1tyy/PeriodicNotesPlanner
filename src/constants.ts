@@ -76,6 +76,7 @@ export const SETTINGS_DEFAULTS = {
 	INCLUDE_PDF_CONTENT: false,
 	PDF_NOTE_PROP: "Note",
 	PDF_CONTENT_HEADER: "## Note",
+	ENABLE_PDF_COMMANDS: false,
 
 	// ===== Time Budget Code Block Settings =====
 	AUTO_INSERT_CODE_BLOCK: true,

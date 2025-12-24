@@ -108,6 +108,7 @@ export const GenerationSettingsSchema = z.object({
 	includePdfContent: z.boolean().default(SETTINGS_DEFAULTS.INCLUDE_PDF_CONTENT),
 	pdfNoteProp: z.string().default(SETTINGS_DEFAULTS.PDF_NOTE_PROP),
 	pdfContentHeader: z.string().default(SETTINGS_DEFAULTS.PDF_CONTENT_HEADER),
+	enablePdfCommands: z.boolean().default(SETTINGS_DEFAULTS.ENABLE_PDF_COMMANDS),
 
 	// Time Budget Code Block Settings
 	autoInsertCodeBlock: z.boolean().default(SETTINGS_DEFAULTS.AUTO_INSERT_CODE_BLOCK),

@@ -13,6 +13,7 @@ import { PeriodicPlannerSettingsTab } from "./settings/settings-tab";
 import type { PeriodLinks } from "./types";
 import { PERIOD_CONFIG } from "./types";
 import { createPeriodInfo, getNextPeriod, getPreviousPeriod, parseLinkToDateTime } from "./utils/date-utils";
+import { getPdfPath } from "./utils/file-operations";
 import {
 	assignPeriodPropertiesToFrontmatter,
 	getActiveFileCache,
@@ -197,6 +198,21 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.registerOpenCurrentCommand("open-quarterly", "Open current quarterly note", "quarterly");
 		this.registerOpenCurrentCommand("open-yearly", "Open current yearly note", "yearly");
 
+		if (this.settingsStore.currentSettings.generation.enablePdfCommands) {
+			this.registerOpenCurrentPdfCommand("open-daily-pdf", "Open today's daily note (PDF)", "daily");
+			this.addCommand({
+				id: "open-yesterday-pdf",
+				name: "Open yesterday's daily note (PDF)",
+				callback: async () => {
+					await this.openPeriodPdfForDate(DateTime.now().minus({ days: 1 }), "daily");
+				},
+			});
+			this.registerOpenCurrentPdfCommand("open-weekly-pdf", "Open current weekly note (PDF)", "weekly");
+			this.registerOpenCurrentPdfCommand("open-monthly-pdf", "Open current monthly note (PDF)", "monthly");
+			this.registerOpenCurrentPdfCommand("open-quarterly-pdf", "Open current quarterly note (PDF)", "quarterly");
+			this.registerOpenCurrentPdfCommand("open-yearly-pdf", "Open current yearly note (PDF)", "yearly");
+		}
+
 		this.addCommand({
 			id: "show-children",
 			name: "Show child periods",
@@ -315,6 +331,32 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			}
 		} else {
 			new Notice(`Failed to open note: ${result.error}`);
+		}
+	}
+
+	private registerOpenCurrentPdfCommand(id: string, name: string, periodType: PeriodType): void {
+		this.addCommand({
+			id,
+			name,
+			callback: async () => {
+				await this.openPeriodPdfForDate(DateTime.now(), periodType);
+			},
+		});
+	}
+
+	private async openPeriodPdfForDate(dateTime: DateTime, periodType: PeriodType): Promise<void> {
+		const result = await this.autoGenerator.generateSingleNote(dateTime, periodType);
+		if (!result.success) {
+			new Notice(`Failed to generate note: ${result.error}`);
+			return;
+		}
+
+		const pdfPath = getPdfPath(result.filePath);
+		const pdfFile = this.app.vault.getAbstractFileByPath(pdfPath);
+		if (pdfFile instanceof TFile) {
+			await openNoteFile(this.app, pdfFile);
+		} else {
+			new Notice(`PDF file not found: ${pdfPath}`);
 		}
 	}
 

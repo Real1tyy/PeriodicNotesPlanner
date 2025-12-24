@@ -202,6 +202,21 @@ export class GenerationSettings {
 					});
 			});
 
+		new Setting(containerEl)
+			.setName("Enable PDF commands")
+			.setDesc("Also expose commands to open PDF versions of notes if they exist (e.g., Open today's daily note (PDF))")
+			.addToggle((toggle) => {
+				toggle.setValue(this.settingsStore.currentSettings.generation.enablePdfCommands).onChange(async (value) => {
+					await this.settingsStore.updateSettings((s) => ({
+						...s,
+						generation: {
+							...s.generation,
+							enablePdfCommands: value,
+						},
+					}));
+				});
+			});
+
 		new Setting(containerEl).setName("Time budget code block").setHeading();
 
 		containerEl.createEl("p", {
