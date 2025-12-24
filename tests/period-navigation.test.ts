@@ -23,6 +23,7 @@ const allEnabledSettings: GenerationSettings = {
 	includePdfContent: false,
 	pdfNoteProp: "Note",
 	pdfContentHeader: "## Note",
+	enablePdfCommands: false,
 	autoInsertCodeBlock: true,
 	includePlanHeading: true,
 	planHeadingContent: "## Plan",
