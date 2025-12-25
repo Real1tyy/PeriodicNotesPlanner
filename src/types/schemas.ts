@@ -12,7 +12,7 @@ export const CategorySchema = z
 		createdAt: z.number().int().positive(),
 		updatedAt: z.number().int().positive().optional(),
 	})
-	.loose();
+	.strip();
 
 export type Category = z.infer<typeof CategorySchema>;
 
@@ -22,7 +22,7 @@ export const TimeAllocationSchema = z
 		categoryId: z.string(),
 		hours: z.number().nonnegative(),
 	})
-	.loose();
+	.strip();
 
 export type TimeAllocation = z.infer<typeof TimeAllocationSchema>;
 
@@ -38,7 +38,7 @@ export const FrontmatterSchema = z
 		periodStart: DateTimeSchema,
 		periodEnd: DateTimeSchema,
 	})
-	.loose();
+	.strip();
 
 export type Frontmatter = z.infer<typeof FrontmatterSchema>;
 
@@ -51,7 +51,7 @@ export const DirectorySettingsSchema = z
 		quarterlyFolder: z.string().catch(SETTINGS_DEFAULTS.QUARTERLY_FOLDER),
 		yearlyFolder: z.string().catch(SETTINGS_DEFAULTS.YEARLY_FOLDER),
 	})
-	.loose();
+	.strip();
 
 export type DirectorySettings = z.infer<typeof DirectorySettingsSchema>;
 
@@ -64,7 +64,7 @@ export const NamingSettingsSchema = z
 		quarterlyFormat: z.string().catch(SETTINGS_DEFAULTS.QUARTERLY_FORMAT),
 		yearlyFormat: z.string().catch(SETTINGS_DEFAULTS.YEARLY_FORMAT),
 	})
-	.loose();
+	.strip();
 
 export type NamingSettings = z.infer<typeof NamingSettingsSchema>;
 
@@ -74,7 +74,7 @@ export const TimeBudgetSettingsSchema = z
 		hoursPerWeek: z.number().int().positive().max(168).catch(SETTINGS_DEFAULTS.HOURS_PER_WEEK),
 		autoInheritParentPercentages: z.boolean().catch(SETTINGS_DEFAULTS.AUTO_INHERIT_PARENT_PERCENTAGES),
 	})
-	.loose();
+	.strip();
 
 export type TimeBudgetSettings = z.infer<typeof TimeBudgetSettingsSchema>;
 
@@ -101,7 +101,7 @@ export const PropertySettingsSchema = z
 		periodStartProp: z.string().catch(SETTINGS_DEFAULTS.PERIOD_START_PROP),
 		periodEndProp: z.string().catch(SETTINGS_DEFAULTS.PERIOD_END_PROP),
 	})
-	.loose();
+	.strip();
 
 export type PropertySettings = z.infer<typeof PropertySettingsSchema>;
 
@@ -130,7 +130,7 @@ export const GenerationSettingsSchema = z
 		includePlanHeading: z.boolean().catch(SETTINGS_DEFAULTS.INCLUDE_PLAN_HEADING),
 		planHeadingContent: z.string().catch(SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT),
 	})
-	.loose();
+	.strip();
 
 export type GenerationSettings = z.infer<typeof GenerationSettingsSchema>;
 
@@ -145,7 +145,7 @@ export const UISettingsSchema = z
 			.max(150)
 			.catch(SETTINGS_DEFAULTS.OVER_BUDGET_THRESHOLD_PERCENT),
 	})
-	.loose();
+	.strip();
 
 export type UISettings = z.infer<typeof UISettingsSchema>;
 
@@ -157,7 +157,7 @@ export const ActivityWatchSettingsSchema = z
 		heading: z.string().catch(SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING),
 		codeFence: z.string().catch(SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE),
 	})
-	.loose();
+	.strip();
 
 export type ActivityWatchSettings = z.infer<typeof ActivityWatchSettingsSchema>;
 
@@ -171,7 +171,7 @@ export const TemplaterSettingsSchema = z
 		quarterlyTemplate: z.string().catch(SETTINGS_DEFAULTS.TEMPLATER_QUARTERLY_TEMPLATE),
 		yearlyTemplate: z.string().catch(SETTINGS_DEFAULTS.TEMPLATER_YEARLY_TEMPLATE),
 	})
-	.loose();
+	.strip();
 
 export type TemplaterSettings = z.infer<typeof TemplaterSettingsSchema>;
 
@@ -207,6 +207,6 @@ export const PeriodicPlannerSettingsSchema = z
 		// User-defined time categories
 		categories: z.array(CategorySchema).catch([]),
 	})
-	.loose();
+	.strip();
 
 export type PeriodicPlannerSettings = z.infer<typeof PeriodicPlannerSettingsSchema>;
