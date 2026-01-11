@@ -206,6 +206,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 If you find Periodix-Planner useful and want to support its ongoing development, please consider becoming a sponsor. Your contribution helps ensure continuous maintenance, bug fixes, and the introduction of new features.
 
-- [Support My Work](https://github.com/Real1tyy#-support-my-work)
+- [Support My Work](https://matejvavroproductivity.com/support/)
 
 Every contribution, no matter the size, is greatly appreciated!

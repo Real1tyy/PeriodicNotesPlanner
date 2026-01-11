@@ -149,7 +149,7 @@ const config: Config = {
 					items: [
 						{
 							label: "Support My Work",
-							href: "https://github.com/Real1tyy#-support-my-work",
+							href: "https://matejvavroproductivity.com/support/",
 						},
 					],
 				},
