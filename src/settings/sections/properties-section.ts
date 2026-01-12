@@ -1,11 +1,15 @@
 import { Setting } from "obsidian";
-import { SETTINGS_DEFAULTS } from "../constants";
-import type { SettingsStore } from "../core/settings-store";
+import { SETTINGS_DEFAULTS } from "../../constants";
+import type { SettingsStore } from "../../core/settings-store";
+import type { SettingsSection } from "../types";
 
-export class PropertySettings {
+export class PropertiesSection implements SettingsSection {
+	readonly id = "properties";
+	readonly label = "Properties";
+
 	constructor(private settingsStore: SettingsStore) {}
 
-	display(containerEl: HTMLElement): void {
+	render(containerEl: HTMLElement): void {
 		new Setting(containerEl).setName("Frontmatter properties").setHeading();
 
 		containerEl.createEl("p", {
@@ -13,7 +17,6 @@ export class PropertySettings {
 			cls: "setting-item-description",
 		});
 
-		// Navigation properties
 		new Setting(containerEl)
 			.setName("Navigation links")
 			.setHeading()
@@ -43,7 +46,6 @@ export class PropertySettings {
 			SETTINGS_DEFAULTS.PARENT_PROP
 		);
 
-		// Hierarchical properties
 		new Setting(containerEl)
 			.setName("Hierarchical links")
 			.setHeading()
@@ -81,7 +83,6 @@ export class PropertySettings {
 			SETTINGS_DEFAULTS.YEAR_PROP
 		);
 
-		// Time budget properties
 		new Setting(containerEl)
 			.setName("Time budget data")
 			.setHeading()
@@ -103,7 +104,6 @@ export class PropertySettings {
 			SETTINGS_DEFAULTS.HOURS_SPENT_PROP
 		);
 
-		// Period metadata
 		new Setting(containerEl).setName("Period metadata").setHeading().setDesc("Properties for period identification");
 
 		this.addPropertySetting(

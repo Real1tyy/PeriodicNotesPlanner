@@ -1,11 +1,15 @@
 import { Setting } from "obsidian";
-import { SETTINGS_DEFAULTS } from "../constants";
-import type { SettingsStore } from "../core/settings-store";
+import { SETTINGS_DEFAULTS } from "../../constants";
+import type { SettingsStore } from "../../core/settings-store";
+import type { SettingsSection } from "../types";
 
-export class GenerationSettings {
+export class GenerationSection implements SettingsSection {
+	readonly id = "generation";
+	readonly label = "Generation";
+
 	constructor(private settingsStore: SettingsStore) {}
 
-	display(containerEl: HTMLElement): void {
+	render(containerEl: HTMLElement): void {
 		new Setting(containerEl).setName("Note generation").setHeading();
 
 		containerEl.createEl("p", {

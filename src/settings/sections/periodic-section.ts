@@ -1,12 +1,16 @@
 import { Setting } from "obsidian";
-import { SETTINGS_DEFAULTS } from "../constants";
-import type { SettingsStore } from "../core/settings-store";
-import { cls } from "../utils/css";
+import { SETTINGS_DEFAULTS } from "../../constants";
+import type { SettingsStore } from "../../core/settings-store";
+import { cls } from "../../utils/css";
+import type { SettingsSection } from "../types";
 
-export class PeriodicSettings {
+export class PeriodicSection implements SettingsSection {
+	readonly id = "periodic";
+	readonly label = "Periodic Settings";
+
 	constructor(private settingsStore: SettingsStore) {}
 
-	display(containerEl: HTMLElement): void {
+	render(containerEl: HTMLElement): void {
 		this.displayFolders(containerEl);
 		this.displayNaming(containerEl);
 		this.displayTimeBudget(containerEl);

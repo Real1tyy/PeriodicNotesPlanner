@@ -1,16 +1,20 @@
 import { nanoid } from "nanoid";
 import { Setting } from "obsidian";
-import { SETTINGS_DEFAULTS } from "../constants";
-import type { SettingsStore } from "../core/settings-store";
-import type { Category } from "../types";
-import { cls } from "../utils/css";
+import { SETTINGS_DEFAULTS } from "../../constants";
+import type { SettingsStore } from "../../core/settings-store";
+import type { Category } from "../../types";
+import { cls } from "../../utils/css";
+import type { SettingsSection } from "../types";
 
-export class CategorySettings {
+export class CategoriesSection implements SettingsSection {
+	readonly id = "categories";
+	readonly label = "Categories";
+
 	private categoriesContainer: HTMLElement | null = null;
 
 	constructor(private settingsStore: SettingsStore) {}
 
-	display(containerEl: HTMLElement): void {
+	render(containerEl: HTMLElement): void {
 		new Setting(containerEl).setName("Time categories").setHeading();
 
 		containerEl.createEl("p", {

@@ -1,16 +1,20 @@
 import type { App } from "obsidian";
 import { Notice, Setting } from "obsidian";
-import { SETTINGS_DEFAULTS } from "../constants";
-import type { SettingsStore } from "../core/settings-store";
-import { processAllDailyNotesForActivityWatch } from "../utils/activity-watch";
+import { SETTINGS_DEFAULTS } from "../../constants";
+import type { SettingsStore } from "../../core/settings-store";
+import { processAllDailyNotesForActivityWatch } from "../../utils/activity-watch";
+import type { SettingsSection } from "../types";
 
-export class IntegrationSettings {
+export class IntegrationsSection implements SettingsSection {
+	readonly id = "integrations";
+	readonly label = "Integrations";
+
 	constructor(
 		private settingsStore: SettingsStore,
 		private app: App
 	) {}
 
-	display(containerEl: HTMLElement): void {
+	render(containerEl: HTMLElement): void {
 		new Setting(containerEl).setName("Integrations").setHeading();
 
 		containerEl.createEl("p", {
