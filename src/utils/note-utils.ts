@@ -34,28 +34,16 @@ export async function extractCodeBlockContent(vault: Vault, file: TFile, codeFen
 	}
 }
 
-/**
- * Extracts category allocations from a time budget code block.
- * Returns a map of category names to hours allocated.
- */
 export async function extractCategoryAllocations(vault: Vault, file: TFile): Promise<Map<string, number>> {
-	const allocations = new Map<string, number>();
-
-	try {
-		const blockContent = await extractCodeBlockContent(vault, file, TIME_BUDGET_CODE_FENCE);
-		if (!blockContent) {
-			return allocations;
-		}
-
-		const parsed = parseAllocationBlock(blockContent);
-		for (const allocation of parsed.allocations) {
-			allocations.set(allocation.categoryName, allocation.hours);
-		}
-	} catch (error) {
-		console.debug(`Error extracting allocations from ${file.path}:`, error);
+	const blockContent = await extractCodeBlockContent(vault, file, TIME_BUDGET_CODE_FENCE);
+	if (!blockContent) {
+		return new Map<string, number>();
 	}
 
-	return allocations;
+	return parseAllocationBlock(blockContent).allocations.reduce((allocations, allocation) => {
+		allocations.set(allocation.categoryName, allocation.hours);
+		return allocations;
+	}, new Map<string, number>());
 }
 
 export function detectPeriodTypeFromFilename(
