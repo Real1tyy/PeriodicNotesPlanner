@@ -1,6 +1,5 @@
 import type { SettingsUIBuilder } from "@real1ty-obsidian-plugins/utils";
 import { Setting } from "obsidian";
-import { SETTINGS_DEFAULTS } from "../../constants";
 import type { PeriodicPlannerSettingsSchema } from "../../types";
 import type { SettingsSection } from "../../types/settings";
 
@@ -34,11 +33,13 @@ export class BasesSection implements SettingsSection {
 			placeholder: "date",
 		});
 
-		this.uiBuilder.addText(containerEl, {
+		this.uiBuilder.addSlider(containerEl, {
 			key: "basesView.dateColumnSize",
 			name: "Date column size",
 			desc: "Width in pixels for the date property column in the Bases table view.",
-			placeholder: SETTINGS_DEFAULTS.BASES_DATE_COLUMN_SIZE.toString(),
+			min: 50,
+			max: 500,
+			step: 10,
 		});
 
 		this.uiBuilder.addText(containerEl, {

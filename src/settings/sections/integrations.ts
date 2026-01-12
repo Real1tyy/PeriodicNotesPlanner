@@ -1,7 +1,9 @@
+import type { SettingsUIBuilder } from "@real1ty-obsidian-plugins/utils";
 import type { App } from "obsidian";
 import { Notice, Setting } from "obsidian";
 import { SETTINGS_DEFAULTS } from "../../constants";
 import type { SettingsStore } from "../../core/settings-store";
+import type { PeriodicPlannerSettingsSchema } from "../../types";
 import type { SettingsSection } from "../../types/settings";
 import { processAllDailyNotesForActivityWatch } from "../../utils/activity-watch";
 
@@ -10,6 +12,7 @@ export class IntegrationsSection implements SettingsSection {
 	readonly label = "Integrations";
 
 	constructor(
+		private uiBuilder: SettingsUIBuilder<typeof PeriodicPlannerSettingsSchema>,
 		private settingsStore: SettingsStore,
 		private app: App
 	) {}
@@ -29,74 +32,32 @@ export class IntegrationsSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Enable ActivityWatch")
-			.setDesc("Enable ActivityWatch integration for daily notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.activityWatch.enabled).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						activityWatch: {
-							...s.activityWatch,
-							enabled: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "activityWatch.enabled",
+			name: "Enable ActivityWatch",
+			desc: "Enable ActivityWatch integration for daily notes",
+		});
 
-		new Setting(containerEl)
-			.setName("ActivityWatch API URL")
-			.setDesc("The URL of your ActivityWatch server (default: http://localhost:5600)")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL)
-					.setValue(this.settingsStore.currentSettings.activityWatch.apiUrl)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							activityWatch: {
-								...s.activityWatch,
-								apiUrl: value || SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "activityWatch.apiUrl",
+			name: "ActivityWatch API URL",
+			desc: "The URL of your ActivityWatch server (default: http://localhost:5600)",
+			placeholder: SETTINGS_DEFAULTS.ACTIVITY_WATCH_URL,
+		});
 
-		new Setting(containerEl)
-			.setName("ActivityWatch heading")
-			.setDesc("The heading to use for ActivityWatch sections in daily notes")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING)
-					.setValue(this.settingsStore.currentSettings.activityWatch.heading)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							activityWatch: {
-								...s.activityWatch,
-								heading: value || SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "activityWatch.heading",
+			name: "ActivityWatch heading",
+			desc: "The heading to use for ActivityWatch sections in daily notes",
+			placeholder: SETTINGS_DEFAULTS.ACTIVITY_WATCH_HEADING,
+		});
 
-		new Setting(containerEl)
-			.setName("Code fence name")
-			.setDesc("The code fence language identifier for ActivityWatch blocks (requires plugin reload to take effect)")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE)
-					.setValue(this.settingsStore.currentSettings.activityWatch.codeFence)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							activityWatch: {
-								...s.activityWatch,
-								codeFence: value || SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "activityWatch.codeFence",
+			name: "Code fence name",
+			desc: "The code fence language identifier for ActivityWatch blocks (requires plugin reload to take effect)",
+			placeholder: SETTINGS_DEFAULTS.ACTIVITY_WATCH_CODE_FENCE,
+		});
 
 		new Setting(containerEl).setName("Templater").setHeading();
 
@@ -105,110 +66,46 @@ export class IntegrationsSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Enable Templater")
-			.setDesc("Use Templater templates when creating periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.templater.enabled).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						templater: {
-							...s.templater,
-							enabled: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "templater.enabled",
+			name: "Enable Templater",
+			desc: "Use Templater templates when creating periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Daily note template")
-			.setDesc("Path to the template file for daily notes (e.g., Templates/Daily.md)")
-			.addText((text) => {
-				text
-					.setPlaceholder("Templates/Daily.md")
-					.setValue(this.settingsStore.currentSettings.templater.dailyTemplate)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							templater: {
-								...s.templater,
-								dailyTemplate: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "templater.dailyTemplate",
+			name: "Daily note template",
+			desc: "Path to the template file for daily notes (e.g., Templates/Daily.md)",
+			placeholder: "Templates/Daily.md",
+		});
 
-		new Setting(containerEl)
-			.setName("Weekly note template")
-			.setDesc("Path to the template file for weekly notes (e.g., Templates/Weekly.md)")
-			.addText((text) => {
-				text
-					.setPlaceholder("Templates/Weekly.md")
-					.setValue(this.settingsStore.currentSettings.templater.weeklyTemplate)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							templater: {
-								...s.templater,
-								weeklyTemplate: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "templater.weeklyTemplate",
+			name: "Weekly note template",
+			desc: "Path to the template file for weekly notes (e.g., Templates/Weekly.md)",
+			placeholder: "Templates/Weekly.md",
+		});
 
-		new Setting(containerEl)
-			.setName("Monthly note template")
-			.setDesc("Path to the template file for monthly notes (e.g., Templates/Monthly.md)")
-			.addText((text) => {
-				text
-					.setPlaceholder("Templates/Monthly.md")
-					.setValue(this.settingsStore.currentSettings.templater.monthlyTemplate)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							templater: {
-								...s.templater,
-								monthlyTemplate: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "templater.monthlyTemplate",
+			name: "Monthly note template",
+			desc: "Path to the template file for monthly notes (e.g., Templates/Monthly.md)",
+			placeholder: "Templates/Monthly.md",
+		});
 
-		new Setting(containerEl)
-			.setName("Quarterly note template")
-			.setDesc("Path to the template file for quarterly notes (e.g., Templates/Quarterly.md)")
-			.addText((text) => {
-				text
-					.setPlaceholder("Templates/Quarterly.md")
-					.setValue(this.settingsStore.currentSettings.templater.quarterlyTemplate)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							templater: {
-								...s.templater,
-								quarterlyTemplate: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "templater.quarterlyTemplate",
+			name: "Quarterly note template",
+			desc: "Path to the template file for quarterly notes (e.g., Templates/Quarterly.md)",
+			placeholder: "Templates/Quarterly.md",
+		});
 
-		new Setting(containerEl)
-			.setName("Yearly note template")
-			.setDesc("Path to the template file for yearly notes (e.g., Templates/Yearly.md)")
-			.addText((text) => {
-				text
-					.setPlaceholder("Templates/Yearly.md")
-					.setValue(this.settingsStore.currentSettings.templater.yearlyTemplate)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							templater: {
-								...s.templater,
-								yearlyTemplate: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "templater.yearlyTemplate",
+			name: "Yearly note template",
+			desc: "Path to the template file for yearly notes (e.g., Templates/Yearly.md)",
+			placeholder: "Templates/Yearly.md",
+		});
 
 		new Setting(containerEl).setName("Actions").setHeading();
 

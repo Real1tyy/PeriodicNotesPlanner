@@ -108,7 +108,7 @@ export type PropertySettings = z.infer<typeof PropertySettingsSchema>;
 const GenerationSettingsSchema = z
 	.object({
 		autoGenerateOnLoad: z.boolean().catch(SETTINGS_DEFAULTS.AUTO_GENERATE_ON_LOAD),
-		generatePeriodsAhead: z.number().int().min(1).max(5).catch(SETTINGS_DEFAULTS.GENERATE_PERIODS_AHEAD),
+		generatePeriodsAhead: z.number().int().min(1).max(10).catch(SETTINGS_DEFAULTS.GENERATE_PERIODS_AHEAD),
 
 		// Period Enablement Settings
 		enableDaily: z.boolean().catch(SETTINGS_DEFAULTS.ENABLE_DAILY),

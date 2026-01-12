@@ -1,6 +1,8 @@
+import type { SettingsUIBuilder } from "@real1ty-obsidian-plugins/utils";
 import { Setting } from "obsidian";
 import { SETTINGS_DEFAULTS } from "../../constants";
 import type { SettingsStore } from "../../core/settings-store";
+import type { PeriodicPlannerSettingsSchema } from "../../types";
 import type { SettingsSection } from "../../types/settings";
 import { cls } from "../../utils/css";
 
@@ -8,7 +10,10 @@ export class PeriodicSection implements SettingsSection {
 	readonly id = "periodic";
 	readonly label = "Periodic Settings";
 
-	constructor(private settingsStore: SettingsStore) {}
+	constructor(
+		private uiBuilder: SettingsUIBuilder<typeof PeriodicPlannerSettingsSchema>,
+		private settingsStore: SettingsStore
+	) {}
 
 	render(containerEl: HTMLElement): void {
 		this.displayFolders(containerEl);
@@ -24,45 +29,40 @@ export class PeriodicSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		this.addFolderSetting(
-			containerEl,
-			"Daily notes folder",
-			"Folder for daily notes (e.g., Periodic/Daily)",
-			"dailyFolder",
-			SETTINGS_DEFAULTS.DAILY_FOLDER
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "directories.dailyFolder",
+			name: "Daily notes folder",
+			desc: "Folder for daily notes (e.g., Periodic/Daily)",
+			placeholder: SETTINGS_DEFAULTS.DAILY_FOLDER,
+		});
 
-		this.addFolderSetting(
-			containerEl,
-			"Weekly notes folder",
-			"Folder for weekly notes (e.g., Periodic/Weekly)",
-			"weeklyFolder",
-			SETTINGS_DEFAULTS.WEEKLY_FOLDER
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "directories.weeklyFolder",
+			name: "Weekly notes folder",
+			desc: "Folder for weekly notes (e.g., Periodic/Weekly)",
+			placeholder: SETTINGS_DEFAULTS.WEEKLY_FOLDER,
+		});
 
-		this.addFolderSetting(
-			containerEl,
-			"Monthly notes folder",
-			"Folder for monthly notes (e.g., Periodic/Monthly)",
-			"monthlyFolder",
-			SETTINGS_DEFAULTS.MONTHLY_FOLDER
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "directories.monthlyFolder",
+			name: "Monthly notes folder",
+			desc: "Folder for monthly notes (e.g., Periodic/Monthly)",
+			placeholder: SETTINGS_DEFAULTS.MONTHLY_FOLDER,
+		});
 
-		this.addFolderSetting(
-			containerEl,
-			"Quarterly notes folder",
-			"Folder for quarterly notes (e.g., Periodic/Quarterly)",
-			"quarterlyFolder",
-			SETTINGS_DEFAULTS.QUARTERLY_FOLDER
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "directories.quarterlyFolder",
+			name: "Quarterly notes folder",
+			desc: "Folder for quarterly notes (e.g., Periodic/Quarterly)",
+			placeholder: SETTINGS_DEFAULTS.QUARTERLY_FOLDER,
+		});
 
-		this.addFolderSetting(
-			containerEl,
-			"Yearly notes folder",
-			"Folder for yearly notes (e.g., Periodic/Yearly)",
-			"yearlyFolder",
-			SETTINGS_DEFAULTS.YEARLY_FOLDER
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "directories.yearlyFolder",
+			name: "Yearly notes folder",
+			desc: "Folder for yearly notes (e.g., Periodic/Yearly)",
+			placeholder: SETTINGS_DEFAULTS.YEARLY_FOLDER,
+		});
 	}
 
 	private displayNaming(containerEl: HTMLElement): void {
@@ -81,45 +81,40 @@ export class PeriodicSection implements SettingsSection {
 		containerEl.createEl("br");
 		containerEl.createEl("br");
 
-		this.addFormatSetting(
-			containerEl,
-			"Daily format",
-			"Format for daily notes (default: 04-12-2025)",
-			"dailyFormat",
-			SETTINGS_DEFAULTS.DAILY_FORMAT
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "naming.dailyFormat",
+			name: "Daily format",
+			desc: "Format for daily notes (default: 04-12-2025)",
+			placeholder: SETTINGS_DEFAULTS.DAILY_FORMAT,
+		});
 
-		this.addFormatSetting(
-			containerEl,
-			"Weekly format",
-			"Format for weekly notes (default: 47-2025)",
-			"weeklyFormat",
-			SETTINGS_DEFAULTS.WEEKLY_FORMAT
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "naming.weeklyFormat",
+			name: "Weekly format",
+			desc: "Format for weekly notes (default: 47-2025)",
+			placeholder: SETTINGS_DEFAULTS.WEEKLY_FORMAT,
+		});
 
-		this.addFormatSetting(
-			containerEl,
-			"Monthly format",
-			"Format for monthly notes (default: 5-2025)",
-			"monthlyFormat",
-			SETTINGS_DEFAULTS.MONTHLY_FORMAT
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "naming.monthlyFormat",
+			name: "Monthly format",
+			desc: "Format for monthly notes (default: 5-2025)",
+			placeholder: SETTINGS_DEFAULTS.MONTHLY_FORMAT,
+		});
 
-		this.addFormatSetting(
-			containerEl,
-			"Quarterly format",
-			"Format for quarterly notes (default: Q1-2025)",
-			"quarterlyFormat",
-			SETTINGS_DEFAULTS.QUARTERLY_FORMAT
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "naming.quarterlyFormat",
+			name: "Quarterly format",
+			desc: "Format for quarterly notes (default: Q1-2025)",
+			placeholder: SETTINGS_DEFAULTS.QUARTERLY_FORMAT,
+		});
 
-		this.addFormatSetting(
-			containerEl,
-			"Yearly format",
-			"Format for yearly notes (default: 2025)",
-			"yearlyFormat",
-			SETTINGS_DEFAULTS.YEARLY_FORMAT
-		);
+		this.uiBuilder.addText(containerEl, {
+			key: "naming.yearlyFormat",
+			name: "Yearly format",
+			desc: "Format for yearly notes (default: 2025)",
+			placeholder: SETTINGS_DEFAULTS.YEARLY_FORMAT,
+		});
 	}
 
 	private displayTimeBudget(containerEl: HTMLElement): void {
@@ -163,78 +158,13 @@ export class PeriodicSection implements SettingsSection {
 					});
 			});
 
-		new Setting(containerEl)
-			.setName("Automatically inherit parent percentages")
-			.setDesc(
-				"When enabled, opening the allocation editor for a child period with no categories will automatically fill allocations based on the parent period's percentage distribution."
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(this.settingsStore.currentSettings.timeBudget.autoInheritParentPercentages)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							timeBudget: {
-								...s.timeBudget,
-								autoInheritParentPercentages: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "timeBudget.autoInheritParentPercentages",
+			name: "Automatically inherit parent percentages",
+			desc: "When enabled, opening the allocation editor for a child period with no categories will automatically fill allocations based on the parent period's percentage distribution.",
+		});
 
 		this.addCalculatedValues(containerEl);
-	}
-
-	private addFolderSetting(
-		containerEl: HTMLElement,
-		name: string,
-		desc: string,
-		key: keyof typeof this.settingsStore.currentSettings.directories,
-		placeholder: string
-	): void {
-		new Setting(containerEl)
-			.setName(name)
-			.setDesc(desc)
-			.addText((text) => {
-				text
-					.setPlaceholder(placeholder)
-					.setValue(this.settingsStore.currentSettings.directories[key] as string)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							directories: {
-								...s.directories,
-								[key]: value || placeholder,
-							},
-						}));
-					});
-			});
-	}
-
-	private addFormatSetting(
-		containerEl: HTMLElement,
-		name: string,
-		desc: string,
-		key: keyof typeof this.settingsStore.currentSettings.naming,
-		placeholder: string
-	): void {
-		new Setting(containerEl)
-			.setName(name)
-			.setDesc(desc)
-			.addText((text) => {
-				text
-					.setPlaceholder(placeholder)
-					.setValue(this.settingsStore.currentSettings.naming[key] as string)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							naming: {
-								...s.naming,
-								[key]: value || placeholder,
-							},
-						}));
-					});
-			});
 	}
 
 	private addCalculatedValues(containerEl: HTMLElement): void {

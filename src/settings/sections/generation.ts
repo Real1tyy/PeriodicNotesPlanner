@@ -1,13 +1,14 @@
+import type { SettingsUIBuilder } from "@real1ty-obsidian-plugins/utils";
 import { Setting } from "obsidian";
 import { SETTINGS_DEFAULTS } from "../../constants";
-import type { SettingsStore } from "../../core/settings-store";
+import type { PeriodicPlannerSettingsSchema } from "../../types";
 import type { SettingsSection } from "../../types/settings";
 
 export class GenerationSection implements SettingsSection {
 	readonly id = "generation";
 	readonly label = "Generation";
 
-	constructor(private settingsStore: SettingsStore) {}
+	constructor(private uiBuilder: SettingsUIBuilder<typeof PeriodicPlannerSettingsSchema>) {}
 
 	render(containerEl: HTMLElement): void {
 		new Setting(containerEl).setName("Note generation").setHeading();
@@ -17,39 +18,20 @@ export class GenerationSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Auto-generate on load")
-			.setDesc("Automatically generate the next period's note when Obsidian loads")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.autoGenerateOnLoad).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							autoGenerateOnLoad: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.autoGenerateOnLoad",
+			name: "Auto-generate on load",
+			desc: "Automatically generate the next period's note when Obsidian loads",
+		});
 
-		new Setting(containerEl)
-			.setName("Generate periods ahead")
-			.setDesc("How many periods into the future to generate (1-5)")
-			.addSlider((slider) => {
-				slider
-					.setLimits(1, 5, 1)
-					.setValue(this.settingsStore.currentSettings.generation.generatePeriodsAhead)
-					.setDynamicTooltip()
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								generatePeriodsAhead: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addSlider(containerEl, {
+			key: "generation.generatePeriodsAhead",
+			name: "Generate periods ahead",
+			desc: "How many periods into the future to generate (1-10)",
+			min: 1,
+			max: 10,
+			step: 1,
+		});
 
 		new Setting(containerEl).setName("Enabled period types").setHeading();
 
@@ -58,80 +40,35 @@ export class GenerationSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Enable daily notes")
-			.setDesc("Generate and track daily periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.enableDaily).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							enableDaily: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.enableDaily",
+			name: "Enable daily notes",
+			desc: "Generate and track daily periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Enable weekly notes")
-			.setDesc("Generate and track weekly periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.enableWeekly).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							enableWeekly: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.enableWeekly",
+			name: "Enable weekly notes",
+			desc: "Generate and track weekly periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Enable monthly notes")
-			.setDesc("Generate and track monthly periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.enableMonthly).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							enableMonthly: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.enableMonthly",
+			name: "Enable monthly notes",
+			desc: "Generate and track monthly periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Enable quarterly notes")
-			.setDesc("Generate and track quarterly periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.enableQuarterly).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							enableQuarterly: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.enableQuarterly",
+			name: "Enable quarterly notes",
+			desc: "Generate and track quarterly periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Enable yearly notes")
-			.setDesc("Generate and track yearly periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.enableYearly).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							enableYearly: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.enableYearly",
+			name: "Enable yearly notes",
+			desc: "Generate and track yearly periodic notes",
+		});
 
 		new Setting(containerEl).setName("PDF note linking").setHeading();
 
@@ -140,86 +77,37 @@ export class GenerationSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Include PDF link in frontmatter")
-			.setDesc("Add a frontmatter property linking to a PDF file with the same name (e.g., Daily/04-12-2025.pdf)")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.includePdfFrontmatter).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							includePdfFrontmatter: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.includePdfFrontmatter",
+			name: "Include PDF link in frontmatter",
+			desc: "Add a frontmatter property linking to a PDF file with the same name (e.g., Daily/04-12-2025.pdf)",
+		});
 
-		new Setting(containerEl)
-			.setName("Include PDF embed in content")
-			.setDesc("Add an embedded PDF viewer after the frontmatter")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.includePdfContent).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							includePdfContent: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.includePdfContent",
+			name: "Include PDF embed in content",
+			desc: "Add an embedded PDF viewer after the frontmatter",
+		});
 
-		new Setting(containerEl)
-			.setName("PDF frontmatter property name")
-			.setDesc("The property name used in frontmatter for the PDF link")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.PDF_NOTE_PROP)
-					.setValue(this.settingsStore.currentSettings.generation.pdfNoteProp)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								pdfNoteProp: value || SETTINGS_DEFAULTS.PDF_NOTE_PROP,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "generation.pdfNoteProp",
+			name: "PDF frontmatter property name",
+			desc: "The property name used in frontmatter for the PDF link",
+			placeholder: SETTINGS_DEFAULTS.PDF_NOTE_PROP,
+		});
 
-		new Setting(containerEl)
-			.setName("PDF content header")
-			.setDesc("The header text displayed above the embedded PDF")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.PDF_CONTENT_HEADER)
-					.setValue(this.settingsStore.currentSettings.generation.pdfContentHeader)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								pdfContentHeader: value || SETTINGS_DEFAULTS.PDF_CONTENT_HEADER,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "generation.pdfContentHeader",
+			name: "PDF content header",
+			desc: "The header text displayed above the embedded PDF",
+			placeholder: SETTINGS_DEFAULTS.PDF_CONTENT_HEADER,
+		});
 
-		new Setting(containerEl)
-			.setName("Enable PDF commands")
-			.setDesc("Also expose commands to open PDF versions of notes if they exist (e.g., Open today's daily note (PDF))")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.enablePdfCommands).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							enablePdfCommands: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.enablePdfCommands",
+			name: "Enable PDF commands",
+			desc: "Also expose commands to open PDF versions of notes if they exist (e.g., Open today's daily note (PDF))",
+		});
 
 		new Setting(containerEl).setName("Time budget code block").setHeading();
 
@@ -228,53 +116,24 @@ export class GenerationSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Auto-insert code block")
-			.setDesc("Automatically add the periodic-planner code block to newly generated periodic notes")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.autoInsertCodeBlock).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							autoInsertCodeBlock: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.autoInsertCodeBlock",
+			name: "Auto-insert code block",
+			desc: "Automatically add the periodic-planner code block to newly generated periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Add heading above code block")
-			.setDesc("Add a Markdown heading above the periodic-planner code block")
-			.addToggle((toggle) => {
-				toggle.setValue(this.settingsStore.currentSettings.generation.includePlanHeading).onChange(async (value) => {
-					await this.settingsStore.updateSettings((s) => ({
-						...s,
-						generation: {
-							...s.generation,
-							includePlanHeading: value,
-						},
-					}));
-				});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.includePlanHeading",
+			name: "Add heading above code block",
+			desc: "Add a Markdown heading above the periodic-planner code block",
+		});
 
-		new Setting(containerEl)
-			.setName("Plan heading content")
-			.setDesc("The Markdown heading to add above the code block (e.g., ## plan)")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT)
-					.setValue(this.settingsStore.currentSettings.generation.planHeadingContent)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								planHeadingContent: value || SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "generation.planHeadingContent",
+			name: "Plan heading content",
+			desc: "The Markdown heading to add above the code block (e.g., ## plan)",
+			placeholder: SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT,
+		});
 
 		new Setting(containerEl).setName("Bases view embedding").setHeading();
 
@@ -283,40 +142,18 @@ export class GenerationSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Include Bases view in generation")
-			.setDesc("Automatically add Bases task filtering view to newly generated periodic notes")
-			.addToggle((toggle) => {
-				toggle
-					.setValue(this.settingsStore.currentSettings.generation.includeBasesInGeneration)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								includeBasesInGeneration: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.includeBasesInGeneration",
+			name: "Include Bases view in generation",
+			desc: "Automatically add Bases task filtering view to newly generated periodic notes",
+		});
 
-		new Setting(containerEl)
-			.setName("Bases heading")
-			.setDesc("The Markdown heading to add above the Bases view (e.g., ## Bases)")
-			.addText((text) => {
-				text
-					.setPlaceholder(SETTINGS_DEFAULTS.BASES_HEADING)
-					.setValue(this.settingsStore.currentSettings.generation.basesHeading)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								basesHeading: value || SETTINGS_DEFAULTS.BASES_HEADING,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addText(containerEl, {
+			key: "generation.basesHeading",
+			name: "Bases heading",
+			desc: "The Markdown heading to add above the Bases view (e.g., ## Bases)",
+			placeholder: SETTINGS_DEFAULTS.BASES_HEADING,
+		});
 
 		new Setting(containerEl).setName("Startup behavior").setHeading();
 
@@ -325,23 +162,10 @@ export class GenerationSection implements SettingsSection {
 			cls: "setting-item-description",
 		});
 
-		new Setting(containerEl)
-			.setName("Open yesterday's PDF on startup")
-			.setDesc(
-				"Automatically open yesterday's daily note PDF in a detached window when Obsidian loads (only if not already open)"
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(this.settingsStore.currentSettings.generation.openYesterdayPdfOnStartup)
-					.onChange(async (value) => {
-						await this.settingsStore.updateSettings((s) => ({
-							...s,
-							generation: {
-								...s.generation,
-								openYesterdayPdfOnStartup: value,
-							},
-						}));
-					});
-			});
+		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.openYesterdayPdfOnStartup",
+			name: "Open yesterday's PDF on startup",
+			desc: "Automatically open yesterday's daily note PDF in a detached window when Obsidian loads (only if not already open)",
+		});
 	}
 }
