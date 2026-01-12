@@ -66,6 +66,32 @@
 	padding: 10px 0;
 }
 
+/* Settings Footer */
+.periodic-planner-settings-footer {
+	margin-top: 2rem;
+	padding: 0.75em 0;
+	border-top: 1px solid var(--background-modifier-border);
+	text-align: center;
+	font-size: var(--font-ui-smaller);
+	color: var(--text-faint);
+}
+
+.periodic-planner-settings-footer-links {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.periodic-planner-settings-support-link {
+	text-decoration: none;
+	color: var(--text-accent);
+}
+
+.periodic-planner-settings-support-link:hover {
+	text-decoration: underline;
+}
+
 /* Category List */
 .periodic-planner-categories-list {
 	margin-top: 16px;
