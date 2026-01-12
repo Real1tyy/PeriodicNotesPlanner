@@ -69,7 +69,13 @@ export class TimeBudgetBlockRenderer extends MarkdownRenderChild {
 		const filePath = this.context.sourcePath;
 
 		this.indexSubscription = this.periodIndex.events$.subscribe((event) => {
-			if (event.type === "period-updated" && event.filePath === filePath) {
+			if (
+				(event.type === "note-added" ||
+					event.type === "note-updated" ||
+					event.type === "note-deleted" ||
+					event.type === "parent-children-updated") &&
+				event.filePath === filePath
+			) {
 				void this.renderContent();
 			}
 		});

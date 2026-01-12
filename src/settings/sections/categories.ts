@@ -2,11 +2,12 @@ import { Setting } from "obsidian";
 import type { Subscription } from "rxjs";
 import { PieChartRenderer } from "../../components/shared/pie-chart";
 import { SETTINGS_DEFAULTS } from "../../constants";
-import type { CategoryTracker, GlobalStatistics, GlobalStatisticsAggregator } from "../../core";
+import type { CategoryTracker, GlobalStatisticsAggregator, PeriodTypeStatistics } from "../../core";
 import type { SettingsStore } from "../../core/settings-store";
 import type { Category } from "../../types";
 import type { SettingsSection } from "../../types/settings";
 import { cls } from "../../utils/css";
+import { getTopLevelEnabledPeriod } from "../../utils/period-navigation";
 
 export class CategoriesSection implements SettingsSection {
 	readonly id = "categories";
@@ -63,19 +64,25 @@ export class CategoriesSection implements SettingsSection {
 
 		this.statisticsContainer = containerEl.createDiv({ cls: cls("global-statistics") });
 
-		const statistics = this.globalStatsAggregator.getStatistics();
-		if (statistics) {
-			this.renderPieChartSummary(statistics);
-		}
-
 		this.statsSubscription = this.globalStatsAggregator.events$.subscribe((event) => {
 			if (event.type === "statistics-updated") {
-				this.renderPieChartSummary(event.statistics);
+				this.updateGlobalStatistics();
 			}
 		});
+		this.updateGlobalStatistics();
 	}
 
-	private renderPieChartSummary(statistics: GlobalStatistics): void {
+	private updateGlobalStatistics(): void {
+		const topLevelPeriodType = getTopLevelEnabledPeriod(this.settingsStore.currentSettings.generation);
+		if (topLevelPeriodType) {
+			const statistics = this.globalStatsAggregator.getStatisticsForPeriodType(topLevelPeriodType);
+			if (statistics) {
+				this.renderPieChartSummary(statistics);
+			}
+		}
+	}
+
+	private renderPieChartSummary(statistics: PeriodTypeStatistics): void {
 		if (!this.statisticsContainer) {
 			return;
 		}
@@ -96,7 +103,7 @@ export class CategoriesSection implements SettingsSection {
 		this.renderPieChart(chartContainer, statistics, categories);
 	}
 
-	private renderPieChart(container: HTMLElement, statistics: GlobalStatistics, categories: Category[]): void {
+	private renderPieChart(container: HTMLElement, statistics: PeriodTypeStatistics, categories: Category[]): void {
 		if (this.pieChartRenderer) {
 			this.pieChartRenderer.destroy();
 		}
@@ -143,7 +150,9 @@ export class CategoriesSection implements SettingsSection {
 		}
 
 		const statistics = this.globalStatsAggregator.getStatistics();
-		const statsMap = new Map(statistics?.categoryStats.map((s) => [s.categoryName, s]) ?? []);
+		const topLevelPeriodType = getTopLevelEnabledPeriod(this.settingsStore.currentSettings.generation);
+		const periodStats = topLevelPeriodType ? statistics.byPeriodType.get(topLevelPeriodType) : undefined;
+		const statsMap = new Map(periodStats?.categoryStats.map((s) => [s.categoryName, s]) ?? []);
 
 		const allCategoryNames = new Set<string>();
 		for (const category of categories) {
@@ -166,7 +175,7 @@ export class CategoriesSection implements SettingsSection {
 			const tracked = trackedCategories.get(categoryName);
 			const stat = statsMap.get(categoryName);
 
-			this.renderCategory(containerEl, categoryName, category, tracked, stat, statistics?.totalHours ?? 0);
+			this.renderCategory(containerEl, categoryName, category, tracked, stat, periodStats?.totalHours ?? 0);
 		}
 	}
 

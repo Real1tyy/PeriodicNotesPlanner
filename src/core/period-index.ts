@@ -5,14 +5,34 @@ import { getParentFilePathsFromLinks } from "../utils/note-utils";
 import { noteDataChanged } from "../utils/period";
 import type { PeriodicNoteIndexer } from "./periodic-note-indexer";
 
-type PeriodIndexEvent = {
-	type: "period-updated";
-	filePath: string;
-};
+type PeriodIndexEvent =
+	| {
+			type: "note-added";
+			filePath: string;
+			note: IndexedPeriodNote;
+			categoryAllocations: Map<string, number>;
+	  }
+	| {
+			type: "note-updated";
+			filePath: string;
+			note: IndexedPeriodNote;
+			oldCategoryAllocations: Map<string, number>;
+			newCategoryAllocations: Map<string, number>;
+	  }
+	| {
+			type: "note-deleted";
+			filePath: string;
+			note: IndexedPeriodNote;
+			categoryAllocations: Map<string, number>;
+	  }
+	| {
+			type: "parent-children-updated";
+			filePath: string;
+	  };
 
 export class PeriodIndex {
 	private eventsSubscription: Subscription | null = null;
-	public readonly notesByPath: Map<string, IndexedPeriodNote> = new Map();
+	private readonly notesByPath: Map<string, IndexedPeriodNote> = new Map();
 	private childrenCache: Map<string, PeriodChildren> = new Map();
 	private eventsSubject = new Subject<PeriodIndexEvent>();
 	public readonly events$ = this.eventsSubject.asObservable();
@@ -51,6 +71,14 @@ export class PeriodIndex {
 		return this.notesByPath.get(filePath);
 	}
 
+	getAllNotes(): IndexedPeriodNote[] {
+		return Array.from(this.notesByPath.values());
+	}
+
+	getNotesByPeriodType(periodType: string): IndexedPeriodNote[] {
+		return Array.from(this.notesByPath.values()).filter((note) => note.periodType === periodType);
+	}
+
 	private addOrUpdateNote(note: IndexedPeriodNote): void {
 		const existingNote = this.notesByPath.get(note.filePath);
 		const hasChanged = noteDataChanged(existingNote, note);
@@ -62,13 +90,29 @@ export class PeriodIndex {
 		this.notesByPath.set(note.filePath, note);
 		const affectedParents = this.addToParentsCaches(note);
 
-		// Only emit events if the note's data actually changed
 		if (hasChanged) {
-			this.eventsSubject.next({ type: "period-updated", filePath: note.filePath });
+			if (existingNote) {
+				this.eventsSubject.next({
+					type: "note-updated",
+					filePath: note.filePath,
+					note,
+					oldCategoryAllocations: existingNote.categoryAllocations,
+					newCategoryAllocations: note.categoryAllocations,
+				});
+			} else {
+				this.eventsSubject.next({
+					type: "note-added",
+					filePath: note.filePath,
+					note,
+					categoryAllocations: note.categoryAllocations,
+				});
+			}
 
-			// Also emit for affected parents since child allocations changed
 			for (const parentPath of affectedParents) {
-				this.eventsSubject.next({ type: "period-updated", filePath: parentPath });
+				this.eventsSubject.next({
+					type: "parent-children-updated",
+					filePath: parentPath,
+				});
 			}
 		}
 	}
@@ -80,10 +124,18 @@ export class PeriodIndex {
 			this.childrenCache.delete(filePath);
 			this.notesByPath.delete(filePath);
 
-			this.eventsSubject.next({ type: "period-updated", filePath });
+			this.eventsSubject.next({
+				type: "note-deleted",
+				filePath,
+				note,
+				categoryAllocations: note.categoryAllocations,
+			});
 
 			for (const parentPath of affectedParents) {
-				this.eventsSubject.next({ type: "period-updated", filePath: parentPath });
+				this.eventsSubject.next({
+					type: "parent-children-updated",
+					filePath: parentPath,
+				});
 			}
 		}
 	}

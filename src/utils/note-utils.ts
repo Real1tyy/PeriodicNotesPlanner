@@ -231,5 +231,5 @@ export function getParentFilePathsFromLinks(
 }
 
 export function getNotesByPeriodType(periodIndex: PeriodIndex, periodType: PeriodType): IndexedPeriodNote[] {
-	return Array.from(periodIndex.notesByPath.values()).filter((note) => note.periodType === periodType);
+	return periodIndex.getNotesByPeriodType(periodType);
 }

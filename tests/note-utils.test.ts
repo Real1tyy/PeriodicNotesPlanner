@@ -3,7 +3,12 @@ import type { TFile, Vault } from "obsidian";
 import { describe, expect, it, vi } from "vitest";
 import { PERIOD_TYPES } from "../src/constants";
 import type { IndexedPeriodNote } from "../src/types";
-import { extractCategoryAllocations, getParentFilePathsFromLinks, parseFileToNote } from "../src/utils/note-utils";
+import {
+	extractCategoryAllocations,
+	extractCodeBlockContent,
+	getParentFilePathsFromLinks,
+	parseFileToNote,
+} from "../src/utils/note-utils";
 import { TFile as MockTFile, Vault as MockVault } from "./mocks/obsidian";
 import { createMockSettings } from "./test-helpers";
 
@@ -20,6 +25,113 @@ describe("Note Utilities", () => {
 		(file as any).stat = { mtime: mtime ?? Date.now() };
 		return file as unknown as TFile;
 	};
+
+	describe("extractCodeBlockContent", () => {
+		it("should extract content from code block with matching fence", async () => {
+			const content = "```periodic-planner\nWork: 8\nHealth: 2\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBe("Work: 8\nHealth: 2\n");
+		});
+
+		it("should return null when code block with fence does not exist", async () => {
+			const content = "```other-fence\nSome content\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBeNull();
+		});
+
+		it("should return null when no code blocks exist", async () => {
+			const content = "Just regular markdown content";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBeNull();
+		});
+
+		it("should extract content from first matching code block when multiple exist", async () => {
+			const content = "```periodic-planner\nFirst: 8\n```\n\nSome content\n\n```periodic-planner\nSecond: 2\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBe("First: 8\n");
+		});
+
+		it("should handle empty code block", async () => {
+			const content = "```periodic-planner\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBe("");
+		});
+
+		it("should handle code block with only whitespace", async () => {
+			const content = "```periodic-planner\n   \n\t\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBe("   \n\t\n");
+		});
+
+		it("should handle multiline content", async () => {
+			const content = "```periodic-planner\nWork: 8\nHealth: 2\nLearning: 3\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBe("Work: 8\nHealth: 2\nLearning: 3\n");
+		});
+
+		it("should handle vault.read error gracefully", async () => {
+			const vault = new MockVault();
+			vault.read = vi.fn().mockRejectedValue(new Error("File not found"));
+			const file = createMockFile("test.md");
+
+			const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+
+			const result = await extractCodeBlockContent(vault as unknown as Vault, file, "periodic-planner");
+
+			expect(result).toBeNull();
+			expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining("Error reading file"), expect.any(Error));
+
+			consoleSpy.mockRestore();
+		});
+
+		it("should handle code block with special characters", async () => {
+			const content = "```periodic-planner\nWork: 8.5\nHealth: 2.25\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBe("Work: 8.5\nHealth: 2.25\n");
+		});
+
+		it("should match fence exactly", async () => {
+			const content = "```periodic-planner-extended\nContent\n```";
+			const vault = createMockVault(content);
+			const file = createMockFile("test.md");
+
+			const result = await extractCodeBlockContent(vault, file, "periodic-planner");
+
+			expect(result).toBeNull();
+		});
+	});
 
 	describe("extractCategoryAllocations", () => {
 		it("should extract single category allocation", async () => {

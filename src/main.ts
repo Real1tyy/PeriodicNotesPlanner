@@ -116,8 +116,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.templateService = new TemplateService(this.app, this.settingsStore.settings$);
 		this.autoGenerator = new AutoGenerator(this.app, this.settingsStore.settings$, this.templateService);
 		this.periodIndex = new PeriodIndex(this.indexer);
-		this.globalStatsAggregator = new GlobalStatisticsAggregator(this.periodIndex, this.settingsStore.currentSettings);
-		this.categoryTracker = new CategoryTracker(this.periodIndex, this.settingsStore.currentSettings);
+		this.globalStatsAggregator = new GlobalStatisticsAggregator(this.periodIndex);
+		this.categoryTracker = new CategoryTracker(this.periodIndex, this.settingsStore);
 
 		await this.indexer.start();
 
