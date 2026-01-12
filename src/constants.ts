@@ -106,6 +106,7 @@ export const SETTINGS_DEFAULTS = {
 	BASES_DATE_PROPERTY: "Date",
 	BASES_PROPERTIES_TO_SHOW: "",
 	BASES_SHOW_RIBBON_ICON: true,
+	BASES_DATE_COLUMN_SIZE: 150,
 
 	// ===== Bases Generation Settings =====
 	INCLUDE_BASES_IN_GENERATION: false,

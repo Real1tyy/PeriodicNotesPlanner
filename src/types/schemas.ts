@@ -182,6 +182,7 @@ const BasesViewSettingsSchema = z
 		dateProperty: z.string().catch(SETTINGS_DEFAULTS.BASES_DATE_PROPERTY),
 		propertiesToShow: z.string().catch(SETTINGS_DEFAULTS.BASES_PROPERTIES_TO_SHOW),
 		showRibbonIcon: z.boolean().catch(SETTINGS_DEFAULTS.BASES_SHOW_RIBBON_ICON),
+		dateColumnSize: z.number().int().positive().catch(SETTINGS_DEFAULTS.BASES_DATE_COLUMN_SIZE),
 	})
 	.strip();
 

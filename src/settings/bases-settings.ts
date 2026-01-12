@@ -17,6 +17,7 @@ export class BasesSettings {
 
 		this.renderTasksDirectorySetting(containerEl);
 		this.renderDatePropertySetting(containerEl);
+		this.renderDateColumnSizeSetting(containerEl);
 		this.renderPropertiesToShowSetting(containerEl);
 		this.renderShowRibbonIconSetting(containerEl);
 	}
@@ -63,6 +64,32 @@ export class BasesSettings {
 							dateProperty: value || SETTINGS_DEFAULTS.BASES_DATE_PROPERTY,
 						},
 					}));
+				})
+		);
+
+		settingEl.settingEl.addClass(cls("setting"));
+	}
+
+	private renderDateColumnSizeSetting(containerEl: HTMLElement): void {
+		const settingEl = new Setting(containerEl)
+			.setName("Date column size")
+			.setDesc("Width in pixels for the date property column in the Bases table view.");
+
+		settingEl.addText((text) =>
+			text
+				.setPlaceholder(SETTINGS_DEFAULTS.BASES_DATE_COLUMN_SIZE.toString())
+				.setValue(this.settingsStore.currentSettings.basesView.dateColumnSize.toString())
+				.onChange(async (value) => {
+					const numValue = Number.parseInt(value, 10);
+					if (!Number.isNaN(numValue) && numValue > 0) {
+						await this.settingsStore.updateSettings((settings) => ({
+							...settings,
+							basesView: {
+								...settings.basesView,
+								dateColumnSize: numValue,
+							},
+						}));
+					}
 				})
 		);
 

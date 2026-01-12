@@ -14,7 +14,7 @@ export interface BasesMarkdownOptions {
 
 export function generateBasesMarkdown(options: BasesMarkdownOptions): string {
 	const { periodType, periodStart, periodEnd, settings } = options;
-	const { tasksDirectory, dateProperty, propertiesToShow } = settings;
+	const { tasksDirectory, dateProperty, propertiesToShow, dateColumnSize } = settings;
 
 	const orderSection = buildOrderSection(propertiesToShow, dateProperty);
 
@@ -31,7 +31,10 @@ views:
         - ${dateProperty} > "${startDateWithoutTz}"
         - ${dateProperty} < "${endDateWithoutTz}"
     sort:
-      - ${dateProperty}: desc
+      - property: ${dateProperty}
+        direction: DESC
+    columnSize:
+      note.${dateProperty}: ${dateColumnSize}
 \`\`\`
 `;
 }
