@@ -99,3 +99,32 @@ export function parseLinkToDateTime(linkTarget: string, format: string): DateTim
 	const filename = extractFilenameFromPath(linkTarget);
 	return parsePeriodName(filename, format);
 }
+
+export function formatDateWithoutTimezone(dt: DateTime): string {
+	if (!dt.isValid) {
+		throw new Error("Failed to format date: invalid DateTime");
+	}
+	const year = dt.year.toString().padStart(4, "0");
+	const month = dt.month.toString().padStart(2, "0");
+	const day = dt.day.toString().padStart(2, "0");
+	const hour = dt.hour.toString().padStart(2, "0");
+	const minute = dt.minute.toString().padStart(2, "0");
+	const second = dt.second.toString().padStart(2, "0");
+	return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+}
+
+export interface PeriodIntervalStrings {
+	start: string;
+	end: string;
+}
+
+export function formatPeriodIntervalForBases(periodStart: DateTime, periodEnd: DateTime): PeriodIntervalStrings {
+	const startMinusOne = periodStart.minus({ minutes: 1 });
+	const endRoundedUp = periodEnd.plus({ minutes: 1 }).startOf("minute");
+	const endMinusOne = endRoundedUp.minus({ minutes: 1 });
+
+	return {
+		start: formatDateWithoutTimezone(startMinusOne),
+		end: formatDateWithoutTimezone(endMinusOne),
+	};
+}

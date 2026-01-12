@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import { PERIOD_TYPES } from "../src/constants";
 import {
 	createPeriodInfo,
+	formatDateWithoutTimezone,
 	formatPeriodDateRange,
+	formatPeriodIntervalForBases,
 	formatPeriodName,
 	getAncestorPeriodTypes,
 	getEndOfPeriod,
@@ -363,6 +365,228 @@ describe("Date Utilities", () => {
 			expect(result?.day).toBe(15);
 			expect(result?.month).toBe(6);
 			expect(result?.year).toBe(2025);
+		});
+	});
+
+	describe("formatDateWithoutTimezone", () => {
+		it("should format date without timezone and milliseconds", () => {
+			const dt = DateTime.fromISO("2026-01-12T14:30:45.123+01:00");
+			const result = formatDateWithoutTimezone(dt);
+			expect(result).toBe("2026-01-12T14:30:45");
+		});
+
+		it("should format date with seconds but no milliseconds", () => {
+			const dt = DateTime.fromISO("2026-01-12T14:30:45.999+01:00");
+			const result = formatDateWithoutTimezone(dt);
+			expect(result).toBe("2026-01-12T14:30:45");
+		});
+
+		it("should format date at midnight", () => {
+			const dt = DateTime.fromISO("2026-01-12T00:00:00.000+01:00");
+			const result = formatDateWithoutTimezone(dt);
+			expect(result).toBe("2026-01-12T00:00:00");
+		});
+
+		it("should format date at end of day", () => {
+			const dt = DateTime.fromISO("2026-01-12T23:59:59.999+01:00");
+			const result = formatDateWithoutTimezone(dt);
+			expect(result).toBe("2026-01-12T23:59:59");
+		});
+
+		it("should format date with UTC timezone", () => {
+			const dt = DateTime.fromISO("2026-01-12T14:30:45.123Z");
+			const result = formatDateWithoutTimezone(dt);
+			const expected = `${dt.year}-${String(dt.month).padStart(2, "0")}-${String(dt.day).padStart(2, "0")}T${String(dt.hour).padStart(2, "0")}:${String(dt.minute).padStart(2, "0")}:${String(dt.second).padStart(2, "0")}`;
+			expect(result).toBe(expected);
+		});
+
+		it("should format date with negative timezone offset", () => {
+			const dt = DateTime.fromISO("2026-01-12T14:30:45.123-05:00");
+			const result = formatDateWithoutTimezone(dt);
+			const expected = `${dt.year}-${String(dt.month).padStart(2, "0")}-${String(dt.day).padStart(2, "0")}T${String(dt.hour).padStart(2, "0")}:${String(dt.minute).padStart(2, "0")}:${String(dt.second).padStart(2, "0")}`;
+			expect(result).toBe(expected);
+		});
+
+		it("should format date with one minute subtracted", () => {
+			const dt = DateTime.fromISO("2026-01-12T00:00:00.000+01:00");
+			const minusOne = dt.minus({ minutes: 1 });
+			const result = formatDateWithoutTimezone(minusOne);
+			expect(result).toBe("2026-01-11T23:59:00");
+		});
+
+		it("should handle date crossing day boundary", () => {
+			const dt = DateTime.fromISO("2026-01-12T00:00:00.000+01:00");
+			const minusOne = dt.minus({ minutes: 1 });
+			const result = formatDateWithoutTimezone(minusOne);
+			expect(result).toBe("2026-01-11T23:59:00");
+		});
+
+		it("should handle date crossing month boundary", () => {
+			const dt = DateTime.fromISO("2026-02-01T00:00:00.000+01:00");
+			const minusOne = dt.minus({ minutes: 1 });
+			const result = formatDateWithoutTimezone(minusOne);
+			expect(result).toBe("2026-01-31T23:59:00");
+		});
+
+		it("should handle date crossing year boundary", () => {
+			const dt = DateTime.fromISO("2026-01-01T00:00:00.000+01:00");
+			const minusOne = dt.minus({ minutes: 1 });
+			const result = formatDateWithoutTimezone(minusOne);
+			expect(result).toBe("2025-12-31T23:59:00");
+		});
+
+		it("should preserve seconds in output", () => {
+			const dt = DateTime.fromISO("2026-01-12T14:30:45.123+01:00");
+			const result = formatDateWithoutTimezone(dt);
+			expect(result).toMatch(/:\d{2}$/);
+			expect(result.split(":")[2]).toBe("45");
+		});
+
+		it("should throw error for invalid date", () => {
+			const dt = DateTime.invalid("test");
+			expect(() => formatDateWithoutTimezone(dt)).toThrow("Failed to format date");
+		});
+	});
+
+	describe("formatPeriodIntervalForBases", () => {
+		it("should format period interval with one minute subtracted from both start and end", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T00:00:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T23:59:59.999+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-11T23:59:00");
+			expect(result.end).toBe("2026-01-12T23:59:00");
+		});
+
+		it("should handle same start and end time", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T14:30:00.000+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-12T14:29:00");
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle period crossing day boundary", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T00:00:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-13T00:00:00.000+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-11T23:59:00");
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle period crossing month boundary", () => {
+			const periodStart = DateTime.fromISO("2026-02-01T00:00:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-02-01T23:59:59.999+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-31T23:59:00");
+			expect(result.end).toBe("2026-02-01T23:59:00");
+		});
+
+		it("should handle period crossing year boundary", () => {
+			const periodStart = DateTime.fromISO("2026-01-01T00:00:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-01T23:59:59.999+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2025-12-31T23:59:00");
+			expect(result.end).toBe("2026-01-01T23:59:00");
+		});
+
+		it("should handle UTC timezone", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T00:00:00.000Z");
+			const periodEnd = DateTime.fromISO("2026-01-12T23:59:59.999Z");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			const expectedStartDt = periodStart.minus({ minutes: 1 });
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.start).toBe(formatDateWithoutTimezone(expectedStartDt));
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle negative timezone offset", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T00:00:00.000-05:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T23:59:59.999-05:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			const expectedStartDt = periodStart.minus({ minutes: 1 });
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.start).toBe(formatDateWithoutTimezone(expectedStartDt));
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle period with milliseconds", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:45.123+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T15:30:45.456+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-12T14:29:45");
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle period at exact minute boundaries", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T15:30:00.000+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-12T14:29:00");
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle very short period (one minute)", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T14:31:00.000+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-12T14:29:00");
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should handle period with seconds", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:45.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T15:30:45.000+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).toBe("2026-01-12T14:29:45");
+			const expectedEndDt = periodEnd.plus({ minutes: 1 }).startOf("minute").minus({ minutes: 1 });
+			expect(result.end).toBe(formatDateWithoutTimezone(expectedEndDt));
+		});
+
+		it("should return object with start and end properties", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T00:00:00.000+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T23:59:59.999+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result).toHaveProperty("start");
+			expect(result).toHaveProperty("end");
+			expect(typeof result.start).toBe("string");
+			expect(typeof result.end).toBe("string");
+		});
+
+		it("should format dates without timezone in output strings", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:45.123+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T15:30:45.456+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).not.toMatch(/[+-]\d{2}:\d{2}$/);
+			expect(result.end).not.toMatch(/[+-]\d{2}:\d{2}$/);
+			expect(result.start).not.toMatch(/Z$/);
+			expect(result.end).not.toMatch(/Z$/);
+		});
+
+		it("should format dates without milliseconds in output strings", () => {
+			const periodStart = DateTime.fromISO("2026-01-12T14:30:45.123+01:00");
+			const periodEnd = DateTime.fromISO("2026-01-12T15:30:45.456+01:00");
+			const result = formatPeriodIntervalForBases(periodStart, periodEnd);
+
+			expect(result.start).not.toMatch(/\.\d{3}$/);
+			expect(result.end).not.toMatch(/\.\d{3}$/);
 		});
 	});
 });
