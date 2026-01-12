@@ -44,28 +44,19 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.settingsStore = new SettingsStore(this);
 		await this.settingsStore.loadSettings();
 
-		this.indexer = new PeriodicNoteIndexer(this.app, this.settingsStore.settings$);
-		this.templateService = new TemplateService(this.app, this.settingsStore.settings$);
-		this.autoGenerator = new AutoGenerator(this.app, this.settingsStore.settings$, this.templateService);
-		this.periodIndex = new PeriodIndex(this.indexer);
-
-		this.registerView(VIEW_TYPE_PERIOD_BASES, (leaf) => new PeriodBasesItemView(leaf, this));
-
 		this.addSettingTab(new PeriodicPlannerSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerVaultEvents();
 		this.updateRibbonIcon();
 
-		this.registerEvent(
-			this.settingsStore.settings$.subscribe(() => {
-				this.updateRibbonIcon();
-			})
-		);
-
-		this.app.workspace.onLayoutReady(() => {
-			void this.initializeOnLayoutReady();
-			void this.checkForUpdates();
+		const settingsSubscription = this.settingsStore.settings$.subscribe(() => {
+			this.updateRibbonIcon();
 		});
+		this.register(() => {
+			settingsSubscription.unsubscribe();
+		});
+
+		this.initializePlugin();
 	}
 
 	onunload() {
@@ -105,8 +96,25 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		}
 	}
 
-	private async initializeOnLayoutReady(): Promise<void> {
+	private async initializePlugin() {
+		await new Promise<void>((resolve) => this.app.workspace.onLayoutReady(resolve));
+
+		// @ts-expect-error - initialized property exists at runtime but not in type definitions
+		if (!this.app.metadataCache.initialized) {
+			await new Promise<void>((resolve) => {
+				// @ts-expect-error - initialized event exists at runtime but not in type definitions
+				this.app.metadataCache.once("initialized", resolve);
+			});
+		}
+
+		this.indexer = new PeriodicNoteIndexer(this.app, this.settingsStore.settings$);
+		this.templateService = new TemplateService(this.app, this.settingsStore.settings$);
+		this.autoGenerator = new AutoGenerator(this.app, this.settingsStore.settings$, this.templateService);
+		this.periodIndex = new PeriodIndex(this.indexer);
+
 		await this.indexer.start();
+
+		this.registerView(VIEW_TYPE_PERIOD_BASES, (leaf) => new PeriodBasesItemView(leaf, this));
 		this.registerCodeBlockProcessor();
 
 		if (this.autoGenerator.shouldAutoGenerate()) {
@@ -116,6 +124,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		if (this.settingsStore.currentSettings.generation.openYesterdayPdfOnStartup) {
 			await this.openYesterdayPdfIfNotOpen();
 		}
+
+		await this.checkForUpdates();
 	}
 
 	private async runAutoGeneration(): Promise<void> {
