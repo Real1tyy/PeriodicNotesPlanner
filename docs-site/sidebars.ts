@@ -24,7 +24,8 @@ const sidebars: SidebarsConfig = {
         "features/visual-statistics",
         "features/categories",
         "features/time-budget-blocks",
-        "features/period-children"
+        "features/period-children",
+        "features/bases-integration"
       ]
     },
     "configuration",

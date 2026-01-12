@@ -3,22 +3,18 @@ import type PeriodicPlannerPlugin from "../main";
 import { cls, toggleCls } from "../utils/css";
 import { BasesSettings } from "./bases-settings";
 import { CategorySettings } from "./category-settings";
-import { DirectorySettings } from "./directory-settings";
 import { GenerationSettings } from "./generation-settings";
 import { IntegrationSettings } from "./integration-settings";
-import { NamingSettings } from "./naming-settings";
+import { PeriodicSettings } from "./periodic-settings";
 import { PropertySettings } from "./property-settings";
-import { TimeBudgetSettings } from "./time-budget-settings";
 
-type TabId = "directories" | "naming" | "time" | "properties" | "categories" | "generation" | "integrations" | "bases";
+type TabId = "periodic" | "properties" | "categories" | "generation" | "integrations" | "bases";
 
 export class PeriodicPlannerSettingsTab extends PluginSettingTab {
-	private activeTab: TabId = "directories";
+	private activeTab: TabId = "periodic";
 	private contentEl: HTMLElement | null = null;
 
-	private directorySettings: DirectorySettings;
-	private namingSettings: NamingSettings;
-	private timeBudgetSettings: TimeBudgetSettings;
+	private periodicSettings: PeriodicSettings;
 	private propertySettings: PropertySettings;
 	private categorySettings: CategorySettings;
 	private generationSettings: GenerationSettings;
@@ -28,10 +24,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 	constructor(app: App, plugin: PeriodicPlannerPlugin) {
 		super(app, plugin);
 
-		// Initialize all settings sections
-		this.directorySettings = new DirectorySettings(plugin.settingsStore);
-		this.namingSettings = new NamingSettings(plugin.settingsStore);
-		this.timeBudgetSettings = new TimeBudgetSettings(plugin.settingsStore);
+		this.periodicSettings = new PeriodicSettings(plugin.settingsStore);
 		this.propertySettings = new PropertySettings(plugin.settingsStore);
 		this.categorySettings = new CategorySettings(plugin.settingsStore);
 		this.generationSettings = new GenerationSettings(plugin.settingsStore);
@@ -67,9 +60,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		const tabsContainer = containerEl.createDiv({ cls: cls("settings-tabs") });
 
 		const tabs: { id: TabId; label: string; icon: string }[] = [
-			{ id: "directories", label: "Folders", icon: "folder" },
-			{ id: "naming", label: "Naming", icon: "file-text" },
-			{ id: "time", label: "Time budget", icon: "clock" },
+			{ id: "periodic", label: "Periodic Settings", icon: "calendar" },
 			{ id: "categories", label: "Categories", icon: "tag" },
 			{ id: "properties", label: "Properties", icon: "list" },
 			{ id: "generation", label: "Generation", icon: "play" },
@@ -93,16 +84,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 
 	private updateTabStyles(tabsContainer: HTMLElement): void {
 		const tabs = tabsContainer.querySelectorAll(`.${cls("tab")}`);
-		const tabIds: TabId[] = [
-			"directories",
-			"naming",
-			"time",
-			"categories",
-			"properties",
-			"generation",
-			"integrations",
-			"bases",
-		];
+		const tabIds: TabId[] = ["periodic", "categories", "properties", "generation", "integrations", "bases"];
 
 		tabs.forEach((tab, index) => {
 			toggleCls(tab as HTMLElement, "active", tabIds[index] === this.activeTab);
@@ -114,14 +96,8 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		this.contentEl.empty();
 
 		switch (this.activeTab) {
-			case "directories":
-				this.directorySettings.display(this.contentEl);
-				break;
-			case "naming":
-				this.namingSettings.display(this.contentEl);
-				break;
-			case "time":
-				this.timeBudgetSettings.display(this.contentEl);
+			case "periodic":
+				this.periodicSettings.display(this.contentEl);
 				break;
 			case "categories":
 				this.categorySettings.display(this.contentEl);

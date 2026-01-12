@@ -12,6 +12,8 @@ All notable changes to this project will be documented here.
 
 ### New Features
 
+- **Unified Periodic Settings**: Merged Folders, Naming, and Time Budget settings into a single "Periodic Settings" tab for better organization
+
 - **Auto-Open Yesterday's PDF on Startup**: New optional setting to automatically open yesterday's daily note PDF in a detached window when Obsidian loads
   - Configurable in Settings → Generation → Startup behavior
   - Only opens if the PDF exists and isn't already open

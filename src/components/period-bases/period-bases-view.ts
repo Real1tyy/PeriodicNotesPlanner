@@ -123,5 +123,6 @@ export class PeriodBasesView extends RegisteredEventsComponent {
 		this.lastFilePath = null;
 		this.isUpdating = false;
 		this.contentEl.empty();
+		this.cleanupEvents();
 	}
 }
