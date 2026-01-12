@@ -42,6 +42,14 @@ All notable changes to this project will be documented here.
   - Includes links to support, documentation, and full changelog
   - Helps you stay informed about new features and changes
 
+### Documentation
+
+- **Added Hotkeys Documentation**: New comprehensive documentation page listing all available commands with descriptions, behaviors, and recommended hotkey configurations
+
+### Bug Fixes
+
+- **Fixed plugin reload cleanup**: Resolved an issue where reloading the plugin could fail during unload and then crash on the next load with a duplicate view registration error
+
 ---
 
 ## 1.3.0

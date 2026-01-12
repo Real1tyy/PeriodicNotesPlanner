@@ -29,6 +29,7 @@ const sidebars: SidebarsConfig = {
       ]
     },
     "configuration",
+    "hotkeys",
     "integrations",
     "changelog",
     "faq",
