@@ -174,7 +174,7 @@ export type TemplaterSettings = z.infer<typeof TemplaterSettingsSchema>;
 // ===== Main Plugin Settings Schema =====
 export const PeriodicPlannerSettingsSchema = z
 	.object({
-		version: z.number().int().positive().catch(1),
+		version: z.string().catch(SETTINGS_DEFAULTS.DEFAULT_VERSION),
 
 		// Directory configuration
 		directories: DirectorySettingsSchema.default(DirectorySettingsSchema.parse({})),

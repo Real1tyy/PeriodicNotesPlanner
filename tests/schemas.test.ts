@@ -96,7 +96,7 @@ describe("Schema Validation", () => {
 	describe("PeriodicPlannerSettingsSchema", () => {
 		it("should parse empty object with all defaults", () => {
 			const result = PeriodicPlannerSettingsSchema.parse({});
-			expect(result.version).toBe(1);
+			expect(result.version).toBe(SETTINGS_DEFAULTS.DEFAULT_VERSION);
 			expect(result.directories).toBeDefined();
 			expect(result.naming).toBeDefined();
 			expect(result.timeBudget).toBeDefined();

@@ -8,6 +8,18 @@ All notable changes to this project will be documented here.
 
 ---
 
+## 1.4.0
+
+### New Features
+
+- **What's New Modal**: The plugin now automatically displays a "What's New" modal when you update to a new version
+  - Shows changelog content highlighting new features and improvements
+  - Displays only once per version update
+  - Includes links to support, documentation, and full changelog
+  - Helps you stay informed about new features and changes
+
+---
+
 ## 1.3.0
 
 ### New Features

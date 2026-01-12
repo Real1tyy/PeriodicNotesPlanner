@@ -2,7 +2,7 @@ import { SETTINGS_DEFAULTS } from "../src/constants";
 import type { PeriodicPlannerSettings } from "../src/types";
 
 export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>): PeriodicPlannerSettings => ({
-	version: 1,
+	version: SETTINGS_DEFAULTS.DEFAULT_VERSION,
 	directories: {
 		dailyFolder: "Periodic/Daily",
 		weeklyFolder: "Periodic/Weekly",

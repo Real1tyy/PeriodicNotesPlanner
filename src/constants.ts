@@ -3,6 +3,7 @@
  * Using constants ensures consistency and makes defaults easy to change.
  */
 export const SETTINGS_DEFAULTS = {
+	DEFAULT_VERSION: "1.0.0",
 	// ===== Directory Settings =====
 	DAILY_FOLDER: "Periodic/Daily",
 	WEEKLY_FOLDER: "Periodic/Weekly",

@@ -1,5 +1,7 @@
+import { WhatsNewModal, type WhatsNewModalConfig } from "@real1ty-obsidian-plugins/utils";
 import { DateTime } from "luxon";
 import { Notice, Plugin, TFile } from "obsidian";
+import CHANGELOG_CONTENT from "../docs-site/docs/changelog.md";
 import { ActivityWatchBlockRenderer } from "./components/activity-watch/activity-watch-block";
 import { PeriodChildrenBasesModal } from "./components/period-children/bases-modal";
 import { TimeBudgetBlockRenderer } from "./components/time-budget";
@@ -51,6 +53,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 		this.app.workspace.onLayoutReady(() => {
 			void this.initializeOnLayoutReady();
+			void this.checkForUpdates();
 		});
 	}
 
@@ -417,5 +420,29 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			const renderer = new ActivityWatchBlockRenderer(el, this.app, source);
 			ctx.addChild(renderer);
 		});
+	}
+
+	private async checkForUpdates(): Promise<void> {
+		const currentVersion = this.manifest.version;
+		const lastSeenVersion = this.settingsStore.currentSettings.version;
+
+		if (lastSeenVersion !== currentVersion) {
+			const config: WhatsNewModalConfig = {
+				cssPrefix: "periodic-planner",
+				pluginName: "Periodix Planner",
+				changelogContent: CHANGELOG_CONTENT,
+				links: {
+					support: "https://matejvavroproductivity.com/support/",
+					changelog: "https://real1tyy.github.io/Periodix-Planner/changelog",
+					documentation: "https://real1tyy.github.io/Periodix-Planner/",
+				},
+			};
+
+			new WhatsNewModal(this.app, this, config, lastSeenVersion, currentVersion).open();
+			await this.settingsStore.updateSettings((settings) => ({
+				...settings,
+				version: currentVersion,
+			}));
+		}
 	}
 }
