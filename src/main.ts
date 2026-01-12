@@ -3,6 +3,8 @@ import { DateTime } from "luxon";
 import { Notice, Plugin, TFile } from "obsidian";
 import CHANGELOG_CONTENT from "../docs-site/docs/changelog.md";
 import { ActivityWatchBlockRenderer } from "./components/activity-watch/activity-watch-block";
+import { PeriodBasesItemView, VIEW_TYPE_PERIOD_BASES } from "./components/period-bases/period-bases-item-view";
+import { PeriodBasesModal } from "./components/period-bases/period-bases-modal";
 import { PeriodChildrenBasesModal } from "./components/period-children/bases-modal";
 import { TimeBudgetBlockRenderer } from "./components/time-budget";
 import type { PeriodType } from "./constants";
@@ -47,6 +49,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.autoGenerator = new AutoGenerator(this.app, this.settingsStore.settings$, this.templateService);
 		this.periodIndex = new PeriodIndex(this.indexer);
 
+		this.registerView(VIEW_TYPE_PERIOD_BASES, (leaf) => new PeriodBasesItemView(leaf, this));
+
 		this.addSettingTab(new PeriodicPlannerSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerVaultEvents();
@@ -62,6 +66,23 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.indexer.stop();
 		this.periodIndex.destroy();
 		this.templateService.destroy();
+	}
+
+	async activatePeriodBasesView(): Promise<void> {
+		const { workspace } = this.app;
+
+		const existingLeaves = workspace.getLeavesOfType(VIEW_TYPE_PERIOD_BASES);
+
+		if (existingLeaves.length > 0) {
+			const firstLeaf = existingLeaves[0];
+			workspace.revealLeaf(firstLeaf);
+		} else {
+			const leaf = workspace.getRightLeaf(false);
+			if (leaf) {
+				await leaf.setViewState({ type: VIEW_TYPE_PERIOD_BASES, active: true });
+				workspace.revealLeaf(leaf);
+			}
+		}
 	}
 
 	private async initializeOnLayoutReady(): Promise<void> {
@@ -235,6 +256,34 @@ export default class PeriodicPlannerPlugin extends Plugin {
 					).open();
 				}
 				return true;
+			},
+		});
+
+		this.addCommand({
+			id: "open-period-bases-view",
+			name: "Open Bases view for current period",
+			checkCallback: (checking) => {
+				const settings = this.settingsStore.currentSettings;
+				if (!settings.basesView.tasksDirectory) return false;
+
+				const file = this.app.workspace.getActiveFile();
+				if (!file) return false;
+
+				const entry = this.periodIndex.getEntryForFile(file);
+				if (!entry) return false;
+
+				if (!checking) {
+					new PeriodBasesModal(this.app, entry, settings.basesView).open();
+				}
+				return true;
+			},
+		});
+
+		this.addCommand({
+			id: "open-period-bases-sidebar",
+			name: "Open Period Tasks sidebar",
+			callback: async () => {
+				await this.activatePeriodBasesView();
 			},
 		});
 	}
