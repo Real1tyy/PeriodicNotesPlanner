@@ -13,7 +13,10 @@ import {
 } from "./sections";
 import type { SettingsSection } from "./types";
 
+const DOCS_URL = "https://Real1tyy.github.io/Periodix-Planner/";
+const CHANGELOG_URL = "https://Real1tyy.github.io/Periodix-Planner/changelog";
 const SPONSOR_URL = "https://matejvavroproductivity.com/support/";
+const VIDEO_URL = "https://www.youtube.com/watch?v=bIVNj6fkTc8";
 
 export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 	plugin: PeriodicPlannerPlugin;
@@ -64,6 +67,27 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		const linksContainer = footerEl.createDiv(cls("settings-footer-links"));
 
 		linksContainer.createEl("a", {
+			text: "Documentation",
+			href: DOCS_URL,
+			cls: cls("settings-support-link"),
+			attr: { target: "_blank", rel: "noopener" },
+		});
+
+		linksContainer.createEl("a", {
+			text: "Changelog",
+			href: CHANGELOG_URL,
+			cls: cls("settings-support-link"),
+			attr: { target: "_blank", rel: "noopener" },
+		});
+
+		linksContainer.createEl("a", {
+			text: "Video Tutorials",
+			href: VIDEO_URL,
+			cls: cls("settings-support-link"),
+			attr: { target: "_blank", rel: "noopener" },
+		});
+
+		linksContainer.createEl("a", {
 			text: "Support",
 			href: SPONSOR_URL,
 			cls: cls("settings-support-link"),
@@ -77,8 +101,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		}
 
 		this.sectionContainer.empty();
-		const section =
-			this.sections.find((candidate) => candidate.id === this.selectedSectionId) ?? this.sections[0];
+		const section = this.sections.find((candidate) => candidate.id === this.selectedSectionId) ?? this.sections[0];
 
 		section?.render(this.sectionContainer);
 	}
