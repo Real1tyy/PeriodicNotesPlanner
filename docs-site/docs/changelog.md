@@ -12,6 +12,12 @@ All notable changes to this project will be documented here.
 
 ### New Features
 
+- **Global Statistics**: View comprehensive time allocation statistics across all periodic notes in the Categories settings tab
+  - Aggregates data from top-level periodic notes (yearly, quarterly, monthly, weekly, or daily)
+  - Displays a detailed table with category breakdown, note counts, total hours, and percentages
+  - Interactive pie chart visualization with color-coded categories
+  - Automatically updates when time allocations change
+
 - **Unified Periodic Settings**: Merged Folders, Naming, and Time Budget settings into a single "Periodic Settings" tab for better organization
 
 - **Auto-Open Yesterday's PDF on Startup**: New optional setting to automatically open yesterday's daily note PDF in a detached window when Obsidian loads

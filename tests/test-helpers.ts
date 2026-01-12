@@ -1,5 +1,11 @@
 import { SETTINGS_DEFAULTS } from "../src/constants";
-import type { PeriodicPlannerSettings } from "../src/types";
+import type { Category, PeriodicPlannerSettings } from "../src/types";
+
+export const createMockCategories = (): Category[] => [
+	{ id: "work-id", name: "Work", color: "#ff0000", createdAt: Date.now() },
+	{ id: "health-id", name: "Health", color: "#00ff00", createdAt: Date.now() },
+	{ id: "learning-id", name: "Learning", color: "#0000ff", createdAt: Date.now() },
+];
 
 export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>): PeriodicPlannerSettings => ({
 	version: SETTINGS_DEFAULTS.DEFAULT_VERSION,
@@ -80,6 +86,6 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 		showRibbonIcon: SETTINGS_DEFAULTS.BASES_SHOW_RIBBON_ICON,
 		dateColumnSize: SETTINGS_DEFAULTS.BASES_DATE_COLUMN_SIZE,
 	},
-	categories: [],
+	categories: createMockCategories(),
 	...overrides,
 });

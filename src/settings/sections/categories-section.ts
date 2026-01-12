@@ -1,6 +1,9 @@
 import { nanoid } from "nanoid";
 import { Setting } from "obsidian";
+import type { Subscription } from "rxjs";
+import { PieChartRenderer } from "../../components/shared/pie-chart";
 import { SETTINGS_DEFAULTS } from "../../constants";
+import type { GlobalStatistics, GlobalStatisticsAggregator } from "../../core";
 import type { SettingsStore } from "../../core/settings-store";
 import type { Category } from "../../types";
 import { cls } from "../../utils/css";
@@ -11,10 +14,20 @@ export class CategoriesSection implements SettingsSection {
 	readonly label = "Categories";
 
 	private categoriesContainer: HTMLElement | null = null;
+	private statisticsContainer: HTMLElement | null = null;
+	private pieChartRenderer: PieChartRenderer | null = null;
+	private statsSubscription: Subscription | null = null;
 
-	constructor(private settingsStore: SettingsStore) {}
+	constructor(
+		private settingsStore: SettingsStore,
+		private globalStatsAggregator?: GlobalStatisticsAggregator
+	) {}
 
 	render(containerEl: HTMLElement): void {
+		if (this.globalStatsAggregator) {
+			this.renderGlobalStatistics(containerEl);
+		}
+
 		new Setting(containerEl).setName("Time categories").setHeading();
 
 		containerEl.createEl("p", {
@@ -33,6 +46,123 @@ export class CategoriesSection implements SettingsSection {
 
 		this.categoriesContainer = containerEl.createDiv({ cls: cls("categories-list") });
 		this.renderCategories(this.categoriesContainer);
+	}
+
+	private renderGlobalStatistics(containerEl: HTMLElement): void {
+		new Setting(containerEl).setName("Global statistics").setHeading();
+
+		containerEl.createEl("p", {
+			text: "Total time allocation across all top-level periodic notes.",
+			cls: "setting-item-description",
+		});
+
+		this.statisticsContainer = containerEl.createDiv({ cls: cls("global-statistics") });
+
+		const statistics = this.globalStatsAggregator?.getStatistics();
+		if (statistics) {
+			this.renderStatistics(statistics);
+		}
+
+		this.statsSubscription =
+			this.globalStatsAggregator?.events$.subscribe((event) => {
+				if (event.type === "statistics-updated") {
+					this.renderStatistics(event.statistics);
+				}
+			}) ?? null;
+	}
+
+	private renderStatistics(statistics: GlobalStatistics): void {
+		if (!this.statisticsContainer) {
+			return;
+		}
+
+		this.statisticsContainer.empty();
+
+		const categories = this.settingsStore.currentSettings.categories;
+
+		if (statistics.categoryStats.length === 0) {
+			this.statisticsContainer.createEl("p", {
+				text: "No time allocations found. Create periodic notes and allocate time to see statistics.",
+				cls: "setting-item-description",
+			});
+			return;
+		}
+
+		const listContainer = this.statisticsContainer.createDiv({ cls: cls("statistics-list") });
+		const table = listContainer.createEl("table", { cls: cls("statistics-table") });
+		const thead = table.createEl("thead");
+		const headerRow = thead.createEl("tr");
+		headerRow.createEl("th", { text: "Category" });
+		headerRow.createEl("th", { text: "Notes" });
+		headerRow.createEl("th", { text: "Total Hours" });
+		headerRow.createEl("th", { text: "Percentage" });
+
+		const tbody = table.createEl("tbody");
+		const categoryMap = new Map(categories.map((c) => [c.id, c]));
+
+		for (const stat of statistics.categoryStats) {
+			const category = categoryMap.get(stat.categoryId);
+			if (!category) {
+				continue;
+			}
+
+			const percentage =
+				statistics.totalHours > 0 ? ((stat.totalHours / statistics.totalHours) * 100).toFixed(1) : "0.0";
+
+			const row = tbody.createEl("tr");
+
+			const nameCell = row.createEl("td");
+			const colorIndicator = nameCell.createSpan({ cls: cls("category-color-inline") });
+			colorIndicator.style.backgroundColor = category.color;
+			nameCell.appendText(` ${category.name}`);
+
+			row.createEl("td", { text: stat.noteCount.toString() });
+			row.createEl("td", { text: `${stat.totalHours.toFixed(1)}h` });
+			row.createEl("td", { text: `${percentage}%` });
+		}
+
+		const totalRow = tbody.createEl("tr", { cls: cls("statistics-total-row") });
+		totalRow.createEl("td", { text: "Total" });
+		totalRow.createEl("td", { text: statistics.totalNotes.toString() });
+		totalRow.createEl("td", { text: `${statistics.totalHours.toFixed(1)}h` });
+		totalRow.createEl("td", { text: "100%" });
+
+		const chartContainer = this.statisticsContainer.createDiv({ cls: cls("statistics-chart") });
+		this.renderPieChart(chartContainer, statistics, categories);
+	}
+
+	private renderPieChart(
+		container: HTMLElement,
+		statistics: NonNullable<ReturnType<NonNullable<typeof this.globalStatsAggregator>["getStatistics"]>>,
+		categories: Category[]
+	): void {
+		if (this.pieChartRenderer) {
+			this.pieChartRenderer.destroy();
+		}
+
+		const categoryMap = new Map(categories.map((c) => [c.id, c]));
+		const labels: string[] = [];
+		const values: number[] = [];
+		const colors: string[] = [];
+
+		for (const stat of statistics.categoryStats) {
+			const category = categoryMap.get(stat.categoryId);
+			if (category && stat.totalHours > 0) {
+				labels.push(category.name);
+				values.push(stat.totalHours);
+				colors.push(category.color);
+			}
+		}
+
+		this.pieChartRenderer = new PieChartRenderer(container);
+		this.pieChartRenderer.render({ labels, values, colors }, { valueFormatter: (value) => `${value.toFixed(1)}h` });
+	}
+
+	destroy(): void {
+		this.statsSubscription?.unsubscribe();
+		this.statsSubscription = null;
+		this.pieChartRenderer?.destroy();
+		this.pieChartRenderer = null;
 	}
 
 	private renderCategories(containerEl: HTMLElement): void {

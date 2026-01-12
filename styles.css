@@ -51,6 +51,55 @@
 	border: 1px solid var(--background-modifier-border);
 }
 
+/* Global Statistics */
+.periodic-planner-global-statistics {
+	margin: 20px 0;
+}
+
+.periodic-planner-statistics-list {
+	margin: 16px 0;
+	overflow-x: auto;
+}
+
+.periodic-planner-statistics-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.periodic-planner-statistics-table th {
+	text-align: left;
+	padding: 8px 12px;
+	border-bottom: 2px solid var(--background-modifier-border);
+	color: var(--text-muted);
+	font-weight: 600;
+}
+
+.periodic-planner-statistics-table td {
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.periodic-planner-statistics-total-row {
+	font-weight: 600;
+	background: var(--background-modifier-hover);
+}
+
+.periodic-planner-category-color-inline {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	display: inline-block;
+	border: 1px solid var(--background-modifier-border);
+	vertical-align: middle;
+}
+
+.periodic-planner-statistics-chart {
+	margin-top: 24px;
+	height: 300px;
+	max-width: 600px;
+}
+
 .periodic-planner-category-edit {
 	background: var(--background-secondary);
 	padding: 12px;

@@ -8,6 +8,7 @@ import {
 	getEnabledLinkKey,
 	getEnabledParentPeriodType,
 	getEnabledPeriodTypes,
+	getTopLevelEnabledPeriod,
 	isPeriodTypeEnabled,
 } from "../src/utils/period-navigation";
 
@@ -113,6 +114,74 @@ describe("getEnabledPeriodTypes", () => {
 
 		const result = getEnabledPeriodTypes(settings);
 		expect(result).toEqual(["yearly", "weekly", "daily"]);
+	});
+});
+
+describe("getTopLevelEnabledPeriod", () => {
+	it("should return yearly when all periods are enabled", () => {
+		const result = getTopLevelEnabledPeriod(allEnabledSettings);
+		expect(result).toBe("yearly");
+	});
+
+	it("should return null when all periods are disabled", () => {
+		const result = getTopLevelEnabledPeriod(allDisabledSettings);
+		expect(result).toBe(null);
+	});
+
+	it("should return the first enabled period type", () => {
+		const settings: GenerationSettings = {
+			...allEnabledSettings,
+			enableDaily: true,
+			enableWeekly: false,
+			enableMonthly: false,
+			enableQuarterly: true,
+			enableYearly: true,
+		};
+
+		const result = getTopLevelEnabledPeriod(settings);
+		expect(result).toBe("yearly");
+	});
+
+	it("should return quarterly when yearly is disabled", () => {
+		const settings: GenerationSettings = {
+			...allEnabledSettings,
+			enableYearly: false,
+			enableQuarterly: true,
+			enableMonthly: true,
+			enableWeekly: true,
+			enableDaily: true,
+		};
+
+		const result = getTopLevelEnabledPeriod(settings);
+		expect(result).toBe("quarterly");
+	});
+
+	it("should return monthly when yearly and quarterly are disabled", () => {
+		const settings: GenerationSettings = {
+			...allEnabledSettings,
+			enableYearly: false,
+			enableQuarterly: false,
+			enableMonthly: true,
+			enableWeekly: true,
+			enableDaily: true,
+		};
+
+		const result = getTopLevelEnabledPeriod(settings);
+		expect(result).toBe("monthly");
+	});
+
+	it("should return daily when only daily is enabled", () => {
+		const settings: GenerationSettings = {
+			...allEnabledSettings,
+			enableYearly: false,
+			enableQuarterly: false,
+			enableMonthly: false,
+			enableWeekly: false,
+			enableDaily: true,
+		};
+
+		const result = getTopLevelEnabledPeriod(settings);
+		expect(result).toBe("daily");
 	});
 });
 

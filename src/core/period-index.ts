@@ -12,7 +12,7 @@ type PeriodIndexEvent = {
 
 export class PeriodIndex {
 	private eventsSubscription: Subscription | null = null;
-	private notesByPath: Map<string, IndexedPeriodNote> = new Map();
+	public readonly notesByPath: Map<string, IndexedPeriodNote> = new Map();
 	private childrenCache: Map<string, PeriodChildren> = new Map();
 	private eventsSubject = new Subject<PeriodIndexEvent>();
 	public readonly events$ = this.eventsSubject.asObservable();

@@ -52,6 +52,34 @@ Allocate time to categories:
 - Monitor budget status
 - View visual breakdowns
 
+## 📈 Global Statistics
+
+The Categories tab in settings displays comprehensive statistics across all your top-level periodic notes (yearly, quarterly, monthly, weekly, or daily depending on what you have enabled).
+
+### Statistics Table
+
+View a complete breakdown showing:
+- **Category** - Name with color indicator
+- **Notes** - Number of periodic notes using this category
+- **Total Hours** - Sum of hours allocated to this category
+- **Percentage** - Proportion of total time allocation
+
+### Visual Pie Chart
+
+An interactive pie chart visualizes your time allocation:
+- Color-coded by category
+- Hover for detailed tooltips
+- Shows hours and percentages
+- Automatically updates when allocations change
+
+### How It Works
+
+Global statistics aggregate data from your top-level period type:
+- If yearly notes are enabled, statistics aggregate from all yearly notes
+- If yearly is disabled but quarterly is enabled, statistics use quarterly notes
+- Continues down the hierarchy to find the top enabled period type
+- Updates automatically when you change time allocations
+
 ## 🔄 Managing Categories
 
 ### Editing

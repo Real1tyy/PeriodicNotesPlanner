@@ -22,7 +22,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 	plugin: PeriodicPlannerPlugin;
 
 	private readonly uiBuilder: SettingsUIBuilder<typeof PeriodicPlannerSettingsSchema>;
-	private readonly sections: SettingsSection[];
+	private sections: SettingsSection[] | null = null;
 	private selectedSectionId: string;
 	private sectionContainer: HTMLElement | null = null;
 
@@ -30,8 +30,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.uiBuilder = new SettingsUIBuilder(plugin.settingsStore);
-		this.sections = this.createSections();
-		this.selectedSectionId = this.sections[0]?.id ?? "periodic";
+		this.selectedSectionId = "periodic";
 	}
 
 	display(): void {
@@ -40,10 +39,12 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 
 		containerEl.createEl("h1", { text: "Periodic Planner Settings" });
 
-		if (this.sections.length > 0) {
+		const sections = this.getSections();
+
+		if (sections.length > 0) {
 			const navContainer = containerEl.createDiv(cls("settings-nav"));
 
-			this.sections.forEach((section) => {
+			sections.forEach((section) => {
 				const button = navContainer.createEl("button", {
 					text: section.label,
 					cls: cls("settings-nav-button"),
@@ -101,15 +102,23 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		}
 
 		this.sectionContainer.empty();
-		const section = this.sections.find((candidate) => candidate.id === this.selectedSectionId) ?? this.sections[0];
+		const sections = this.getSections();
+		const section = sections.find((candidate) => candidate.id === this.selectedSectionId) ?? sections[0];
 
 		section?.render(this.sectionContainer);
+	}
+
+	private getSections(): SettingsSection[] {
+		if (!this.sections) {
+			this.sections = this.createSections();
+		}
+		return this.sections;
 	}
 
 	private createSections(): SettingsSection[] {
 		return [
 			new PeriodicSection(this.plugin.settingsStore),
-			new CategoriesSection(this.plugin.settingsStore),
+			new CategoriesSection(this.plugin.settingsStore, this.plugin.globalStatsAggregator),
 			new PropertiesSection(this.plugin.settingsStore),
 			new GenerationSection(this.plugin.settingsStore),
 			new IntegrationsSection(this.plugin.settingsStore, this.app),

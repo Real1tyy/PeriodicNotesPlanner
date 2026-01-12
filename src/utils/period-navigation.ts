@@ -7,6 +7,11 @@ export function getEnabledPeriodTypes(settings: GenerationSettings): PeriodType[
 	return ORDERED_PERIOD_TYPES.filter((periodType) => isPeriodTypeEnabled(periodType, settings));
 }
 
+export function getTopLevelEnabledPeriod(settings: GenerationSettings): PeriodType | null {
+	const enabledTypes = getEnabledPeriodTypes(settings);
+	return enabledTypes.length > 0 ? enabledTypes[0] : null;
+}
+
 export function isPeriodTypeEnabled(periodType: PeriodType, settings: GenerationSettings): boolean {
 	switch (periodType) {
 		case "yearly":
