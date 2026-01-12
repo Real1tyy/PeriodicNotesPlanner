@@ -45,6 +45,7 @@ tags: [work, project-alpha]
 Customize which properties appear in the Bases table view:
 
 - **Properties to show**: Comma-separated list of property names (e.g., `status,priority,tags`)
+- **Date column size**: Width in pixels for the date column (default: `150`)
 
 The view always shows `file.name` and your configured date property, plus any additional properties you specify.
 
@@ -66,6 +67,8 @@ Open the Period Tasks sidebar:
 1. **Ribbon Icon**: Click the list-checks icon in the left sidebar (if enabled)
 2. **Command**: Use command palette → "Open Period Tasks sidebar"
 
+![Bases Sidebar View](/img/features/bases_sidebar.png)
+
 ### How It Works
 
 The sidebar view:
@@ -77,6 +80,8 @@ The sidebar view:
 ## Using Inline Generation
 
 When enabled, Bases views are automatically embedded in newly generated periodic notes. The view appears before PDF content (if enabled).
+
+![Inline Bases View](/img/features/inline_bases.png)
 
 Example generated note:
 

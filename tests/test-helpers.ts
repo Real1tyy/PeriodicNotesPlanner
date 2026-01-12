@@ -77,6 +77,7 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 		dateProperty: SETTINGS_DEFAULTS.BASES_DATE_PROPERTY,
 		propertiesToShow: SETTINGS_DEFAULTS.BASES_PROPERTIES_TO_SHOW,
 		showRibbonIcon: SETTINGS_DEFAULTS.BASES_SHOW_RIBBON_ICON,
+		dateColumnSize: SETTINGS_DEFAULTS.BASES_DATE_COLUMN_SIZE,
 	},
 	categories: [],
 	...overrides,

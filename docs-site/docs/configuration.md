@@ -161,6 +161,7 @@ Configure integration with the Bases plugin for filtering tasks by period interv
 |---------|-------------|---------|
 | **Tasks directory** | Path to your tasks folder (e.g., `Tasks`) | Empty |
 | **Date property** | Frontmatter property name for task dates | `Date` |
+| **Date column size** | Width in pixels for the date column in the table view | `150` |
 | **Properties to show** | Comma-separated list of additional properties to display | Empty |
 | **Show ribbon icon** | Display ribbon icon in left sidebar for quick access | `true` |
 
@@ -174,12 +175,14 @@ Configure integration with the Bases plugin for filtering tasks by period interv
 ```yaml
 Tasks directory: Tasks
 Date property: due
+Date column size: 200
 Properties to show: status,priority,tags
 ```
 
 This configuration:
 - Filters tasks from the `Tasks` folder
 - Uses the `due` frontmatter property for date filtering
+- Sets the date column width to 200 pixels
 - Displays status, priority, and tags columns in the table
 
 [Learn more about Bases integration](/features/bases-integration)

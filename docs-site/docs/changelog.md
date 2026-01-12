@@ -18,6 +18,7 @@ All notable changes to this project will be documented here.
   - **Automatic Date Filtering**: Tasks are filtered by the period's date range (daily, weekly, monthly, quarterly, yearly)
   - **Configurable Task Directory**: Set your tasks folder path in settings
   - **Custom Date Property**: Configure which frontmatter property to use for task dates
+  - **Configurable Date Column Size**: Adjust the width of the date column in the table view (default: 150px)
   - **Flexible Display**: Choose which additional properties to show in the task table
   - **Ribbon Icon Toggle**: Optional ribbon icon for quick access (configurable in settings)
   - **Generation Settings**: Toggle Bases view embedding and customize heading in Generation tab

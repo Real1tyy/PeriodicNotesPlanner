@@ -65,3 +65,17 @@ View all child periods for a given period - see all days in a week, weeks in a m
 ![ActivityWatch integration screenshot](/img/features/activity-watch.png)
 
 Automatically track and visualize your computer usage in daily notes with ActivityWatch integration. [Learn more →](/integrations)
+
+## Bases Integration
+
+### Sidebar View
+
+![Bases sidebar view screenshot](/img/features/bases_sidebar.png)
+
+Filter and view tasks by period intervals with the persistent Period Tasks sidebar that automatically updates based on the current periodic note. [Learn more →](/features/bases-integration)
+
+### Inline Bases View
+
+![Inline Bases view screenshot](/img/features/inline_bases.png)
+
+Automatically embed Bases task filtering views in newly generated periodic notes for seamless task management. [Learn more →](/features/bases-integration)
