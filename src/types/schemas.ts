@@ -129,6 +129,10 @@ const GenerationSettingsSchema = z
 		autoInsertCodeBlock: z.boolean().catch(SETTINGS_DEFAULTS.AUTO_INSERT_CODE_BLOCK),
 		includePlanHeading: z.boolean().catch(SETTINGS_DEFAULTS.INCLUDE_PLAN_HEADING),
 		planHeadingContent: z.string().catch(SETTINGS_DEFAULTS.PLAN_HEADING_CONTENT),
+
+		// Bases Generation Settings
+		includeBasesInGeneration: z.boolean().catch(SETTINGS_DEFAULTS.INCLUDE_BASES_IN_GENERATION),
+		basesHeading: z.string().catch(SETTINGS_DEFAULTS.BASES_HEADING),
 	})
 	.strip();
 

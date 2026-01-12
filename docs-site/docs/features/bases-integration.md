@@ -11,8 +11,9 @@ Periodix-Planner seamlessly integrates with the [Bases plugin](https://help.obsi
 The Bases integration provides two powerful ways to view your period-specific tasks:
 
 1. **Sidebar View** - Persistent task view that updates automatically as you navigate between periodic notes
+2. **Inline Generation** - Automatically embed Bases views in newly generated periodic notes
 
-Both views automatically filter content from your tasks directory based on the period interval (day, week, month, quarter, or year) of the currently open note.
+Both views automatically filter content from your tasks directory based on the period interval (day, week, month, quarter, or year).
 
 ## Setup
 
@@ -22,7 +23,7 @@ Both views automatically filter content from your tasks directory based on the p
 2. Navigate to the **Bases** tab
 3. Set **Tasks directory** to your tasks folder path (e.g., `Tasks`, `Projects/Tasks`)
 
-**Important:** The tasks directory must be configured for the Bases integration to work. Leave it empty to disable Bases-related features.
+The tasks directory must be configured for the Bases integration to work.
 
 ### 2. Configure Date Property
 
@@ -43,9 +44,27 @@ tags: [work, project-alpha]
 
 Customize which properties appear in the Bases table view:
 
-- **Properties to show**: Comma-separated list of property names (e.g., `text,tags,status`)
+- **Properties to show**: Comma-separated list of property names (e.g., `status,priority,tags`)
 
 The view always shows `file.name` and your configured date property, plus any additional properties you specify.
+
+### 4. Configure Ribbon Icon (Optional)
+
+- **Show ribbon icon**: Toggle to show/hide the ribbon icon (default: enabled)
+
+### 5. Configure Inline Generation (Optional)
+
+In **Settings** → **Generation** tab:
+
+- **Include Bases view in generation**: Automatically embed Bases view in new notes (default: disabled)
+- **Bases heading**: Markdown heading above the view (default: `## Bases`)
+
+## Using the Sidebar View
+
+Open the Period Tasks sidebar:
+
+1. **Ribbon Icon**: Click the list-checks icon in the left sidebar (if enabled)
+2. **Command**: Use command palette → "Open Period Tasks sidebar"
 
 ### How It Works
 
@@ -53,10 +72,45 @@ The sidebar view:
 
 - **Auto-updates** when you switch between periodic notes
 - **Filters automatically** based on the current period's date range
-- **Shows empty state** when:
-  - No periodic note is open
-  - Tasks directory is not configured
-  - Current file is not a periodic note
+- **Shows empty state** when tasks directory is not configured or current file is not a periodic note
+
+## Using Inline Generation
+
+When enabled, Bases views are automatically embedded in newly generated periodic notes. The view appears before PDF content (if enabled).
+
+Example generated note:
+
+```markdown
+---
+Period Type: daily
+Period Start: 2026-01-15T00:00:00
+Period End: 2026-01-15T23:59:59
+---
+
+## Plan
+
+\`\`\`periodic-planner
+work: 8h
+\`\`\`
+
+## Bases
+
+\`\`\`base
+views:
+  - type: table
+    name: Daily Tasks
+    order:
+      - file.name
+      - Date
+    filters:
+      and:
+        - file.inFolder("Tasks")
+        - Date > "2026-01-15"
+        - Date < "2026-01-16"
+    sort:
+      - Date: desc
+\`\`\`
+```
 
 ## Related Features
 

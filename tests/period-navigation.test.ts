@@ -27,6 +27,8 @@ const allEnabledSettings: GenerationSettings = {
 	autoInsertCodeBlock: true,
 	includePlanHeading: true,
 	planHeadingContent: "## Plan",
+	includeBasesInGeneration: false,
+	basesHeading: "## Bases",
 };
 
 const allDisabledSettings: GenerationSettings = {

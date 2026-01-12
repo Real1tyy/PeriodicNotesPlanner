@@ -51,6 +51,8 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 		autoInsertCodeBlock: true,
 		includePlanHeading: true,
 		planHeadingContent: "## Plan",
+		includeBasesInGeneration: SETTINGS_DEFAULTS.INCLUDE_BASES_IN_GENERATION,
+		basesHeading: SETTINGS_DEFAULTS.BASES_HEADING,
 	},
 	ui: {
 		warningThresholdPercent: 80,

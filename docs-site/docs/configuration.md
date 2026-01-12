@@ -136,6 +136,21 @@ Select which period types to generate and track. Disabled periods will be skippe
 
 **Example:** If you disable weekly notes, daily notes will link directly to monthly notes as their parent, and monthly notes will show daily notes as children.
 
+### Bases View Embedding
+
+Automatically embed Bases task filtering views in newly generated periodic notes.
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Include Bases view in generation** | Add Bases view to newly generated notes | `false` |
+| **Bases heading** | Markdown heading above the Bases view | `## Bases` |
+
+**How it works:**
+- When enabled, Bases views are automatically added to new notes
+- Filters tasks from your configured tasks directory
+- Uses the period's date range for filtering
+- Appears before PDF content (if enabled)
+
 [Learn more about note generation](/features/note-generation) and [note interconnection](/features/note-interconnection)
 
 ## Bases Tab
@@ -152,7 +167,7 @@ Configure integration with the Bases plugin for filtering tasks by period interv
 **How it works:**
 - Automatically filters tasks from your tasks directory based on the current period's date range
 - Works with all period types (daily, weekly, monthly, quarterly, yearly)
-- Provides both a sidebar view and modal view for task filtering
+- Provides both a sidebar view and inline generation for task filtering
 - Updates automatically when switching between periodic notes
 
 **Example setup:**

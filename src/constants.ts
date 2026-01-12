@@ -106,6 +106,10 @@ export const SETTINGS_DEFAULTS = {
 	BASES_DATE_PROPERTY: "Date",
 	BASES_PROPERTIES_TO_SHOW: "",
 	BASES_SHOW_RIBBON_ICON: true,
+
+	// ===== Bases Generation Settings =====
+	INCLUDE_BASES_IN_GENERATION: false,
+	BASES_HEADING: "## Bases",
 } as const;
 
 /**

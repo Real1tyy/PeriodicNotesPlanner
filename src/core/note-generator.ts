@@ -19,6 +19,7 @@ import { ORDERED_PERIOD_TYPES, PERIOD_CONFIG } from "../types";
 import {
 	createPeriodInfo,
 	formatPeriodName,
+	getEndOfPeriod,
 	getNextPeriod,
 	getPreviousPeriod,
 	getStartOfPeriod,
@@ -37,6 +38,7 @@ import {
 	isPeriodTypeEnabled,
 } from "../utils/period-navigation";
 import { getHoursForPeriodType, roundHours } from "../utils/time-budget-utils";
+import { generateBasesMarkdown } from "./bases";
 
 type Frontmatter = Record<string, unknown>;
 
@@ -94,8 +96,7 @@ export class NoteGenerator {
 			});
 
 			await this.writeFrontmatter(file, dt, periodType);
-			await this.writeTimeBudgetBlock(file, periodType);
-			await this.writePdfContent(file, filePath);
+			await this.writeNoteContent(file, dt, periodType, filePath);
 
 			return { success: true, filePath, alreadyExists: false };
 		} catch (error) {
@@ -168,18 +169,84 @@ export class NoteGenerator {
 		});
 	}
 
-	private async writeTimeBudgetBlock(file: TFile, periodType: PeriodType): Promise<void> {
+	private async writeNoteContent(file: TFile, dt: DateTime, periodType: PeriodType, filePath: string): Promise<void> {
+		const currentContent = await this.app.vault.read(file);
+		const contentParts: string[] = [];
+
+		const timeBudgetBlock = await this.buildTimeBudgetBlock(file, periodType);
+		if (timeBudgetBlock) {
+			contentParts.push(timeBudgetBlock);
+		}
+
+		const basesBlock = this.buildBasesBlock(dt, periodType);
+		if (basesBlock) {
+			contentParts.push(basesBlock);
+		}
+
+		const pdfBlock = this.buildPdfBlock(filePath);
+		if (pdfBlock) {
+			contentParts.push(pdfBlock);
+		}
+
+		if (contentParts.length > 0) {
+			const additionalContent = contentParts.join("");
+			await this.app.vault.modify(file, currentContent + additionalContent);
+		}
+	}
+
+	private async buildTimeBudgetBlock(file: TFile, periodType: PeriodType): Promise<string | null> {
 		if (!this.settings.generation.autoInsertCodeBlock) {
-			return;
+			return null;
 		}
 
 		const inheritedAllocations = await this.getInheritedAllocations(file, periodType);
-		const content = await this.app.vault.read(file);
-		const updatedContent = this.insertCodeBlockAfterFrontmatter(content, inheritedAllocations);
+		return this.formatTimeBudgetBlock(inheritedAllocations);
+	}
 
-		if (updatedContent !== content) {
-			await this.app.vault.modify(file, updatedContent);
+	private formatTimeBudgetBlock(allocations: TimeAllocation[]): string {
+		const allocContent = serializeAllocations(allocations, this.settings.categories);
+
+		let blockContent = "";
+		if (this.settings.generation.includePlanHeading && this.settings.generation.planHeadingContent) {
+			blockContent += `${this.settings.generation.planHeadingContent}\n\n`;
 		}
+		blockContent += `\`\`\`periodic-planner\n${allocContent}\n\`\`\`\n\n`;
+
+		return blockContent;
+	}
+
+	private buildBasesBlock(dt: DateTime, periodType: PeriodType): string | null {
+		const gen = this.settings.generation;
+		const basesSettings = this.settings.basesView;
+
+		if (!gen.includeBasesInGeneration || !basesSettings.tasksDirectory) {
+			return null;
+		}
+
+		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey] as string;
+		const periodStart = getStartOfPeriod(dt, periodType);
+		const periodEnd = getEndOfPeriod(dt, periodType);
+		const periodName = formatPeriodName(periodStart, format);
+
+		const basesMarkdown = generateBasesMarkdown({
+			periodType,
+			periodName,
+			periodStart,
+			periodEnd,
+			settings: basesSettings,
+		});
+
+		return `${gen.basesHeading}\n${basesMarkdown}\n`;
+	}
+
+	private buildPdfBlock(filePath: string): string | null {
+		const gen = this.settings.generation;
+		if (!gen.includePdfContent) {
+			return null;
+		}
+
+		const pdfPath = getPdfPath(filePath);
+		return `${gen.pdfContentHeader}\n\n![[${pdfPath}]]`;
 	}
 
 	async ensureTimeBudgetBlock(file: TFile, periodType: PeriodType): Promise<void> {
@@ -324,16 +391,5 @@ export class NoteGenerator {
 		}
 
 		return links;
-	}
-
-	private async writePdfContent(file: TFile, filePath: string): Promise<void> {
-		const gen = this.settings.generation;
-		if (!gen.includePdfContent) return;
-
-		const pdfPath = getPdfPath(filePath);
-		const content = `${gen.pdfContentHeader}\n\n![[${pdfPath}]]`;
-
-		const currentContent = await this.app.vault.read(file);
-		await this.app.vault.modify(file, currentContent + content);
 	}
 }

@@ -271,5 +271,47 @@ export class GenerationSettings {
 						}));
 					});
 			});
+
+		new Setting(containerEl).setName("Bases view embedding").setHeading();
+
+		containerEl.createEl("p", {
+			text: "Automatically embed Bases task view in newly generated periodic notes.",
+			cls: "setting-item-description",
+		});
+
+		new Setting(containerEl)
+			.setName("Include Bases view in generation")
+			.setDesc("Automatically add Bases task filtering view to newly generated periodic notes")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.settingsStore.currentSettings.generation.includeBasesInGeneration)
+					.onChange(async (value) => {
+						await this.settingsStore.updateSettings((s) => ({
+							...s,
+							generation: {
+								...s.generation,
+								includeBasesInGeneration: value,
+							},
+						}));
+					});
+			});
+
+		new Setting(containerEl)
+			.setName("Bases heading")
+			.setDesc("The Markdown heading to add above the Bases view (e.g., ## Bases)")
+			.addText((text) => {
+				text
+					.setPlaceholder(SETTINGS_DEFAULTS.BASES_HEADING)
+					.setValue(this.settingsStore.currentSettings.generation.basesHeading)
+					.onChange(async (value) => {
+						await this.settingsStore.updateSettings((s) => ({
+							...s,
+							generation: {
+								...s.generation,
+								basesHeading: value || SETTINGS_DEFAULTS.BASES_HEADING,
+							},
+						}));
+					});
+			});
 	}
 }

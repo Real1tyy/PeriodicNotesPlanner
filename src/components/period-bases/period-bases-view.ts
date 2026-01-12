@@ -2,11 +2,11 @@ import { RegisteredEventsComponent } from "@real1ty-obsidian-plugins/utils";
 import { type App, Component, MarkdownRenderer } from "obsidian";
 import type { Subscription } from "rxjs";
 import { PERIOD_TYPE_LABELS } from "../../constants";
+import { generateBasesMarkdown } from "../../core/bases";
 import type { PeriodIndex } from "../../core/period-index";
 import type { SettingsStore } from "../../core/settings-store";
 import type { IndexedPeriodNote } from "../../types";
 import { cls } from "../../utils/css";
-import { formatPeriodIntervalForBases } from "../../utils/date-utils";
 
 /**
  * Bases view component that filters tasks by period interval
@@ -89,53 +89,16 @@ export class PeriodBasesView extends RegisteredEventsComponent {
 
 	private async renderBasesView(periodNote: IndexedPeriodNote, container: HTMLElement): Promise<void> {
 		const settings = this.settingsStore.currentSettings.basesView;
-		const { tasksDirectory, dateProperty, propertiesToShow } = settings;
 
-		const orderSection = this.buildOrderSection(propertiesToShow, dateProperty);
-
-		const { start: startDateWithoutTz, end: endDateWithoutTz } = formatPeriodIntervalForBases(
-			periodNote.periodStart,
-			periodNote.periodEnd
-		);
-
-		const basesMarkdown = `
-\`\`\`base
-views:
-  - type: table
-    name: ${PERIOD_TYPE_LABELS[periodNote.periodType]} Tasks${orderSection}
-    filters:
-      and:
-        - file.inFolder("${tasksDirectory}")
-        - ${dateProperty} > "${startDateWithoutTz}"
-        - ${dateProperty} < "${endDateWithoutTz}"
-    sort:
-      - ${dateProperty}: desc
-\`\`\`
-`;
+		const basesMarkdown = generateBasesMarkdown({
+			periodType: periodNote.periodType,
+			periodName: periodNote.noteName,
+			periodStart: periodNote.periodStart,
+			periodEnd: periodNote.periodEnd,
+			settings,
+		});
 
 		await MarkdownRenderer.render(this.app, basesMarkdown, container, periodNote.filePath, this.component);
-	}
-
-	private buildOrderSection(propertiesToShow: string, dateProperty: string): string {
-		const properties = new Set<string>();
-
-		properties.add("file.name");
-		properties.add(dateProperty);
-		if (propertiesToShow && propertiesToShow.trim() !== "") {
-			const userProperties = propertiesToShow
-				.split(",")
-				.map((p) => p.trim())
-				.filter((p) => p.length > 0);
-			for (const prop of userProperties) {
-				properties.add(prop);
-			}
-		}
-		const orderArray = Array.from(properties)
-			.map((prop) => `      - ${prop}`)
-			.join("\n");
-		return `
-    order:
-${orderArray}`;
 	}
 
 	private renderEmptyState(message: string): void {
@@ -146,7 +109,6 @@ ${orderArray}`;
 	}
 
 	async updateActiveFile(): Promise<void> {
-		this.lastFilePath = null;
 		await this.render();
 	}
 

@@ -35,14 +35,6 @@ export class PeriodBasesItemView extends ItemView {
 		this.basesView = new PeriodBasesView(this.app, this.contentEl, this.plugin.settingsStore, this.plugin.periodIndex);
 
 		this.registerEvent(
-			this.app.workspace.on("file-open", async () => {
-				if (this.basesView) {
-					await this.basesView.updateActiveFile();
-				}
-			})
-		);
-
-		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", async () => {
 				if (this.basesView) {
 					await this.basesView.updateActiveFile();

@@ -4,7 +4,6 @@ import { Notice, Plugin, TFile } from "obsidian";
 import CHANGELOG_CONTENT from "../docs-site/docs/changelog.md";
 import { ActivityWatchBlockRenderer } from "./components/activity-watch/activity-watch-block";
 import { PeriodBasesItemView, VIEW_TYPE_PERIOD_BASES } from "./components/period-bases/period-bases-item-view";
-import { PeriodBasesModal } from "./components/period-bases/period-bases-modal";
 import { PeriodChildrenBasesModal } from "./components/period-children/bases-modal";
 import { TimeBudgetBlockRenderer } from "./components/time-budget";
 import type { PeriodType } from "./constants";
@@ -275,26 +274,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 						settings.properties,
 						settings.generation
 					).open();
-				}
-				return true;
-			},
-		});
-
-		this.addCommand({
-			id: "open-period-bases-view",
-			name: "Open Bases view for current period",
-			checkCallback: (checking) => {
-				const settings = this.settingsStore.currentSettings;
-				if (!settings.basesView.tasksDirectory) return false;
-
-				const file = this.app.workspace.getActiveFile();
-				if (!file) return false;
-
-				const entry = this.periodIndex.getEntryForFile(file);
-				if (!entry) return false;
-
-				if (!checking) {
-					new PeriodBasesModal(this.app, entry, settings.basesView).open();
 				}
 				return true;
 			},

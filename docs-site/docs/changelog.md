@@ -14,11 +14,13 @@ All notable changes to this project will be documented here.
 
 - **Bases Plugin Integration**: Seamlessly filter and view tasks by period intervals using the Bases plugin. [Learn more](/features/bases-integration)
   - **Period Tasks Sidebar**: Persistent sidebar view that automatically filters tasks based on the current periodic note
+  - **Inline Generation**: Automatically embed Bases views in newly generated periodic notes (configurable)
   - **Automatic Date Filtering**: Tasks are filtered by the period's date range (daily, weekly, monthly, quarterly, yearly)
   - **Configurable Task Directory**: Set your tasks folder path in settings
   - **Custom Date Property**: Configure which frontmatter property to use for task dates
   - **Flexible Display**: Choose which additional properties to show in the task table
   - **Ribbon Icon Toggle**: Optional ribbon icon for quick access (configurable in settings)
+  - **Generation Settings**: Toggle Bases view embedding and customize heading in Generation tab
 
 - **Configurable Ribbon Icon**: New setting to show/hide the Period Tasks ribbon icon (default: enabled)
   - Toggle in Settings → Bases → Show ribbon icon
