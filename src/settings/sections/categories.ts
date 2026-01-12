@@ -44,17 +44,13 @@ export class CategoriesSection implements SettingsSection {
 		this.categoriesContainer = containerEl.createDiv({ cls: cls("categories-list") });
 		this.renderCategories(this.categoriesContainer);
 
-		if (this.categoryTracker) {
-			this.trackerSubscription = this.categoryTracker.events$.subscribe(() => {
-				if (this.categoriesContainer) {
-					this.renderCategories(this.categoriesContainer);
-				}
-			});
-		}
+		this.trackerSubscription = this.categoryTracker.events$.subscribe(() => {
+			if (this.categoriesContainer) {
+				this.renderCategories(this.categoriesContainer);
+			}
+		});
 
-		if (this.globalStatsAggregator) {
-			this.renderGlobalStatisticsSummary(containerEl);
-		}
+		this.renderGlobalStatisticsSummary(containerEl);
 	}
 
 	private renderGlobalStatisticsSummary(containerEl: HTMLElement): void {
@@ -67,17 +63,16 @@ export class CategoriesSection implements SettingsSection {
 
 		this.statisticsContainer = containerEl.createDiv({ cls: cls("global-statistics") });
 
-		const statistics = this.globalStatsAggregator?.getStatistics();
+		const statistics = this.globalStatsAggregator.getStatistics();
 		if (statistics) {
 			this.renderPieChartSummary(statistics);
 		}
 
-		this.statsSubscription =
-			this.globalStatsAggregator?.events$.subscribe((event) => {
-				if (event.type === "statistics-updated") {
-					this.renderPieChartSummary(event.statistics);
-				}
-			}) ?? null;
+		this.statsSubscription = this.globalStatsAggregator.events$.subscribe((event) => {
+			if (event.type === "statistics-updated") {
+				this.renderPieChartSummary(event.statistics);
+			}
+		});
 	}
 
 	private renderPieChartSummary(statistics: GlobalStatistics): void {
@@ -137,7 +132,7 @@ export class CategoriesSection implements SettingsSection {
 		containerEl.empty();
 
 		const categories = this.settingsStore.currentSettings.categories;
-		const trackedCategories = this.categoryTracker?.getCategories() || new Map();
+		const trackedCategories = this.categoryTracker.getCategories();
 
 		if (categories.length === 0 && trackedCategories.size === 0) {
 			containerEl.createEl("p", {
@@ -147,7 +142,7 @@ export class CategoriesSection implements SettingsSection {
 			return;
 		}
 
-		const statistics = this.globalStatsAggregator?.getStatistics();
+		const statistics = this.globalStatsAggregator.getStatistics();
 		const statsMap = new Map(statistics?.categoryStats.map((s) => [s.categoryName, s]) ?? []);
 
 		const allCategoryNames = new Set<string>();
