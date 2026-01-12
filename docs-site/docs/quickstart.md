@@ -18,6 +18,8 @@ You'll see several tabs for configuration:
 - **Categories** - Define your time investment categories
 - **Properties** - Customize frontmatter property names
 - **Generation** - Control auto-generation behavior
+- **Integrations** - ActivityWatch and Templater integration
+- **Bases** - Task filtering with Bases plugin (optional)
 
 ## Step 2: Configure folders
 

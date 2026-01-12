@@ -12,6 +12,19 @@ All notable changes to this project will be documented here.
 
 ### New Features
 
+- **Bases Plugin Integration**: Seamlessly filter and view tasks by period intervals using the Bases plugin. [Learn more](/features/bases-integration)
+  - **Period Tasks Sidebar**: Persistent sidebar view that automatically filters tasks based on the current periodic note
+  - **Automatic Date Filtering**: Tasks are filtered by the period's date range (daily, weekly, monthly, quarterly, yearly)
+  - **Configurable Task Directory**: Set your tasks folder path in settings
+  - **Custom Date Property**: Configure which frontmatter property to use for task dates
+  - **Flexible Display**: Choose which additional properties to show in the task table
+  - **Ribbon Icon Toggle**: Optional ribbon icon for quick access (configurable in settings)
+
+- **Configurable Ribbon Icon**: New setting to show/hide the Period Tasks ribbon icon (default: enabled)
+  - Toggle in Settings → Bases → Show ribbon icon
+  - Dynamically shows/hides without requiring restart
+  - Uses "list-checks" icon in left sidebar
+
 - **What's New Modal**: The plugin now automatically displays a "What's New" modal when you update to a new version
   - Shows changelog content highlighting new features and improvements
   - Displays only once per version update

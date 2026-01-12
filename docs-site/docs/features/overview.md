@@ -141,4 +141,16 @@ View all child periods for a given period:
 
 **Learn more:** [Period Children](/features/period-children)
 
+## 🗂️ Bases Integration
+
+Filter and view tasks by period intervals using the Bases plugin:
+
+- **Sidebar View** - Persistent task filtering in sidebar
+- **Modal View** - Quick popup for current period tasks
+- **Auto-Filtering** - Tasks filtered by period date range
+- **Configurable** - Customize task directory, date property, and display columns
+- **Ribbon Icon** - Optional quick-access icon (configurable)
+
+**Learn more:** [Bases Integration](/features/bases-integration)
+
 ---

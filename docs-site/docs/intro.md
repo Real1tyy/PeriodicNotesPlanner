@@ -28,6 +28,7 @@ Periodix-Planner combines:
 - **⏱️ Time Budget System** - Allocate and track time across categories with visual feedback
 - **📊 Visual Statistics** - Pie charts and tables showing time allocation and budget status
 - **🎨 Category Management** - Organize your time investments with custom categories and colors
+- **🗂️ Bases Integration** - Filter tasks by period intervals using the Bases plugin (optional)
 
 ## ✨ Key Features
 
@@ -109,6 +110,11 @@ See the [Installation Guide](/installation) and [Quick Start Guide](/quickstart)
 - Allocate dedicated hours to learning
 - Track progress toward time-based goals
 - Adjust allocations based on priorities
+
+### Task Management
+- Filter tasks by period with Bases plugin integration
+- View weekly/monthly tasks automatically
+- Track deadlines within period contexts
 
 ### Business Planning
 - Quarterly OKR time budgets

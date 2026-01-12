@@ -16,6 +16,8 @@ Access settings via **Settings** → **Periodix-Planner**. The settings are orga
 - **Categories** - Define time investment categories
 - **Properties** - Customize frontmatter property names
 - **Generation** - Control auto-generation behavior
+- **Integrations** - Configure ActivityWatch and Templater
+- **Bases** - Configure Bases plugin integration for task filtering
 
 ## Folders Tab
 
@@ -135,6 +137,37 @@ Select which period types to generate and track. Disabled periods will be skippe
 **Example:** If you disable weekly notes, daily notes will link directly to monthly notes as their parent, and monthly notes will show daily notes as children.
 
 [Learn more about note generation](/features/note-generation) and [note interconnection](/features/note-interconnection)
+
+## Bases Tab
+
+Configure integration with the Bases plugin for filtering tasks by period intervals. [Learn more about Bases integration](/features/bases-integration)
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Tasks directory** | Path to your tasks folder (e.g., `Tasks`) | Empty |
+| **Date property** | Frontmatter property name for task dates | `Date` |
+| **Properties to show** | Comma-separated list of additional properties to display | Empty |
+| **Show ribbon icon** | Display ribbon icon in left sidebar for quick access | `true` |
+
+**How it works:**
+- Automatically filters tasks from your tasks directory based on the current period's date range
+- Works with all period types (daily, weekly, monthly, quarterly, yearly)
+- Provides both a sidebar view and modal view for task filtering
+- Updates automatically when switching between periodic notes
+
+**Example setup:**
+```yaml
+Tasks directory: Tasks
+Date property: due
+Properties to show: status,priority,tags
+```
+
+This configuration:
+- Filters tasks from the `Tasks` folder
+- Uses the `due` frontmatter property for date filtering
+- Displays status, priority, and tags columns in the table
+
+[Learn more about Bases integration](/features/bases-integration)
 
 ---
 
