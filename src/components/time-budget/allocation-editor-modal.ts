@@ -1,9 +1,16 @@
 import { type App, Modal, Notice } from "obsidian";
+import type { PeriodType } from "src/constants";
 import { getDefaultCategoryColor } from "src/utils/color-utils";
 import { AllocationState } from "../../core/allocation-state";
-import type { Category, TimeAllocation } from "../../types";
+import type { Category, PeriodicPlannerSettings, TimeAllocation } from "../../types";
 import { addCls, cls, removeCls, setCssVar, upsertElement } from "../../utils/css";
-import { calculatePercentage, fillAllocationsFromParent, formatHours, roundHours } from "../../utils/time-budget-utils";
+import {
+	calculatePercentage,
+	fillAllocationsFromParent,
+	formatHours,
+	formatInputValue,
+	roundHours,
+} from "../../utils/time-budget-utils";
 import { ActionButton } from "../shared/action-button";
 import { HorizontalDragController } from "../shared/horizontal-drag-controller";
 import type { CategoryBudgetInfo } from "./parent-budget-tracker";
@@ -43,6 +50,7 @@ export class AllocationEditorModal extends Modal {
 	private typingInputs = new Set<string>();
 	private summaryAllocatedValue: HTMLElement | null = null;
 	private summaryRemainingValue: HTMLElement | null = null;
+	private hideUnusedCategories: boolean;
 
 	constructor(
 		app: App,
@@ -50,11 +58,14 @@ export class AllocationEditorModal extends Modal {
 		initialAllocations: TimeAllocation[],
 		private totalHoursAvailable: number,
 		private parentBudgets: Map<string, CategoryBudgetInfo>,
-		private childBudgets: Map<string, CategoryBudgetInfo>
+		private childBudgets: Map<string, CategoryBudgetInfo>,
+		private periodType: PeriodType,
+		private settings: PeriodicPlannerSettings
 	) {
 		super(app);
 		this.state = new AllocationState(initialAllocations);
 		this.state.saveState();
+		this.hideUnusedCategories = this.shouldHideUnusedByDefault();
 	}
 
 	async openAndWait(): Promise<AllocationEditorResult> {
@@ -62,6 +73,30 @@ export class AllocationEditorModal extends Modal {
 			this.resolvePromise = resolve;
 			this.open();
 		});
+	}
+
+	private shouldHideUnusedByDefault(): boolean {
+		if (this.periodType === "yearly") {
+			return false;
+		}
+		return this.settings.timeBudget.hideUnusedCategoriesInEditor;
+	}
+
+	private shouldShowHideUnusedCheckbox(): boolean {
+		return this.periodType !== "yearly";
+	}
+
+	private shouldShowCategory(categoryName: string): boolean {
+		if (!this.hideUnusedCategories) {
+			return true;
+		}
+
+		const currentAllocation = this.state.allocations.get(categoryName) ?? 0;
+		const parentBudget = this.parentBudgets.get(categoryName);
+		if (currentAllocation > 0 || (parentBudget && parentBudget.total > 0)) {
+			return true;
+		}
+		return false;
 	}
 
 	onOpen(): void {
@@ -100,18 +135,6 @@ export class AllocationEditorModal extends Modal {
 
 		const summaryControls = summary.createDiv({ cls: cls("summary-controls") });
 
-		if (this.parentBudgets.size > 0) {
-			const fillFromParentBtn = summaryControls.createEl("button", {
-				text: "Fill parent",
-				cls: cls("fill-from-parent-btn"),
-			});
-			fillFromParentBtn.addEventListener("click", () => {
-				this.withUndoSnapshot(() => {
-					this.applyFillFromParent();
-				});
-			});
-		}
-
 		this.undoButton = new ActionButton(
 			summaryControls,
 			"Undo",
@@ -146,6 +169,49 @@ export class AllocationEditorModal extends Modal {
 			() => this.redo(),
 			() => !this.state.canRedo()
 		);
+
+		const hasParentBudgets = this.parentBudgets.size > 0;
+		const shouldShowHideUnused = this.shouldShowHideUnusedCheckbox();
+
+		if (hasParentBudgets || shouldShowHideUnused) {
+			const secondaryControls = summary.createDiv({ cls: cls("summary-secondary-controls") });
+
+			if (hasParentBudgets) {
+				const fillFromParentBtn = secondaryControls.createEl("button", {
+					text: "Fill parent",
+					cls: cls("fill-from-parent-btn"),
+				});
+				fillFromParentBtn.addEventListener("click", () => {
+					this.withUndoSnapshot(() => {
+						this.applyFillFromParent();
+					});
+				});
+			}
+
+			if (shouldShowHideUnused) {
+				const hideUnusedContainer = secondaryControls.createDiv({ cls: cls("hide-unused-container") });
+
+				const hideUnusedCheckbox = hideUnusedContainer.createEl("input", {
+					type: "checkbox",
+					cls: cls("hide-unused-checkbox"),
+				});
+				hideUnusedCheckbox.checked = this.hideUnusedCategories;
+				hideUnusedCheckbox.addEventListener("change", () => {
+					this.hideUnusedCategories = hideUnusedCheckbox.checked;
+					this.reRenderAllocationList();
+				});
+
+				const hideUnusedLabel = hideUnusedContainer.createSpan({
+					text: "Hide unused",
+					cls: cls("hide-unused-label"),
+				});
+				hideUnusedLabel.addEventListener("click", () => {
+					hideUnusedCheckbox.checked = !hideUnusedCheckbox.checked;
+					this.hideUnusedCategories = hideUnusedCheckbox.checked;
+					this.reRenderAllocationList();
+				});
+			}
+		}
 	}
 
 	private updateSummaryValues(): void {
@@ -186,7 +252,9 @@ export class AllocationEditorModal extends Modal {
 			...Array.from(this.state.allocations.keys()),
 		]);
 
-		const sortedCategoryNames = Array.from(allCategoryNames).sort((a, b) => a.localeCompare(b));
+		const sortedCategoryNames = Array.from(allCategoryNames)
+			.filter((name) => this.shouldShowCategory(name))
+			.sort((a, b) => a.localeCompare(b));
 
 		for (const categoryName of sortedCategoryNames) {
 			const category = this.categories.find((c) => c.name === categoryName) ?? {
@@ -225,10 +293,10 @@ export class AllocationEditorModal extends Modal {
 			const input = inputContainer.createEl("input", {
 				type: "number",
 				cls: cls("allocation-input"),
-				value: currentHours > 0 ? String(currentHours) : "",
+				value: formatInputValue(currentHours),
 			});
 			input.min = "0";
-			input.step = "0.5";
+			input.step = "0.001";
 			input.dataset.categoryId = categoryName;
 
 			input.addEventListener("focus", () => {
@@ -243,6 +311,7 @@ export class AllocationEditorModal extends Modal {
 						this.state.allocations.set(categoryName, value);
 					});
 					this.typingInputs.delete(categoryName);
+					input.value = formatInputValue(this.state.allocations.get(categoryName) ?? 0);
 					this.scheduleUpdate();
 				}
 			});
@@ -411,7 +480,7 @@ export class AllocationEditorModal extends Modal {
 
 		if (!Number.isNaN(hours)) {
 			this.state.allocations.set(this.dragCategoryId, hours);
-			refs.input.value = hours > 0 ? String(hours) : "";
+			refs.input.value = formatInputValue(hours);
 
 			this.updateAllocationItemStates();
 			this.updateSummaryValues();
@@ -439,7 +508,7 @@ export class AllocationEditorModal extends Modal {
 
 			const refs = this.rowRefs.get(categoryId);
 			if (refs) {
-				refs.input.value = hours > 0 ? String(hours) : "";
+				refs.input.value = formatInputValue(hours);
 			}
 
 			this.updateAllocationItemStates();
@@ -539,7 +608,7 @@ export class AllocationEditorModal extends Modal {
 
 	private applyValue(categoryId: string, value: number, input: HTMLInputElement): void {
 		this.state.allocations.set(categoryId, value);
-		input.value = value > 0 ? String(value) : "";
+		input.value = formatInputValue(value);
 		this.focusedCategoryId = categoryId;
 		this.updateViewsWithFocusPreservation();
 	}
@@ -712,10 +781,8 @@ export class AllocationEditorModal extends Modal {
 
 		this.focusedCategoryId = categoryName;
 
-		this.saveScrollPosition();
-		this.renderAllocationList();
+		this.reRenderAllocationList();
 		this.renderSummary();
-		this.restoreScrollPosition();
 		this.scrollToFocusedCategory();
 
 		new Notice(`Category "${categoryName}" added. Assign time to save it.`);
@@ -808,6 +875,12 @@ export class AllocationEditorModal extends Modal {
 		}
 	}
 
+	private reRenderAllocationList(): void {
+		this.saveScrollPosition();
+		this.renderAllocationList();
+		this.restoreScrollPosition();
+	}
+
 	private scrollToFocusedCategory(): void {
 		if (!this.focusedCategoryId) return;
 
@@ -820,10 +893,8 @@ export class AllocationEditorModal extends Modal {
 	private executeHistoryOperation(operation: () => Map<string, number> | null): void {
 		const state = operation();
 		if (state) {
-			this.saveScrollPosition();
-			this.renderAllocationList();
+			this.reRenderAllocationList();
 			this.renderSummary();
-			this.restoreScrollPosition();
 		}
 		this.undoButton?.update();
 		this.redoButton?.update();
@@ -850,9 +921,7 @@ export class AllocationEditorModal extends Modal {
 			this.state.allocations.set(allocation.categoryName, allocation.hours);
 		}
 
-		this.saveScrollPosition();
-		this.renderAllocationList();
+		this.reRenderAllocationList();
 		this.renderSummary();
-		this.restoreScrollPosition();
 	}
 }

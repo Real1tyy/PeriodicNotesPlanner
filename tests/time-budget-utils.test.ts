@@ -16,6 +16,7 @@ describe("Time Budget Utilities", () => {
 	const defaultSettings: TimeBudgetSettings = {
 		hoursPerWeek: 40,
 		autoInheritParentPercentages: false,
+		hideUnusedCategoriesInEditor: true,
 	};
 
 	describe("calculateHoursForPeriods", () => {
@@ -30,7 +31,11 @@ describe("Time Budget Utilities", () => {
 		});
 
 		it("should handle different weekly hours", () => {
-			const settings: TimeBudgetSettings = { hoursPerWeek: 60, autoInheritParentPercentages: false };
+			const settings: TimeBudgetSettings = {
+				hoursPerWeek: 60,
+				autoInheritParentPercentages: false,
+				hideUnusedCategoriesInEditor: true,
+			};
 			const result = calculateHoursForPeriods(settings);
 
 			expect(result.weekly).toBe(60);

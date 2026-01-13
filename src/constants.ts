@@ -87,6 +87,9 @@ export const SETTINGS_DEFAULTS = {
 	// ===== Auto-Inherit Settings =====
 	AUTO_INHERIT_PARENT_PERCENTAGES: false,
 
+	// ===== Allocation Editor Settings =====
+	HIDE_UNUSED_CATEGORIES_IN_EDITOR: true,
+
 	// ===== ActivityWatch Settings =====
 	ENABLE_ACTIVITY_WATCH: false,
 	ACTIVITY_WATCH_URL: "http://localhost:5600",

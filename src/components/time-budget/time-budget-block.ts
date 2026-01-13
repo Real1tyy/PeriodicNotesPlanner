@@ -466,7 +466,9 @@ export class TimeBudgetBlockRenderer extends MarkdownRenderChild {
 				currentAllocations,
 				totalHours,
 				parentBudgets,
-				childBudgets
+				childBudgets,
+				periodType,
+				this.settingsStore.currentSettings
 			);
 
 			void modal.openAndWait().then((result) => {

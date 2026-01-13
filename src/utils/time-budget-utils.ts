@@ -10,6 +10,14 @@ export function formatHours(hours: number): string {
 	return roundHours(hours).toFixed(2);
 }
 
+export function formatInputValue(hours: number): string {
+	if (hours <= 0) {
+		return "";
+	}
+	const rounded = Math.round(hours * 1000) / 1000;
+	return rounded.toString();
+}
+
 export function formatSecondsToHours(seconds: number): string {
 	return (seconds / 3600).toFixed(2);
 }

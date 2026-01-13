@@ -164,6 +164,12 @@ export class PeriodicSection implements SettingsSection {
 			desc: "When enabled, opening the allocation editor for a child period with no categories will automatically fill allocations based on the parent period's percentage distribution.",
 		});
 
+		this.uiBuilder.addToggle(containerEl, {
+			key: "timeBudget.hideUnusedCategoriesInEditor",
+			name: "Hide unused categories by default",
+			desc: "In the allocation editor, hide categories with no allocation from parent periods (except for yearly). Can be toggled in the editor.",
+		});
+
 		this.addCalculatedValues(containerEl);
 	}
 

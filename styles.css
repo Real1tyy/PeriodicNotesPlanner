@@ -785,6 +785,38 @@
 	margin-bottom: 8px;
 }
 
+.periodic-planner-summary-secondary-controls {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin-bottom: 8px;
+	padding-top: 4px;
+}
+
+.periodic-planner-hide-unused-container {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 8px;
+	border-radius: 6px;
+	background: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+}
+
+.periodic-planner-hide-unused-checkbox {
+	cursor: pointer;
+	margin: 0;
+}
+
+.periodic-planner-hide-unused-label {
+	cursor: pointer;
+	font-size: 13px;
+	color: var(--text-normal);
+	user-select: none;
+	white-space: nowrap;
+}
+
 .periodic-planner-summary-stats {
 	display: flex;
 	justify-content: center;

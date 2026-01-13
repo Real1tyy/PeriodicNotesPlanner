@@ -12,6 +12,12 @@ All notable changes to this project will be documented here.
 
 ### New Features
 
+- **Improved Input Precision in Allocation Editor**: Enhanced number input handling
+  - **3 decimal places**: Input fields now support up to 3 decimal places (e.g., `8.125` hours)
+  - **Auto-formatting**: Values automatically format to show maximum 3 decimals when you finish typing
+  - **Precise calculations**: Behind the scenes, values are stored with full precision
+  - **Better UX**: Cleaner display while maintaining calculation accuracy
+
 - **Hide Unused Categories in Allocation Editor**: Reduce clutter by hiding categories with no parent budget allocation
   - **Configurable default**: Toggle default behavior in settings (Time Budget section)
   - **Per-session toggle**: "Hide unused" checkbox in the allocation editor header

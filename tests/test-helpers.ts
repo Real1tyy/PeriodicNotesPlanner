@@ -26,6 +26,7 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 	timeBudget: {
 		hoursPerWeek: 40,
 		autoInheritParentPercentages: false,
+		hideUnusedCategoriesInEditor: true,
 	},
 	properties: {
 		previousProp: SETTINGS_DEFAULTS.PREVIOUS_PROP,

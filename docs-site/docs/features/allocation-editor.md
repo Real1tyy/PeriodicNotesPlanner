@@ -35,7 +35,7 @@ The Allocation Editor allows you to:
 
 At the top of the editor, you'll see:
 
-- **Hide unused** checkbox: Toggle visibility of categories without parent budget allocation (only for non-yearly periods)
+- **Hide unused** checkbox: Toggle visibility of categories without parent budget allocation (non-yearly periods only). Default state is configurable in settings.
 - **Fill parent** button: Inherit allocations from parent period (only shown if parent exists)
 - **Undo** button: Revert recent changes
 - **Allocated**: Total hours allocated across all categories
@@ -94,12 +94,13 @@ Add categories without leaving the editor:
 Type hours directly in the input field:
 
 1. Click the input field
-2. Type the number of hours (e.g., `8`)
+2. Type the number of hours (e.g., `8.5` or `8.125`)
 3. Press Enter or click away
 4. Allocation updates automatically
 
 **Features:**
-- Supports decimals (e.g., `8.5`)
+- Supports up to 3 decimal places (e.g., `8.125`)
+- Auto-formats on blur to show maximum 3 decimals
 - Auto-updates on input
 - Validates against total available hours
 
