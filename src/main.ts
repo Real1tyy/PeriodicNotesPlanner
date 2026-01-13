@@ -50,7 +50,6 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 		this.addSettingTab(new PeriodicPlannerSettingsTab(this.app, this));
 		this.registerCommands();
-		this.registerVaultEvents();
 		this.updateRibbonIcon();
 
 		const settingsSubscription = this.settingsStore.settings$.subscribe(() => {
@@ -60,7 +59,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 			settingsSubscription.unsubscribe();
 		});
 
-		this.initializePlugin();
+		await this.initializePlugin();
 	}
 
 	onunload() {
@@ -122,6 +121,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 		await this.indexer.start();
 
+		this.registerVaultEvents();
 		this.registerView(VIEW_TYPE_PERIOD_BASES, (leaf) => new PeriodBasesItemView(leaf, this));
 		this.registerCodeBlockProcessor();
 
@@ -199,11 +199,13 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async refreshActiveNote(file: TFile): Promise<void> {
+		if (!this.indexer || !this.periodIndex) return;
 		await this.indexer.refreshFile(file);
 		await this.ensurePeriodicNoteComplete(file);
 	}
 
 	private async ensurePeriodicNoteComplete(file: TFile): Promise<void> {
+		if (!this.periodIndex) return;
 		const entry = this.periodIndex.getEntryForFile(file);
 		if (!entry) return;
 
