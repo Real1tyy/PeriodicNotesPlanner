@@ -1,5 +1,5 @@
+import { createHistory } from "@real1ty-obsidian-plugins/utils";
 import type { TimeAllocation } from "../types";
-import { createHistory } from "./history";
 
 export class AllocationState {
 	allocations = new Map<string, number>();
