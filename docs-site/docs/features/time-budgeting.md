@@ -72,6 +72,19 @@ The time budget block displays pie charts and allocation tables showing category
 
 ## Advanced Features
 
+### Time Budget Sorting {#time-budget-sorting}
+
+Control how categories are displayed in the time budget table.
+
+- **Configure in settings:** Settings → Time budget → "Default time budget sorting"
+- **Options:**
+  - **Hours (highest first)** - Default, shows most time-intensive categories at the top
+  - **Hours (lowest first)** - Shows least allocated categories first
+  - **Category (A-Z)** - Alphabetical sort ascending
+  - **Category (Z-A)** - Alphabetical sort descending
+
+The sorting applies to all time budget tables in your periodic notes and updates when you change the setting.
+
 ### Hide Unused Categories {#hide-unused-categories}
 
 Reduce clutter in the Allocation Editor by hiding categories with no parent budget allocation.

@@ -170,6 +170,18 @@ export class PeriodicSection implements SettingsSection {
 			desc: "In the allocation editor, hide categories with no allocation from parent periods (except for yearly). Can be toggled in the editor.",
 		});
 
+		this.uiBuilder.addDropdown(containerEl, {
+			key: "timeBudget.sortBy",
+			name: "Default time budget sorting",
+			desc: "Choose how categories are sorted in the time budget table by default",
+			options: {
+				"hours-desc": "Hours (highest first)",
+				"hours-asc": "Hours (lowest first)",
+				"category-desc": "Category (Z-A)",
+				"category-asc": "Category (A-Z)",
+			},
+		});
+
 		this.addCalculatedValues(containerEl);
 	}
 

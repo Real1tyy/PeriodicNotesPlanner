@@ -8,6 +8,20 @@ All notable changes to this project will be documented here.
 
 ---
 
+## 1.5.0
+
+### New Features
+
+- **Configurable Time Budget Sorting**: Choose how categories are displayed in time budget tables
+  - **Hours (highest first)**: Default - Shows most time-intensive categories at the top
+  - **Hours (lowest first)**: Shows least allocated categories first
+  - **Category (A-Z)**: Alphabetical sort ascending
+  - **Category (Z-A)**: Alphabetical sort descending
+  - **Configure in settings**: Settings → Time budget → "Default time budget sorting"
+  - **Applies to all time budgets**: Sorting is consistent across all periodic notes
+
+---
+
 ## 1.4.0
 
 ### New Features

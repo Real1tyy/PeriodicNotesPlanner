@@ -70,6 +70,9 @@ export const TimeBudgetSettingsSchema = z
 		hoursPerWeek: z.number().int().positive().max(168).catch(SETTINGS_DEFAULTS.HOURS_PER_WEEK),
 		autoInheritParentPercentages: z.boolean().catch(SETTINGS_DEFAULTS.AUTO_INHERIT_PARENT_PERCENTAGES),
 		hideUnusedCategoriesInEditor: z.boolean().catch(SETTINGS_DEFAULTS.HIDE_UNUSED_CATEGORIES_IN_EDITOR),
+		sortBy: z
+			.enum(["hours-desc", "hours-asc", "category-desc", "category-asc"])
+			.catch(SETTINGS_DEFAULTS.TIME_BUDGET_SORT_BY),
 	})
 	.strip();
 

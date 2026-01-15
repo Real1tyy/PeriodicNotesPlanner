@@ -62,6 +62,14 @@ Configure available hours for each period type and inheritance behavior.
 |---------|-------------|---------|
 | **Hours per Week** | Base weekly hour budget for planning | `40` |
 | **Automatically inherit parent percentages** | Auto-fill child periods with parent's allocation distribution | `false` |
+| **Hide unused categories by default** | Hide categories with no parent budget in the allocation editor | `true` |
+| **Default time budget sorting** | How categories are sorted in time budget tables | `Hours (highest first)` |
+
+**Sorting options:**
+- Hours (highest first) - Shows most time-intensive categories at the top
+- Hours (lowest first) - Shows least allocated categories first
+- Category (A-Z) - Alphabetical sort ascending
+- Category (Z-A) - Alphabetical sort descending
 
 **Hours calculations:**
 - Monthly = Weekly × 4.33

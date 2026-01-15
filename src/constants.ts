@@ -21,6 +21,7 @@ export const SETTINGS_DEFAULTS = {
 
 	// ===== Time Budget Settings =====
 	HOURS_PER_WEEK: 40, // Default productive hours per week
+	TIME_BUDGET_SORT_BY: "hours-desc" as "hours-desc" | "hours-asc" | "category-desc" | "category-asc",
 	// Daily/Monthly/Quarterly/Yearly are calculated from weekly unless overridden
 
 	// ===== Frontmatter Property Names - space-cased values =====
@@ -146,3 +147,15 @@ export const PERIOD_TYPE_LABELS: Record<PeriodType, string> = {
 	quarterly: "Quarterly",
 	yearly: "Yearly",
 };
+
+/**
+ * Sort configuration mapping for time budget display
+ */
+export const TIME_BUDGET_SORT_CONFIG = {
+	"hours-desc": { column: "hours" as const, direction: "desc" as const },
+	"hours-asc": { column: "hours" as const, direction: "asc" as const },
+	"category-desc": { column: "name" as const, direction: "desc" as const },
+	"category-asc": { column: "name" as const, direction: "asc" as const },
+} as const;
+
+export type TimeBudgetSortOption = keyof typeof TIME_BUDGET_SORT_CONFIG;

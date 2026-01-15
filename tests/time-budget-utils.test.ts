@@ -17,6 +17,7 @@ describe("Time Budget Utilities", () => {
 		hoursPerWeek: 40,
 		autoInheritParentPercentages: false,
 		hideUnusedCategoriesInEditor: true,
+		sortBy: "hours-desc",
 	};
 
 	describe("calculateHoursForPeriods", () => {
@@ -35,6 +36,7 @@ describe("Time Budget Utilities", () => {
 				hoursPerWeek: 60,
 				autoInheritParentPercentages: false,
 				hideUnusedCategoriesInEditor: true,
+				sortBy: "hours-desc",
 			};
 			const result = calculateHoursForPeriods(settings);
 

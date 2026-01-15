@@ -1,6 +1,6 @@
 import { type App, type MarkdownPostProcessorContext, MarkdownRenderChild, TFile } from "obsidian";
 import type { Subscription } from "rxjs";
-import type { PeriodType } from "../../constants";
+import { type PeriodType, TIME_BUDGET_SORT_CONFIG } from "../../constants";
 import type { CategoryTracker } from "../../core/category-tracker";
 import type { PeriodIndex } from "../../core/period-index";
 import type { SettingsStore } from "../../core/settings-store";
@@ -20,8 +20,8 @@ type SortDirection = "asc" | "desc";
 
 export class TimeBudgetBlockRenderer extends MarkdownRenderChild {
 	private pieChartRenderer: PieChartRenderer | null = null;
-	private sortColumn: SortColumn = "name";
-	private sortDirection: SortDirection = "asc";
+	private sortColumn: SortColumn;
+	private sortDirection: SortDirection;
 	private tableData: {
 		allocations: TimeAllocation[];
 		categories: Category[];
@@ -45,6 +45,11 @@ export class TimeBudgetBlockRenderer extends MarkdownRenderChild {
 		private context: MarkdownPostProcessorContext
 	) {
 		super(containerEl);
+
+		const settings = this.settingsStore.currentSettings;
+		const sortConfig = TIME_BUDGET_SORT_CONFIG[settings.timeBudget.sortBy];
+		this.sortColumn = sortConfig.column;
+		this.sortDirection = sortConfig.direction;
 	}
 
 	onload(): void {
