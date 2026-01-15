@@ -117,6 +117,7 @@ export class AllocationEditorModal extends Modal {
 		if (this.debounceTimer) {
 			clearTimeout(this.debounceTimer);
 		}
+		this.commitAllTypingInputs();
 		if (this.resolvePromise) {
 			this.resolvePromise(this.result);
 		}
@@ -305,6 +306,10 @@ export class AllocationEditorModal extends Modal {
 			});
 
 			input.addEventListener("blur", () => {
+				if (this.debounceTimer) {
+					clearTimeout(this.debounceTimer);
+					this.debounceTimer = null;
+				}
 				if (this.typingInputs.has(categoryName)) {
 					this.withUndoSnapshot(() => {
 						const value = Number.parseFloat(input.value) || 0;
@@ -441,6 +446,7 @@ export class AllocationEditorModal extends Modal {
 			cls: cls("action-btn"),
 		});
 		cancelBtn.addEventListener("click", () => {
+			this.commitAllTypingInputs();
 			this.result = { allocations: [], cancelled: true };
 			this.close();
 		});
@@ -450,6 +456,7 @@ export class AllocationEditorModal extends Modal {
 			cls: cls("action-btn primary"),
 		});
 		saveBtn.addEventListener("click", () => {
+			this.commitAllTypingInputs();
 			this.result = {
 				allocations: this.getAllocationsArray(),
 				cancelled: false,
@@ -801,6 +808,7 @@ export class AllocationEditorModal extends Modal {
 
 			// If not in input, submit form
 			evt.preventDefault();
+			this.commitAllTypingInputs();
 			this.result = {
 				allocations: this.getAllocationsArray(),
 				cancelled: false,
@@ -808,6 +816,16 @@ export class AllocationEditorModal extends Modal {
 			this.close();
 			return false;
 		});
+	}
+
+	private commitAllTypingInputs(): void {
+		for (const [category, refs] of this.rowRefs) {
+			if (this.typingInputs.has(category)) {
+				const value = Number.parseFloat(refs.input.value) || 0;
+				this.state.allocations.set(category, value);
+			}
+		}
+		this.typingInputs.clear();
 	}
 
 	private withUndoSnapshot(fn: () => void): void {
