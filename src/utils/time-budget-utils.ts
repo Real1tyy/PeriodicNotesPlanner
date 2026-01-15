@@ -80,6 +80,14 @@ export function calculatePercentage(value: number, total: number): number {
 	return total > 0 ? (value / total) * 100 : 0;
 }
 
+export function formatHoursWithPercentage(hours: number, percentage: number): string {
+	return `${formatHours(hours)}h (${percentage.toFixed(1)}%)`;
+}
+
+export function formatBudgetDisplay(allocated: number, total: number, percentage: number): string {
+	return `${formatHours(allocated)}h / ${formatHours(total)}h (${percentage.toFixed(1)}%)`;
+}
+
 type BudgetStatus = "under" | "warning" | "over";
 
 export function getBudgetStatus(

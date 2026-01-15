@@ -7,7 +7,9 @@ import { addCls, cls, removeCls, setCssVar, upsertElement } from "../../utils/cs
 import {
 	calculatePercentage,
 	fillAllocationsFromParent,
+	formatBudgetDisplay,
 	formatHours,
+	formatHoursWithPercentage,
 	formatInputValue,
 	roundHours,
 } from "../../utils/time-budget-utils";
@@ -40,7 +42,6 @@ export class AllocationEditorModal extends Modal {
 	private result: AllocationEditorResult = { allocations: [], cancelled: true };
 	private resolvePromise: ((result: AllocationEditorResult) => void) | null = null;
 	private debounceTimer: ReturnType<typeof setTimeout> | null = null;
-	private focusedCategoryId: string | null = null;
 	private scrollPosition = 0;
 	private rowRefs = new Map<string, AllocationRowRefs>();
 	private dragController: HorizontalDragController | null = null;
@@ -224,12 +225,12 @@ export class AllocationEditorModal extends Modal {
 		const allocatedPercentage = calculatePercentage(totalAllocated, this.totalHoursAvailable);
 		const remainingPercentage = calculatePercentage(remaining, this.totalHoursAvailable);
 
-		this.summaryAllocatedValue.textContent = `${formatHours(totalAllocated)}h (${allocatedPercentage.toFixed(1)}%)`;
+		this.summaryAllocatedValue.textContent = formatHoursWithPercentage(totalAllocated, allocatedPercentage);
 		const statusClass = allocatedPercentage > 100 ? "over" : allocatedPercentage >= 80 ? "warning" : "under";
 		removeCls(this.summaryAllocatedValue, "status-over", "status-warning", "status-under");
 		addCls(this.summaryAllocatedValue, `status-${statusClass}`);
 
-		this.summaryRemainingValue.textContent = `${formatHours(remaining)}h (${remainingPercentage.toFixed(1)}%)`;
+		this.summaryRemainingValue.textContent = formatHoursWithPercentage(remaining, remainingPercentage);
 		if (remaining < 0) {
 			addCls(this.summaryRemainingValue, "status-over");
 		} else {
@@ -300,7 +301,6 @@ export class AllocationEditorModal extends Modal {
 			input.dataset.categoryId = categoryName;
 
 			input.addEventListener("focus", () => {
-				this.focusedCategoryId = categoryName;
 				this.typingInputs.add(categoryName);
 			});
 
@@ -360,7 +360,6 @@ export class AllocationEditorModal extends Modal {
 		}
 
 		this.restoreScrollPosition();
-		this.scrollToFocusedCategory();
 	}
 
 	private setupParentBudget(
@@ -376,11 +375,11 @@ export class AllocationEditorModal extends Modal {
 		if (isOver) {
 			addCls(parentBudgetInfo, "over-budget");
 			parentBudgetInfo.setText(
-				`⚠️ Parent: ${formatHours(parentBudget.allocated)}h / ${formatHours(parentBudget.total)}h (${parentPercentage.toFixed(1)}%)`
+				`⚠️ Parent: ${formatBudgetDisplay(parentBudget.allocated, parentBudget.total, parentPercentage)}`
 			);
 		} else {
 			parentBudgetInfo.setText(
-				`Parent: ${formatHours(parentBudget.allocated)}h / ${formatHours(parentBudget.total)}h (${parentPercentage.toFixed(1)}%)`
+				`Parent: ${formatBudgetDisplay(parentBudget.allocated, parentBudget.total, parentPercentage)}`
 			);
 		}
 
@@ -417,7 +416,7 @@ export class AllocationEditorModal extends Modal {
 		const total = childBudget.total ?? 0;
 		const percentage = calculatePercentage(allocated, total);
 		const childBudgetInfo = budgetInfoContainer.createSpan({ cls: cls("child-budget-info") });
-		childBudgetInfo.setText(`Child allocated: ${formatHours(allocated)}h (${percentage.toFixed(1)}%)`);
+		childBudgetInfo.setText(`Child allocated: ${formatHoursWithPercentage(allocated, percentage)}`);
 
 		return childBudgetInfo;
 	}
@@ -609,7 +608,6 @@ export class AllocationEditorModal extends Modal {
 	private applyValue(categoryId: string, value: number, input: HTMLInputElement): void {
 		this.state.allocations.set(categoryId, value);
 		input.value = formatInputValue(value);
-		this.focusedCategoryId = categoryId;
 		this.updateViewsWithFocusPreservation();
 	}
 
@@ -624,23 +622,12 @@ export class AllocationEditorModal extends Modal {
 	}
 
 	private updateViewsWithFocusPreservation(): void {
-		const focusedRefs = this.focusedCategoryId ? this.rowRefs.get(this.focusedCategoryId) : null;
-		const selectionStart = focusedRefs?.input.selectionStart ?? null;
-		const selectionEnd = focusedRefs?.input.selectionEnd ?? null;
-
 		this.saveScrollPosition();
 
 		this.updateSummaryValues();
 		this.updateAllocationItemStates();
 
 		this.restoreScrollPosition();
-
-		if (this.focusedCategoryId && focusedRefs) {
-			focusedRefs.input.focus();
-			if (selectionStart !== null && selectionEnd !== null) {
-				focusedRefs.input.setSelectionRange(selectionStart, selectionEnd);
-			}
-		}
 	}
 
 	private updateAllocationItemStates(): void {
@@ -665,9 +652,9 @@ export class AllocationEditorModal extends Modal {
 					removeCls(refs.parentBudgetInfo, "over-budget");
 					if (isOver) {
 						addCls(refs.parentBudgetInfo, "over-budget");
-						refs.parentBudgetInfo.textContent = `⚠️ Parent: ${formatHours(parentBudget.allocated)}h / ${formatHours(parentBudget.total)}h (${parentPercentage.toFixed(1)}%)`;
+						refs.parentBudgetInfo.textContent = `⚠️ Parent: ${formatBudgetDisplay(parentBudget.allocated, parentBudget.total, parentPercentage)}`;
 					} else {
-						refs.parentBudgetInfo.textContent = `Parent: ${formatHours(parentBudget.allocated)}h / ${formatHours(parentBudget.total)}h (${parentPercentage.toFixed(1)}%)`;
+						refs.parentBudgetInfo.textContent = `Parent: ${formatBudgetDisplay(parentBudget.allocated, parentBudget.total, parentPercentage)}`;
 					}
 				}
 
@@ -679,7 +666,7 @@ export class AllocationEditorModal extends Modal {
 					if (!refs.childBudgetInfo) {
 						refs.childBudgetInfo = refs.budgetInfoContainer.createSpan({ cls: cls("child-budget-info") });
 					}
-					refs.childBudgetInfo.textContent = `Child allocated: ${formatHours(allocated)}h (${percentage.toFixed(1)}%)`;
+					refs.childBudgetInfo.textContent = `Child allocated: ${formatHoursWithPercentage(allocated, percentage)}`;
 				} else if (refs.childBudgetInfo) {
 					refs.childBudgetInfo.remove();
 					refs.childBudgetInfo = null;
@@ -699,8 +686,6 @@ export class AllocationEditorModal extends Modal {
 	}
 
 	private showCreateCategoryInput(): void {
-		this.focusedCategoryId = null;
-
 		const existingInput = this.contentEl.querySelector<HTMLInputElement>(
 			`.${cls("create-category-input-wrapper")} input`
 		);
@@ -770,8 +755,7 @@ export class AllocationEditorModal extends Modal {
 	private createNewCategory(categoryName: string): void {
 		if (this.state.allocations.has(categoryName)) {
 			new Notice(`Category "${categoryName}" already exists`);
-			this.focusedCategoryId = categoryName;
-			this.updateViewsWithFocusPreservation();
+			this.scrollToCategoryById(categoryName);
 			return;
 		}
 
@@ -779,11 +763,10 @@ export class AllocationEditorModal extends Modal {
 			this.state.allocations.set(categoryName, 0);
 		});
 
-		this.focusedCategoryId = categoryName;
-
 		this.reRenderAllocationList();
 		this.renderSummary();
-		this.scrollToFocusedCategory();
+
+		this.scrollToCategoryById(categoryName);
 
 		new Notice(`Category "${categoryName}" added. Assign time to save it.`);
 	}
@@ -881,10 +864,8 @@ export class AllocationEditorModal extends Modal {
 		this.restoreScrollPosition();
 	}
 
-	private scrollToFocusedCategory(): void {
-		if (!this.focusedCategoryId) return;
-
-		const refs = this.rowRefs.get(this.focusedCategoryId);
+	private scrollToCategoryById(categoryId: string): void {
+		const refs = this.rowRefs.get(categoryId);
 		if (refs) {
 			refs.item.scrollIntoView({ behavior: "smooth", block: "nearest" });
 		}

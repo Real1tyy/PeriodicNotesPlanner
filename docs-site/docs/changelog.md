@@ -34,6 +34,13 @@ All notable changes to this project will be documented here.
   - **Smart view filtering**: Only shows views for child period types (e.g., Yearly modal shows Quarterly/Monthly/Weekly/Daily, but not Yearly)
   - **Better UX**: Consistent with Bases plugin's native interface
 
+### Bug Fixes
+
+- **Fixed Allocation Editor Focus Behavior**: Resolved focus management issues
+  - **No more automatic refocusing**: Input fields no longer automatically refocus when typing
+  - **Natural focus transitions**: You can now freely click between rows without the UI fighting against you
+  - **Preserved scroll position**: Scroll position is maintained during updates without interfering with focus
+
 ---
 
 ## 1.4.0
