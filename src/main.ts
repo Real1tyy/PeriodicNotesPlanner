@@ -1,4 +1,4 @@
-import { WhatsNewModal, type WhatsNewModalConfig } from "@real1ty-obsidian-plugins/utils";
+import { WhatsNewModal, WhatsNewModalConfig } from "@real1ty-obsidian-plugins/utils";
 import { DateTime } from "luxon";
 import { Notice, Plugin, TFile } from "obsidian";
 import CHANGELOG_CONTENT from "../docs-site/docs/changelog.md";
@@ -538,6 +538,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 				pluginName: "Periodix Planner",
 				changelogContent: CHANGELOG_CONTENT,
 				links: {
+					github: "https://github.com/Real1tyy/Periodix-Planner",
 					support: "https://matejvavroproductivity.com/support/",
 					changelog: "https://real1tyy.github.io/Periodix-Planner/changelog",
 					documentation: "https://real1tyy.github.io/Periodix-Planner/",
