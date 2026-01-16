@@ -35,6 +35,34 @@ Complete video guide for Periodix-Planner - watch to learn all features in actio
 
 ---
 
+## Advanced Features & Workflow
+
+<div class="video-container" style={{"textAlign": "center", "marginBottom": "2em"}}>
+  <iframe
+    style={{"width":"100%", "aspectRatio": "16/9"}}
+    src="https://www.youtube.com/embed/ggijBVSo1to"
+    title="Periodix-Planner - Advanced Features & Workflow"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen>
+  </iframe>
+</div>
+
+**What This Video Covers**: In this video, I walk through all the new major features introduced since the first Periodix Planner video release, while demonstrating how they work inside a real planning workflow. I also show how I combine Periodix Planner with Prisma Calendar to precisely plan and visualize my time.
+
+**Note**: If you haven't seen the first Periodix Planner video yet, I recommend starting there to understand the core concepts before diving into the advanced workflow shown here.
+
+**Core Concepts**:
+- **Advanced time budgeting** - Precise allocations with granular control
+- **Fully reactive category system** - Create, edit, and delete categories instantly
+- **Global statistics and analytics** - Comprehensive insights across all periodic notes
+- **Category-level insights** - Hours, usage, and distribution tracking
+- **Period Tasks sidebar** - Powered by Obsidian Bases integration
+- **ActivityWatch integration** - Privacy-first, local time-tracking integration
+- **Real-world usage** - How to plan your time, not just your notes
+
+---
+
 ## 📚 Additional Resources
 
 Want to dive deeper? Check out these documentation sections:
