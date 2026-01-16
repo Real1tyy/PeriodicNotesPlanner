@@ -1248,7 +1248,7 @@
 }
 
 .periodic-planner-whats-new-plugin-name::after {
-	content: '';
+	content: "";
 	position: absolute;
 	bottom: -2px;
 	left: 0;
@@ -1299,7 +1299,7 @@
 }
 
 .periodic-planner-whats-new-support a::after {
-	content: '';
+	content: "";
 	position: absolute;
 	bottom: -2px;
 	left: 0;
