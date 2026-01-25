@@ -137,6 +137,11 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async runAutoGeneration(): Promise<void> {
+		if (this.settingsStore.currentSettings.generation.readOnly) {
+			console.debug("Periodic Planner: Skipping auto-generation (read-only mode)");
+			return;
+		}
+
 		try {
 			const summary = await this.autoGenerator.runAutoGeneration();
 			console.debug(formatAutoGenerationSummary(summary));
@@ -206,6 +211,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 	private async ensurePeriodicNoteComplete(file: TFile): Promise<void> {
 		if (!this.periodIndex) return;
+		if (this.settingsStore.currentSettings.generation.readOnly) return;
+
 		const entry = this.periodIndex.getEntryForFile(file);
 		if (!entry) return;
 
@@ -214,6 +221,8 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async ensureFrontmatterProperties(file: TFile, periodType: PeriodType, dateTime: DateTime): Promise<void> {
+		if (this.settingsStore.currentSettings.generation.readOnly) return;
+
 		const settings = this.settingsStore.currentSettings;
 		const props = settings.properties;
 		const format = settings.naming[PERIOD_CONFIG[periodType].formatKey];

@@ -136,6 +136,9 @@ const GenerationSettingsSchema = z
 
 		// Startup Settings
 		openYesterdayPdfOnStartup: z.boolean().catch(SETTINGS_DEFAULTS.OPEN_YESTERDAY_PDF_ON_STARTUP),
+
+		// Read-Only Mode
+		readOnly: z.boolean().catch(SETTINGS_DEFAULTS.READ_ONLY),
 	})
 	.strip();
 

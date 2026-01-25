@@ -19,6 +19,12 @@ export class GenerationSection implements SettingsSection {
 		});
 
 		this.uiBuilder.addToggle(containerEl, {
+			key: "generation.readOnly",
+			name: "Disable automatic generation",
+			desc: "Prevents automatic file generation and modifications (on startup, file open, etc.). Manual commands will still work when you explicitly trigger them. Use this to prevent conflicts during sync or when you want the plugin to only act on your explicit commands.",
+		});
+
+		this.uiBuilder.addToggle(containerEl, {
 			key: "generation.autoGenerateOnLoad",
 			name: "Auto-generate on load",
 			desc: "Automatically generate the next period's note when Obsidian loads",

@@ -122,6 +122,9 @@ export const SETTINGS_DEFAULTS = {
 
 	// ===== Startup Settings =====
 	OPEN_YESTERDAY_PDF_ON_STARTUP: false,
+
+	// ===== Read-Only Mode =====
+	READ_ONLY: false,
 } as const;
 
 /**

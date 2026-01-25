@@ -220,10 +220,12 @@ export class PeriodicNoteIndexer {
 		const note = await parseFileToNote(file, frontmatter, this.vault, this.settings, this.app);
 		if (!note) return [];
 
-		await updateHoursSpentInFrontmatter(this.app, file, note.hoursSpent, this.settings.properties.hoursSpentProp);
+		if (!this.settings.generation.readOnly) {
+			await updateHoursSpentInFrontmatter(this.app, file, note.hoursSpent, this.settings.properties.hoursSpentProp);
 
-		if (note.periodType === PERIOD_TYPES.DAILY) {
-			await injectActivityWatchContent(this.app, file, note.periodStart, this.settings);
+			if (note.periodType === PERIOD_TYPES.DAILY) {
+				await injectActivityWatchContent(this.app, file, note.periodStart, this.settings);
+			}
 		}
 
 		return [{ type: "note-indexed", filePath: file.path, oldPath, note }];

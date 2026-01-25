@@ -246,6 +246,10 @@ export class NoteGenerator {
 	}
 
 	async ensureTimeBudgetBlock(file: TFile, periodType: PeriodType): Promise<void> {
+		if (this.settings.generation.readOnly) {
+			return;
+		}
+
 		if (!this.settings.generation.autoInsertCodeBlock) {
 			return;
 		}
