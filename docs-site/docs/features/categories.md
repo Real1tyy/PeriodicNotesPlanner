@@ -25,11 +25,11 @@ Categories are the foundation of the time budgeting system. They represent diffe
 ### How It Works
 
 1. **Write a Time Allocation**: Add any category name in your time budget code fence
-   ```
+   ````
    ​```periodic-planner
    NewCategory: 5
    ​```
-   ```
+   ````
 2. **Instant Registration**: CategoryTracker detects it and adds it to settings automatically with a default color
 3. **Real-Time Tracking**: Usage statistics update as you work across all notes
 4. **Automatic Cleanup**: Remove all instances of a category, and it's automatically removed from settings
@@ -38,13 +38,13 @@ Categories are the foundation of the time budgeting system. They represent diffe
 
 When you create a time budget in any periodic note:
 
-```
+````
 ​```periodic-planner
 Work: 40
 Health: 10
 Learning: 5
 ​```
-```
+````
 
 The categories "Work", "Health", and "Learning" automatically appear in **Settings → Categories** with default colors - no manual setup required!
 
@@ -63,6 +63,7 @@ You can also create categories on-the-fly in the allocation editor:
 ### In Time Budgets
 
 Categories work seamlessly across:
+
 - **[Time Budget Blocks](/features/time-budget-blocks)** - Allocate hours in your periodic notes
 - **[Allocation Editor](/features/allocation-editor)** - Interactive modal for managing allocations
 - **[Statistics](/features/statistics)** - Comprehensive analytics and visualizations
@@ -73,6 +74,7 @@ Categories work seamlessly across:
 ### Default Colors
 
 When a category is first discovered, it's automatically assigned a color from the default palette:
+
 - Blue (#3B82F6)
 - Green (#10B981)
 - Purple (#8B5CF6)
@@ -127,6 +129,7 @@ The Categories settings tab serves as your analytics hub. See comprehensive usag
 ### What You'll See
 
 For each category, view:
+
 - **Total Notes**: How many notes use this category across all period types
 - **Period Breakdown**: Usage per period type (e.g., "Daily: 5 · Weekly: 3 · Monthly: 1")
 - **Hours Allocated**: Total time for the selected period type
@@ -136,6 +139,7 @@ For each category, view:
 ### Smart Sorting
 
 Categories are automatically ordered:
+
 1. **By Hours** (for selected period type): Most-used categories first
 2. **By Total Notes**: Categories in more notes rank higher
 3. **Alphabetically**: Ties broken alphabetically
@@ -157,6 +161,7 @@ Categories automatically sync as you work - no manual management needed:
 ### Behind the Scenes
 
 The **Plugin**:
+
 1. Monitors all periodic notes for category usage
 2. Automatically registers new categories when detected
 3. Updates usage statistics in real-time
@@ -168,6 +173,7 @@ The **Plugin**:
 ### In Settings
 
 The Categories tab shows comprehensive statistics:
+
 - Which notes use each category
 - How many notes per period type
 - Total hours and percentages
@@ -177,6 +183,7 @@ The Categories tab shows comprehensive statistics:
 ### In Notes
 
 Categories appear wherever you allocate time:
+
 - Time budget code blocks
 - Allocation editor modal
 - Parent/child budget tracking
@@ -193,7 +200,6 @@ To remove a category from your system:
 **Alternative**: You can also manually remove allocations from all notes. Once a category is no longer used anywhere, it will be automatically cleaned up from settings.
 
 **Note**: Category colors are preserved even if temporarily unused - they'll reappear with the same color if you use the category again.
-
 
 ---
 

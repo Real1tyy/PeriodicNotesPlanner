@@ -49,6 +49,7 @@ For each period type, you'll see:
 Each category in settings displays comprehensive usage information:
 
 **Example Category Display:**
+
 ```
 Work
 ├─ Total: 12 notes · Daily: 5 · Weekly: 3 · Monthly: 1
@@ -56,6 +57,7 @@ Work
 ```
 
 This tells you:
+
 - **12 notes** use the "Work" category across all period types
 - **5 daily notes**, **3 weekly notes**, and **1 monthly note** contain Work allocations
 - For the selected period type (Monthly), **160 hours** are allocated to Work, representing **45.7%** of total monthly hours

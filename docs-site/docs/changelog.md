@@ -196,7 +196,6 @@ All notable changes to this project will be documented here.
   - File existence check prevents accidental overwrites
   - Seamless integration with Templater's template processing
 
-
 - **Optional Code Block Auto-Insertion**: Added a new setting to control whether the `periodic-planner` code block is automatically inserted into newly generated periodic notes
   - New setting: "Auto-insert code block" in Settings → Generation → Time budget code block
   - When enabled (default: `true`), the plugin automatically adds the time budget code block to new periodic notes

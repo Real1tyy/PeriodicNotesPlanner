@@ -13,6 +13,7 @@ Periodix-Planner provides a comprehensive set of features for managing periodic 
 Periodix-Planner automatically creates periodic notes for all time periods, always staying one step ahead by generating the next period's note in advance.
 
 **Supported Periods:**
+
 - Daily notes
 - Weekly notes
 - Monthly notes
@@ -26,6 +27,7 @@ Periodix-Planner automatically creates periodic notes for all time periods, alwa
 All periodic notes are intelligently linked through frontmatter properties, creating a navigable web of time that lets you zoom in and out of your planning horizon effortlessly.
 
 **Navigation Links:**
+
 - `Previous` / `Next` - Navigate chronologically within the same period type
 - Hierarchical links - Jump from daily → weekly → monthly → quarterly → yearly
 
@@ -36,6 +38,7 @@ All periodic notes are intelligently linked through frontmatter properties, crea
 Define how many hours you have available and delegate them across categories with hierarchical tracking.
 
 **Features:**
+
 - Yearly time pool definition
 - Cascading allocation through hierarchy
 - Smart budget tracking with warnings
@@ -50,6 +53,7 @@ Define how many hours you have available and delegate them across categories wit
 Get visual insights into your time allocation with interactive charts and tables.
 
 **Visualizations:**
+
 - Pie charts showing category distribution
 - Detailed allocation tables
 - Progress bars for budget tracking

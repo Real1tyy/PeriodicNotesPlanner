@@ -24,6 +24,7 @@ Complete video guide for Periodix-Planner - watch to learn all features in actio
 **What This Video Covers**: Periodix Planner turns Obsidian into a time-aware planning system that helps you reason about where your time goes, not just what you get done.
 
 **Core Concepts**:
+
 - **Automatic Periodic Note Generation** - Daily, weekly, monthly, quarterly, and yearly notes (always one step ahead)
 - **Hierarchical Linking** - Notes connected through frontmatter metadata creating a navigable time structure
 - **Time Investment Model** - Allocate time into categories (work, learning, health, relationships, projects), not tasks
@@ -53,6 +54,7 @@ Complete video guide for Periodix-Planner - watch to learn all features in actio
 **Note**: If you haven't seen the first Periodix Planner video yet, I recommend starting there to understand the core concepts before diving into the advanced workflow shown here.
 
 **Core Concepts**:
+
 - **Advanced time budgeting** - Precise allocations with granular control
 - **Fully reactive category system** - Create, edit, and delete categories instantly
 - **Global statistics and analytics** - Comprehensive insights across all periodic notes
@@ -78,6 +80,7 @@ Want to dive deeper? Check out these documentation sections:
 ## 🔔 Stay Updated
 
 Subscribe to the [YouTube channel](https://www.youtube.com/channel/UCGzPa-p5w4vH80NhFQWGFjg) for:
+
 - New feature announcements
 - Productivity tips and workflows
 - Deep dives into specific features

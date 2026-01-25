@@ -12,6 +12,7 @@ sidebar_position: 3
 2. Navigate to **Periodix-Planner** in the left sidebar
 
 You'll see several tabs for configuration:
+
 - **Folders** - Where your periodic notes will be stored
 - **Naming** - How your notes will be named
 - **Time budget** - Configure available hours
@@ -46,6 +47,7 @@ Define your time investment categories:
 5. Repeat for all your categories
 
 **Example categories:**
+
 - Work (Blue)
 - Health & Fitness (Green)
 - Learning (Purple)

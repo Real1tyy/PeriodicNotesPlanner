@@ -45,6 +45,7 @@ Each level tracks total hours available, allocated hours per category, remaining
 ## Budget Tracking
 
 **Visual indicators:**
+
 - 🟢 Green - Within budget
 - 🟡 Yellow - Approaching limit (80-100%)
 - 🔴 Red - Over budget or exceeds parent allocation

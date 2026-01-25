@@ -15,6 +15,7 @@ Periodix-Planner provides command palette commands that can be assigned custom h
 Generates notes for all enabled period types that correspond to the current date (today's daily, this week's weekly, this month's monthly, etc.).
 
 **Behavior:**
+
 - Creates notes that don't exist yet
 - Skips notes that already exist
 - Shows notification with creation summary
@@ -26,6 +27,7 @@ Generates notes for all enabled period types that correspond to the current date
 Runs the auto-generation system to create future period notes based on your "Generate periods ahead" setting.
 
 **Behavior:**
+
 - Generates notes X periods into the future (configured in Generation settings)
 - Respects enabled period types
 - Shows summary of created, existing, and failed notes
@@ -39,6 +41,7 @@ Runs the auto-generation system to create future period notes based on your "Gen
 Navigates to the previous period note from the currently open periodic note.
 
 **Behavior:**
+
 - Uses the `Previous` property from frontmatter
 - Creates the note if it doesn't exist
 - Only available when viewing a periodic note
@@ -50,6 +53,7 @@ Navigates to the previous period note from the currently open periodic note.
 Navigates to the next period note from the currently open periodic note.
 
 **Behavior:**
+
 - Uses the `Next` property from frontmatter
 - Creates the note if it doesn't exist
 - Only available when viewing a periodic note
@@ -61,6 +65,7 @@ Navigates to the next period note from the currently open periodic note.
 Navigates to the parent period note from the currently open periodic note.
 
 **Behavior:**
+
 - Uses the `Parent` property from frontmatter
 - Creates the note if it doesn't exist
 - Only available when viewing a periodic note with a parent
@@ -73,6 +78,7 @@ Navigates to the parent period note from the currently open periodic note.
 Navigates to a child period note from the currently open periodic note.
 
 **Behavior:**
+
 - Opens the most relevant child period
 - If viewing the current period, opens the current child (e.g., today from this week)
 - If viewing a past/future period, opens the first child
@@ -84,17 +90,18 @@ Navigates to a child period note from the currently open periodic note.
 Opens or creates notes for the specified period type.
 
 **Behavior:**
+
 - Generates the note if it doesn't exist
 - Opens the note in the current pane
 
-| Command | Command ID | Period |
-|---------|-----------|---------|
-| Open today's daily note | `periodic-planner:open-daily` | Today |
-| Open yesterday's daily note | `periodic-planner:open-yesterday` | Yesterday |
-| Open current weekly note | `periodic-planner:open-weekly` | Current week |
-| Open current monthly note | `periodic-planner:open-monthly` | Current month |
+| Command                     | Command ID                        | Period          |
+| --------------------------- | --------------------------------- | --------------- |
+| Open today's daily note     | `periodic-planner:open-daily`     | Today           |
+| Open yesterday's daily note | `periodic-planner:open-yesterday` | Yesterday       |
+| Open current weekly note    | `periodic-planner:open-weekly`    | Current week    |
+| Open current monthly note   | `periodic-planner:open-monthly`   | Current month   |
 | Open current quarterly note | `periodic-planner:open-quarterly` | Current quarter |
-| Open current yearly note | `periodic-planner:open-yearly` | Current year |
+| Open current yearly note    | `periodic-planner:open-yearly`    | Current year    |
 
 ## PDF Commands
 
@@ -103,18 +110,19 @@ Opens or creates notes for the specified period type.
 Opens the PDF version of notes for the specified period type in a new detached window.
 
 **Behavior:**
+
 - Generates the note if it doesn't exist
 - Opens the PDF version (`.md.pdf`) in a detached window
 - Shows error if PDF doesn't exist
 
-| Command | Command ID | Period |
-|---------|-----------|---------|
-| Open today's daily note (PDF) | `periodic-planner:open-daily-pdf` | Today |
-| Open yesterday's daily note (PDF) | `periodic-planner:open-yesterday-pdf` | Yesterday |
-| Open current weekly note (PDF) | `periodic-planner:open-weekly-pdf` | Current week |
-| Open current monthly note (PDF) | `periodic-planner:open-monthly-pdf` | Current month |
+| Command                           | Command ID                            | Period          |
+| --------------------------------- | ------------------------------------- | --------------- |
+| Open today's daily note (PDF)     | `periodic-planner:open-daily-pdf`     | Today           |
+| Open yesterday's daily note (PDF) | `periodic-planner:open-yesterday-pdf` | Yesterday       |
+| Open current weekly note (PDF)    | `periodic-planner:open-weekly-pdf`    | Current week    |
+| Open current monthly note (PDF)   | `periodic-planner:open-monthly-pdf`   | Current month   |
 | Open current quarterly note (PDF) | `periodic-planner:open-quarterly-pdf` | Current quarter |
-| Open current yearly note (PDF) | `periodic-planner:open-yearly-pdf` | Current year |
+| Open current yearly note (PDF)    | `periodic-planner:open-yearly-pdf`    | Current year    |
 
 ## Task Management Commands
 
@@ -125,6 +133,7 @@ Opens the PDF version of notes for the specified period type in a new detached w
 Opens a modal showing all child periods with their associated Bases tasks.
 
 **Behavior:**
+
 - Only available when viewing a periodic note with children
 - Not available for daily notes
 - Shows tasks filtered by child period date ranges
@@ -137,6 +146,7 @@ Opens a modal showing all child periods with their associated Bases tasks.
 Opens the Period Tasks sidebar view for the currently open periodic note.
 
 **Behavior:**
+
 - Opens in right sidebar by default
 - Shows Bases-filtered tasks for the current period
 - Updates automatically when switching notes

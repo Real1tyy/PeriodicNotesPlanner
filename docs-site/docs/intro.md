@@ -102,21 +102,25 @@ See the [Installation Guide](/installation) and [Quick Start Guide](/quickstart)
 ## 💡 Use Cases
 
 ### Personal Productivity
+
 - Plan your year with clear time investments
 - Track where your time actually goes
 - Balance work, health, and relationships
 
 ### Goal Achievement
+
 - Allocate dedicated hours to learning
 - Track progress toward time-based goals
 - Adjust allocations based on priorities
 
 ### Task Management
+
 - Filter tasks by period with Bases plugin integration
 - View weekly/monthly tasks automatically
 - Track deadlines within period contexts
 
 ### Business Planning
+
 - Quarterly OKR time budgets
 - Project time allocation
 - Resource planning across time horizons

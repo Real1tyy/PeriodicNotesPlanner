@@ -32,6 +32,7 @@ Set the frontmatter property name used for task dates:
 - **Date property**: The property name in your task notes (default: `Date`)
 
 Example task note frontmatter:
+
 ```yaml
 ---
 Date: 2026-01-15
@@ -110,19 +111,14 @@ work: 8h
 
 \`\`\`base
 views:
-  - type: table
-    name: Daily Tasks
-    order:
-      - file.name
-      - Date
-    filters:
-      and:
-        - file.inFolder("Tasks")
-        - Date > "2026-01-15"
-        - Date < "2026-01-16"
-    sort:
-      - Date: desc
-\`\`\`
+
+- type: table
+  name: Daily Tasks
+  order: - file.name - Date
+  filters:
+  and: - file.inFolder("Tasks") - Date > "2026-01-15" - Date < "2026-01-16"
+  sort: - Date: desc
+  \`\`\`
 ```
 
 ## Related Features

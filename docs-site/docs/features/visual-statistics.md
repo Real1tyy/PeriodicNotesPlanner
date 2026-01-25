@@ -17,7 +17,7 @@ Visual statistics are displayed in the time budget code block within your notes,
 - **Progress bars** - Visual tracking of budget consumption
 - **Budget status** - Color-coded indicators (green/yellow/red)
 
-**Note**: These are *in-note* visualizations. For *global analytics* across all your periodic notes, see **[Statistics](/features/statistics)**.
+**Note**: These are _in-note_ visualizations. For _global analytics_ across all your periodic notes, see **[Statistics](/features/statistics)**.
 
 ## Pie Chart Visualization
 
@@ -31,6 +31,7 @@ The pie chart shows the distribution of allocated time across [categories](/feat
 ### Enlarged View
 
 Click the pie chart to open an enlarged modal view with:
+
 - Larger, more detailed visualization
 - Better visibility of all categories
 - Full screen viewing option
@@ -50,6 +51,7 @@ The allocation table provides detailed information:
 ### Sorting
 
 Click column headers to sort by:
+
 - Category name (alphabetical)
 - Allocated hours (numerical)
 - Parent budget status
@@ -72,6 +74,7 @@ Visual progress indicators show:
 ---
 
 **Related:**
+
 - **[Statistics](/features/statistics)** - View global analytics across all periodic notes
 - **[Categories](/features/categories)** - Learn about automatic category discovery
 - **[Time Budgeting](/features/time-budgeting)** - Understand the time budgeting system

@@ -28,7 +28,6 @@ The Allocation Editor allows you to:
 1. Click the **Edit allocations** button
 2. The Allocation Editor modal opens
 
-
 ## 📊 Editor Interface
 
 ### Summary Section
@@ -82,6 +81,7 @@ Add categories without leaving the editor:
 7. When you save allocations, the category is automatically discovered and tracked
 
 **Features:**
+
 - Create categories instantly without switching to settings
 - New categories start with 0 hours
 - Automatically scrolls to and focuses the new category
@@ -99,6 +99,7 @@ Type hours directly in the input field:
 4. Allocation updates automatically
 
 **Features:**
+
 - Supports up to 3 decimal places (e.g., `8.125`)
 - Auto-formats on blur to show maximum 3 decimals
 - Auto-updates on input
@@ -114,6 +115,7 @@ Click preset percentage buttons:
 - **Max** - Allocates maximum available hours
 
 **How it works:**
+
 - Calculates from total available hours
 - Respects "Fill from parent" setting
 - Updates input field and percentage bar
@@ -128,6 +130,7 @@ Drag the percentage bar to adjust allocation:
 4. Hours update automatically
 
 **Features:**
+
 - Smooth dragging experience
 - Visual feedback during drag
 - Works on desktop and touch devices
@@ -141,6 +144,7 @@ Enter exact percentages:
 3. Allocation updates to that percentage
 
 **Calculation:**
+
 - Based on total available hours
 - Respects "Fill from parent" setting
 - Rounds to nearest 0.1 hours
@@ -152,11 +156,13 @@ Enter exact percentages:
 Click the **"Hide unused"** checkbox at the top to toggle visibility of categories that have no budget allocated from the parent period. This helps reduce clutter when working with child periods.
 
 **When to use:**
+
 - Working on daily/weekly/monthly/quarterly notes (not yearly)
 - Want to focus only on categories with parent budget allocation
 - Need a cleaner view without irrelevant categories
 
 **How it works:**
+
 - Shows categories that have either current allocation OR parent budget allocation
 - Default behavior is configurable in Settings → Time budget
 - Yearly notes always show all categories
@@ -200,6 +206,7 @@ When you exceed a parent budget:
 - **Ctrl/Cmd + Shift + Z** - Redo
 
 **Features:**
+
 - Tracks all allocation changes
 - Maintains separate undo/redo stacks
 - Preserves input focus during undo/redo

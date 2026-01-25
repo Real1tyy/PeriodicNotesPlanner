@@ -11,6 +11,7 @@ The Period Children view shows all child periods for a given period, helping you
 ## Overview
 
 Period Children view displays:
+
 - All days in a week
 - All weeks in a month
 - All months in a quarter

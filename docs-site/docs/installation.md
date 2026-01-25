@@ -53,15 +53,19 @@ After installation, verify everything is working:
 ## 🔄 Updating
 
 ### Community Plugins
+
 Updates will be available automatically through the Community Plugins interface. Simply click **Update** when a new version is available.
 
 ### BRAT
+
 BRAT will automatically check for updates. You can manually check by:
+
 1. Opening **Settings** → **BRAT**
 2. Clicking **Check for updates**
 3. Updating if a new version is available
 
 ### Manual Installation
+
 Download the latest release files and replace the existing files in your plugin folder.
 
 ## Troubleshooting

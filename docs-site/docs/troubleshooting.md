@@ -27,6 +27,7 @@ The Developer Console shows errors and warnings:
 ### Restart Obsidian
 
 Many issues are resolved by restarting:
+
 1. Close Obsidian completely
 2. Wait a few seconds
 3. Reopen Obsidian

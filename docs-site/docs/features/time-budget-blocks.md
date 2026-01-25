@@ -11,6 +11,7 @@ Time budget blocks are interactive visualizations that display time allocation s
 ## Overview
 
 The plugin **automatically adds** time budget blocks to generated periodic notes. These blocks render as interactive visualizations showing:
+
 - Pie chart of category distribution
 - Detailed allocation table
 - Budget status indicators

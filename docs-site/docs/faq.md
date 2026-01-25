@@ -11,6 +11,7 @@ Common questions about Periodix-Planner and their answers.
 ### How do I install Periodix-Planner?
 
 See the [Installation Guide](/installation) for detailed instructions. The plugin can be installed via:
+
 - Community Plugins (once approved)
 - BRAT (for beta versions)
 - Manual installation from GitHub releases
@@ -28,6 +29,7 @@ Yes! BRAT is the recommended method for early access. See the [Installation Guid
 ### Where are my notes stored?
 
 Notes are stored in folders you configure in **Settings** → **Periodix-Planner** → **Folders** tab. Default folders are:
+
 - `Periodic/Daily`
 - `Periodic/Weekly`
 - `Periodic/Monthly`
@@ -55,6 +57,7 @@ When enabled, the plugin automatically generates periodic notes when you open Ob
 ### Will the plugin overwrite my existing notes?
 
 No! The plugin never overwrites existing notes. It only:
+
 - Creates new notes if they don't exist
 - Updates frontmatter if properties are missing
 - Adds time budget blocks if missing
@@ -72,6 +75,7 @@ Use the command **"Generate all periods for today"** from the command palette (C
 ### What happens if I exceed the available hours?
 
 The plugin shows warnings:
+
 - **Red** when over budget
 - **Parent budget warnings** when exceeding parent allocation
 
@@ -84,6 +88,7 @@ When you allocate time in a child period (e.g., weekly), the plugin tracks it ag
 ### How do I navigate between periods?
 
 Use commands from the command palette:
+
 - **Go to previous period**
 - **Go to next period**
 - **Go to parent period**
@@ -115,6 +120,7 @@ Yes! When you click a link or use a navigation command, the plugin automatically
 ### Can I request a feature?
 
 Yes! Open a [feature request](https://github.com/Real1tyy/Periodix-Planner/issues) on GitHub with:
+
 - Clear description
 - Use case
 - Examples if applicable

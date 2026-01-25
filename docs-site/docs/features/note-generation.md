@@ -22,10 +22,10 @@ The plugin generates notes for:
 
 Go to **Settings** → **Periodix-Planner** → **Generation** tab:
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| **Auto-generate on load** | Generate notes when Obsidian opens | `true` |
-| **Generate periods ahead** | How many periods into the future to generate | `1` |
+| Setting                    | Description                                  | Default |
+| -------------------------- | -------------------------------------------- | ------- |
+| **Auto-generate on load**  | Generate notes when Obsidian opens           | `true`  |
+| **Generate periods ahead** | How many periods into the future to generate | `1`     |
 
 When enabled, the plugin automatically creates notes on Obsidian startup and generates the next period in advance.
 
@@ -72,12 +72,14 @@ Customize note names in **Settings** → **Naming** using [Luxon format tokens](
 ## Generation Behavior
 
 **Existing notes:**
+
 - Never overwrites existing content
 - Updates frontmatter if properties are missing
 - Adds time budget block if missing
 - Preserves all your content
 
 **Missing notes:**
+
 - Creates note with all required frontmatter
 - Adds time budget block
 - Creates folder structure if needed

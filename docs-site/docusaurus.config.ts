@@ -4,8 +4,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 
 const config: Config = {
 	title: "Periodix-Planner",
-	tagline:
-		"Intelligent periodic note generation with hierarchical time allocation and budget tracking.",
+	tagline: "Intelligent periodic note generation with hierarchical time allocation and budget tracking.",
 	favicon: "img/logo2.jpeg",
 
 	url: "https://Real1tyy.github.io",
@@ -31,8 +30,7 @@ const config: Config = {
 					path: "docs",
 					routeBasePath: "/",
 					sidebarPath: "./sidebars.ts",
-					editUrl:
-						"https://github.com/Real1tyy/Periodix-Planner/edit/main/docs-site/",
+					editUrl: "https://github.com/Real1tyy/Periodix-Planner/edit/main/docs-site/",
 					showLastUpdateAuthor: true,
 					showLastUpdateTime: true,
 				},
@@ -72,52 +70,52 @@ const config: Config = {
 				src: "img/logo2.jpeg",
 				href: "/",
 			},
-		items: [
-			{
-				to: "/features/overview",
-				label: "Features",
-				position: "left",
-			},
-			{
-				to: "/videos",
-				label: "Video Tutorial",
-				position: "right",
-			},
-			{
-				href: "https://github.com/Real1tyy/Periodix-Planner",
-				label: "GitHub",
-				position: "right",
-			},
-		],
+			items: [
+				{
+					to: "/features/overview",
+					label: "Features",
+					position: "left",
+				},
+				{
+					to: "/videos",
+					label: "Video Tutorial",
+					position: "right",
+				},
+				{
+					href: "https://github.com/Real1tyy/Periodix-Planner",
+					label: "GitHub",
+					position: "right",
+				},
+			],
 		},
 		footer: {
 			style: "dark",
 			links: [
-			{
-				title: "Docs",
-				items: [
-					{
-						label: "Periodix-Planner",
-						to: "/",
-					},
-					{
-						label: "Installation",
-						to: "/installation",
-					},
-					{
-						label: "Quick Start",
-						to: "/quickstart",
-					},
-					{
-						label: "Video Tutorials",
-						to: "/videos",
-					},
-					{
-						label: "Changelog",
-						to: "/changelog",
-					},
-				],
-			},
+				{
+					title: "Docs",
+					items: [
+						{
+							label: "Periodix-Planner",
+							to: "/",
+						},
+						{
+							label: "Installation",
+							to: "/installation",
+						},
+						{
+							label: "Quick Start",
+							to: "/quickstart",
+						},
+						{
+							label: "Video Tutorials",
+							to: "/videos",
+						},
+						{
+							label: "Changelog",
+							to: "/changelog",
+						},
+					],
+				},
 				{
 					title: "Community",
 					items: [
@@ -131,23 +129,23 @@ const config: Config = {
 						},
 					],
 				},
-			{
-				title: "More",
-				items: [
-					{
-						label: "Video Tutorials",
-						to: "/videos",
-					},
-					{
-						label: "Repository",
-						href: "https://github.com/Real1tyy/Periodix-Planner",
-					},
-					{
-						label: "Releases",
-						href: "https://github.com/Real1tyy/Periodix-Planner/releases",
-					},
-				],
-			},
+				{
+					title: "More",
+					items: [
+						{
+							label: "Video Tutorials",
+							to: "/videos",
+						},
+						{
+							label: "Repository",
+							href: "https://github.com/Real1tyy/Periodix-Planner",
+						},
+						{
+							label: "Releases",
+							href: "https://github.com/Real1tyy/Periodix-Planner/releases",
+						},
+					],
+				},
 				{
 					title: "Support",
 					items: [

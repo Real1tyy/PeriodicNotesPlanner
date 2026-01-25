@@ -21,14 +21,15 @@ Use [Templater](https://github.com/SilentVoid13/Templater) templates to create c
 
 ### Configuration
 
-| Setting | Description |
-|---------|-------------|
-| **Enable Templater** | Turn integration on/off |
+| Setting                                                 | Description                                        |
+| ------------------------------------------------------- | -------------------------------------------------- |
+| **Enable Templater**                                    | Turn integration on/off                            |
 | **Daily/Weekly/Monthly/Quarterly/Yearly note template** | Path to template file (e.g., `Templates/Daily.md`) |
 
 ### How It Works
 
 When creating a new periodic note:
+
 1. If a template path is configured, Periodix-Planner uses Templater to process it
 2. After template processing, required frontmatter is automatically added
 3. If no template is configured, notes are created with default content
@@ -88,7 +89,7 @@ Track and visualize your computer usage automatically in daily notes with intera
 
 **Code Fence Format**: Data is stored as structured JSON in code blocks for easy parsing and rendering:
 
-```markdown
+````markdown
 ## ActivityWatch
 
 ```periodic-planner-activity-watch
@@ -101,8 +102,10 @@ Track and visualize your computer usage automatically in daily notes with intera
   ]
 }
 ```
+````
 
 This renders as an interactive block with:
+
 - **Header**: Total active time summary
 - **Sortable Table**: Application | Duration | Percentage
   - Click column headers to sort by name or duration
@@ -113,12 +116,12 @@ This renders as an interactive block with:
 
 ### Configuration
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| **Enable ActivityWatch** | Turn integration on/off | `false` |
-| **API URL** | ActivityWatch server address | `http://localhost:5600` |
-| **Heading** | Heading text for ActivityWatch sections | `## ActivityWatch` |
-| **Code fence name** | Code block language identifier | `periodic-planner-activity-watch` |
+| Setting                  | Description                             | Default                           |
+| ------------------------ | --------------------------------------- | --------------------------------- |
+| **Enable ActivityWatch** | Turn integration on/off                 | `false`                           |
+| **API URL**              | ActivityWatch server address            | `http://localhost:5600`           |
+| **Heading**              | Heading text for ActivityWatch sections | `## ActivityWatch`                |
+| **Code fence name**      | Code block language identifier          | `periodic-planner-activity-watch` |
 
 ### Requirements
 
@@ -129,12 +132,14 @@ This renders as an interactive block with:
 ### Troubleshooting
 
 **Data not appearing?**
+
 - Verify ActivityWatch is running and accessible at the configured API URL
 - Check that you have ActivityWatch watchers enabled (window tracker and AFK tracker)
 - Ensure the daily note is from a past date (not today or future)
 - Use the "Process now" button to manually trigger processing
 
 **Connection errors?**
+
 - Confirm ActivityWatch server is running (`http://localhost:5600` should load in browser)
 - Check firewall settings aren't blocking local connections
 - Verify the API URL in settings matches your ActivityWatch configuration
