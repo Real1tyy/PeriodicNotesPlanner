@@ -37,7 +37,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		containerEl.createEl("h1", { text: "Periodic Planner Settings" });
+		new Setting(containerEl).setName("Periodic Planner Settings").setHeading();
 
 		const sections = this.getSections();
 

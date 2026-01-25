@@ -73,7 +73,7 @@ ${hierarchyFilter}`;
 
 		return childTypes
 			.filter((type) => isPeriodTypeEnabled(type, this.generationSettings))
-			.map((type) => this.directories[PERIOD_CONFIG[type].folderKey] as string);
+			.map((type) => this.directories[PERIOD_CONFIG[type].folderKey]);
 	}
 
 	private buildHierarchyFilter(): string {
@@ -81,7 +81,7 @@ ${hierarchyFilter}`;
 		const noteName = this.parent.noteName;
 		const linkKey = PERIOD_CONFIG[this.parent.periodType].linkKey;
 		const propKey = linkKey ? (`${linkKey}Prop` as keyof PropertySettings) : null;
-		const hierarchyProp = propKey ? (this.properties[propKey] as string) : (this.properties.parentProp as string);
+		const hierarchyProp = propKey ? this.properties[propKey] : this.properties.parentProp;
 		return `    - ${hierarchyProp} == ["[[${filePath}|${noteName}]]"]`;
 	}
 }

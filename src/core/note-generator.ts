@@ -79,8 +79,8 @@ export class NoteGenerator {
 			await ensureFolderExists(this.app, filePath);
 
 			const config = PERIOD_CONFIG[periodType];
-			const folder = this.settings.directories[config.folderKey] as string;
-			const format = this.settings.naming[config.formatKey] as string;
+			const folder = this.settings.directories[config.folderKey];
+			const format = this.settings.naming[config.formatKey];
 			const periodStart = getStartOfPeriod(dt, periodType);
 			const filename = formatPeriodName(periodStart, format);
 
@@ -88,7 +88,7 @@ export class NoteGenerator {
 				title: filename,
 				targetDirectory: folder,
 				filename: filename,
-				templatePath: (this.settings.templater[config.templateKey] as string) || undefined,
+				templatePath: this.settings.templater[config.templateKey] || undefined,
 			});
 
 			await this.writeFrontmatter(file, dt, periodType);
@@ -122,15 +122,15 @@ export class NoteGenerator {
 
 	getNotePath(dt: DateTime, periodType: PeriodType): string {
 		const config = PERIOD_CONFIG[periodType];
-		const folder = this.settings.directories[config.folderKey] as string;
-		const format = this.settings.naming[config.formatKey] as string;
+		const folder = this.settings.directories[config.folderKey];
+		const format = this.settings.naming[config.formatKey];
 		const periodStart = getStartOfPeriod(dt, periodType);
 		const name = formatPeriodName(periodStart, format);
 		return `${folder}/${name}.md`;
 	}
 
 	getNoteLink(dt: DateTime, periodType: PeriodType): string {
-		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey] as string;
+		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
 		const periodStart = getStartOfPeriod(dt, periodType);
 		const displayName = formatPeriodName(periodStart, format);
 		const fullPath = removeFileExtension(this.getNotePath(dt, periodType));
@@ -142,7 +142,7 @@ export class NoteGenerator {
 	}
 
 	getNoteDisplayName(dt: DateTime, periodType: PeriodType): string {
-		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey] as string;
+		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
 		const periodStart = getStartOfPeriod(dt, periodType);
 		return formatPeriodName(periodStart, format);
 	}
@@ -150,7 +150,7 @@ export class NoteGenerator {
 	private async writeFrontmatter(file: TFile, dt: DateTime, periodType: PeriodType): Promise<void> {
 		const props = this.settings.properties;
 		const gen = this.settings.generation;
-		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey] as string;
+		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
 		const periodInfo = createPeriodInfo(dt, periodType, format);
 		const links = this.buildPeriodLinks(periodInfo);
 		const hoursAvailable = getHoursForPeriodType(this.settings.timeBudget, periodType);
@@ -219,7 +219,7 @@ export class NoteGenerator {
 			return null;
 		}
 
-		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey] as string;
+		const format = this.settings.naming[PERIOD_CONFIG[periodType].formatKey];
 		const periodStart = getStartOfPeriod(dt, periodType);
 		const periodEnd = getEndOfPeriod(dt, periodType);
 		const periodName = formatPeriodName(periodStart, format);
@@ -335,7 +335,7 @@ export class NoteGenerator {
 		if (!linkKey) return null;
 
 		const propKey = `${linkKey}Prop`;
-		const propName = properties[propKey as keyof PropertySettings] as string;
+		const propName = properties[propKey as keyof PropertySettings];
 		if (typeof propName !== "string") return null;
 
 		const linkValue: unknown = cache.frontmatter?.[propName];
