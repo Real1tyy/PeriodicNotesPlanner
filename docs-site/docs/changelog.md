@@ -8,6 +8,19 @@ All notable changes to this project will be documented here.
 
 ---
 
+## 1.6.0 - 1/25/2026
+
+### Added
+
+- **Disable automatic generation**: New setting to prevent automatic file creation and modifications while still allowing manual commands
+  - **Location**: Settings → Generation → "Disable automatic generation"
+  - **What it does**: Blocks automatic operations like generation on startup, frontmatter updates when opening files, and ActivityWatch data injection
+  - **Manual commands still work**: You can still use commands like "Generate all periods for today" or "Open today's daily note"
+  - **Use case**: Perfect for preventing sync conflicts or when you want full control over when files are created/modified
+  - **Default**: Disabled (automatic generation works normally)
+
+---
+
 ## 1.5.0 - 1/14/2026
 
 ### New Video
