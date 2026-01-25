@@ -139,6 +139,9 @@ const GenerationSettingsSchema = z
 
 		// Read-Only Mode
 		readOnly: z.boolean().catch(SETTINGS_DEFAULTS.READ_ONLY),
+
+		// Past Period Generation
+		startingPeriodDate: z.string().catch(SETTINGS_DEFAULTS.STARTING_PERIOD_DATE),
 	})
 	.strip();
 

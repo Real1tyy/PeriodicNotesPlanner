@@ -125,6 +125,10 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		this.registerView(VIEW_TYPE_PERIOD_BASES, (leaf) => new PeriodBasesItemView(leaf, this));
 		this.registerCodeBlockProcessor();
 
+		if (this.autoGenerator.shouldGeneratePastPeriods()) {
+			await this.runPastPeriodGeneration();
+		}
+
 		if (this.autoGenerator.shouldAutoGenerate()) {
 			await this.runAutoGeneration();
 		}
@@ -134,6 +138,25 @@ export default class PeriodicPlannerPlugin extends Plugin {
 		}
 
 		await this.checkForUpdates();
+	}
+
+	private async runPastPeriodGeneration(): Promise<void> {
+		if (this.settingsStore.currentSettings.generation.readOnly) {
+			console.debug("Periodic Planner: Skipping past period generation (read-only mode)");
+			return;
+		}
+
+		try {
+			const startingDate = this.settingsStore.currentSettings.generation.startingPeriodDate;
+			const summary = await this.autoGenerator.generatePastPeriods(startingDate);
+			console.debug("Past period generation complete:", formatAutoGenerationSummary(summary));
+
+			if (summary.created > 0) {
+				new Notice(`Periodic Planner: Generated ${summary.created} past note(s), ${summary.existing} already existed`);
+			}
+		} catch (error) {
+			console.error("Periodic Planner: Past period generation failed", error);
+		}
 	}
 
 	private async runAutoGeneration(): Promise<void> {
@@ -167,6 +190,11 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async openYesterdayPdfIfNotOpen(): Promise<void> {
+		if (this.settingsStore.currentSettings.generation.readOnly) {
+			console.debug("Periodic Planner: Skipping PDF generation (automatic generation disabled)");
+			return;
+		}
+
 		try {
 			const yesterday = DateTime.now().minus({ days: 1 });
 			const result = await this.autoGenerator.generateSingleNote(yesterday, "daily");

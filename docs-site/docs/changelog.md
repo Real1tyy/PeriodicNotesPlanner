@@ -12,6 +12,18 @@ All notable changes to this project will be documented here.
 
 ### Added
 
+- **Past Period Generation**: Automatically generate all missing periodic notes from a specific starting date
+  - **Location**: Settings → Generation → "Starting period generation date"
+  - **What it does**: When set, the plugin generates all missing periodic notes (daily, weekly, monthly, quarterly, yearly) from the specified date to today on startup
+  - **Use case**: Perfect for backfilling past notes when you start using the plugin or want to ensure all historical periods exist
+  - **How it works**:
+    - Set a starting date (e.g., January 1, 2025)
+    - On next startup, the plugin checks for missing notes from that date to today
+    - Generates only the missing notes - existing notes are preserved
+    - Respects your enabled period types (only generates enabled periods)
+  - **Default**: Empty (disabled)
+  - **Example**: If today is January 25, 2026 and you set the starting date to January 1, 2025, the plugin will generate all daily, weekly, monthly, quarterly, and yearly notes from January 2025 to January 2026
+
 - **Disable automatic generation**: New setting to prevent automatic file creation and modifications while still allowing manual commands
   - **Location**: Settings → Generation → "Disable automatic generation"
   - **What it does**: Blocks automatic operations like generation on startup, frontmatter updates when opening files, and ActivityWatch data injection

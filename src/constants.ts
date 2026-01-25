@@ -125,6 +125,9 @@ export const SETTINGS_DEFAULTS = {
 
 	// ===== Read-Only Mode =====
 	READ_ONLY: false,
+
+	// ===== Past Period Generation =====
+	STARTING_PERIOD_DATE: "",
 } as const;
 
 /**

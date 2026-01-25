@@ -47,6 +47,7 @@ export const createMockSettings = (overrides?: Partial<PeriodicPlannerSettings>)
 		readOnly: false,
 		autoGenerateOnLoad: false,
 		generatePeriodsAhead: 1,
+		startingPeriodDate: "",
 		enableDaily: true,
 		enableWeekly: true,
 		enableMonthly: true,

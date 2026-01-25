@@ -174,6 +174,44 @@ Select which period types to generate and track. Disabled periods will be skippe
 
 **Example:** If you disable weekly notes, daily notes will link directly to monthly notes as their parent, and monthly notes will show daily notes as children.
 
+### Past Period Generation
+
+Automatically generate all missing periodic notes from a specific starting date to today.
+
+| Setting                             | Description                                                                                                  | Default |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------- |
+| **Starting period generation date** | When set, generates all missing periodic notes from this date to today on startup (format: YYYY-MM-DD)      | Empty   |
+
+**How it works:**
+
+- Set a starting date using the date picker (e.g., January 1, 2025)
+- On next startup, the plugin checks for missing notes from that date to today
+- Generates only the missing notes - existing notes are preserved
+- Respects your enabled period types (only generates enabled periods)
+- Runs before regular auto-generation
+
+**Use cases:**
+
+- **Backfilling past notes**: When you start using the plugin and want to create notes for previous periods
+- **Ensuring completeness**: Make sure all historical periods exist for consistent navigation and tracking
+- **Starting fresh**: Set a date when you want to begin your periodic planning journey
+
+**Example:**
+
+If today is January 25, 2026 and you set the starting date to January 1, 2025:
+- Generates all daily notes from January 1, 2025 to January 25, 2026
+- Generates all weekly notes covering that period
+- Generates all monthly notes (January 2025 through January 2026)
+- Generates all quarterly notes (Q1 2025 through Q1 2026)
+- Generates all yearly notes (2025 and 2026)
+
+**Important:**
+
+- Leave empty to disable past generation
+- Only runs on startup (not on every file open)
+- Respects read-only mode setting
+- Can take time for large date ranges - be patient on first run
+
 ### Startup Behavior
 
 Configure actions to perform when the plugin loads.

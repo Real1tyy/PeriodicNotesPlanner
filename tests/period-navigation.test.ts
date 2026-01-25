@@ -16,6 +16,7 @@ const allEnabledSettings: GenerationSettings = {
 	readOnly: false,
 	autoGenerateOnLoad: false,
 	generatePeriodsAhead: 1,
+	startingPeriodDate: "",
 	enableDaily: true,
 	enableWeekly: true,
 	enableMonthly: true,

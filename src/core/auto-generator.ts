@@ -1,4 +1,4 @@
-import type { DateTime } from "luxon";
+import { DateTime } from "luxon";
 import type { App } from "obsidian";
 import type { Observable, Subscription } from "rxjs";
 import type { PeriodType } from "../constants";
@@ -93,8 +93,74 @@ export class AutoGenerator {
 		return this.noteGenerator.generateAllPeriodsForDate(dt);
 	}
 
+	async generatePastPeriods(startDateStr: string): Promise<AutoGenerationSummary> {
+		const startDate = DateTime.fromISO(startDateStr);
+		if (!startDate.isValid) {
+			console.error(`Invalid starting period date: ${startDateStr}`);
+			return {
+				created: 0,
+				existing: 0,
+				failed: 0,
+				results: new Map(),
+			};
+		}
+
+		const today = now().startOf("day");
+		const summary: AutoGenerationSummary = {
+			created: 0,
+			existing: 0,
+			failed: 0,
+			results: new Map(),
+		};
+
+		for (const periodType of ORDERED_PERIOD_TYPES) {
+			if (!isPeriodTypeEnabled(periodType, this.settings.generation)) {
+				continue;
+			}
+
+			const results = await this.generatePeriodsInRange(startDate, today, periodType);
+			summary.results.set(periodType, results);
+
+			for (const result of results) {
+				if (result.success) {
+					if (result.alreadyExists) {
+						summary.existing++;
+					} else {
+						summary.created++;
+					}
+				} else {
+					summary.failed++;
+				}
+			}
+		}
+
+		return summary;
+	}
+
+	private async generatePeriodsInRange(
+		startDate: DateTime,
+		endDate: DateTime,
+		periodType: PeriodType
+	): Promise<NoteGenerationResult[]> {
+		const results: NoteGenerationResult[] = [];
+		let currentPeriod = getStartOfPeriod(startDate, periodType);
+		const endPeriod = getStartOfPeriod(endDate, periodType);
+
+		while (currentPeriod <= endPeriod) {
+			const result = await this.noteGenerator.generateNote(currentPeriod, periodType);
+			results.push(result);
+			currentPeriod = getNextPeriod(currentPeriod, periodType);
+		}
+
+		return results;
+	}
+
 	shouldAutoGenerate(): boolean {
 		return this.settings.generation.autoGenerateOnLoad;
+	}
+
+	shouldGeneratePastPeriods(): boolean {
+		return this.settings.generation.startingPeriodDate.trim() !== "";
 	}
 
 	getNoteGenerator(): NoteGenerator {
