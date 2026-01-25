@@ -17,7 +17,7 @@ export interface InputFilterManagerOptions {
  * Provides a reusable pattern for filter inputs with show/hide functionality,
  * keyboard shortcuts, and debounced updates.
  *
- * @template T - The type of data being filtered (optional, defaults to unknown)
+ * @template T - The type of data being filtered (optional, default unknown)
  *
  * @example
  * ```ts
