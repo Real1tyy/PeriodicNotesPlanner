@@ -1,9 +1,15 @@
+import { SyncStore } from "@real1ty-obsidian-plugins";
 import { DateTime } from "luxon";
 import type { App } from "obsidian";
 import type { Observable, Subscription } from "rxjs";
 import type { PeriodType } from "../constants";
 import type { TemplateService } from "../services/template";
-import { type NoteGenerationResult, ORDERED_PERIOD_TYPES, type PeriodicPlannerSettings } from "../types";
+import {
+	type NoteGenerationResult,
+	ORDERED_PERIOD_TYPES,
+	type PeriodicPlannerSettings,
+	PeriodixSyncDataSchema,
+} from "../types";
 import { getNextPeriod, getStartOfPeriod, now } from "../utils/date-utils";
 import { isPeriodTypeEnabled } from "../utils/period-navigation";
 import { NoteGenerator } from "./note-generator";
@@ -20,12 +26,17 @@ export class AutoGenerator {
 	private subscription: Subscription;
 	private noteGenerator: NoteGenerator;
 
-	constructor(app: App, settings$: Observable<PeriodicPlannerSettings>, templateService: TemplateService) {
+	constructor(
+		app: App,
+		settings$: Observable<PeriodicPlannerSettings>,
+		templateService: TemplateService,
+		syncStore: SyncStore<typeof PeriodixSyncDataSchema>
+	) {
 		this.settings = null!;
 		this.subscription = settings$.subscribe((settings) => {
 			this.settings = settings;
 		});
-		this.noteGenerator = new NoteGenerator(app, settings$, templateService);
+		this.noteGenerator = new NoteGenerator(app, settings$, templateService, syncStore);
 	}
 
 	destroy(): void {

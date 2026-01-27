@@ -130,7 +130,7 @@ export class PeriodicPlannerSettingsTab extends PluginSettingTab {
 				this.plugin.periodIndex
 			),
 			new PropertiesSection(this.uiBuilder),
-			new GenerationSection(this.uiBuilder),
+			new GenerationSection(this.uiBuilder, this.plugin),
 			new IntegrationsSection(this.uiBuilder, this.plugin.settingsStore, this.app),
 			new BasesSection(this.uiBuilder),
 		];

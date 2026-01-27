@@ -8,6 +8,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## 1.7.0 - 2026-01-27
+
+### Changed
+
+- **Read-only Mode Storage**: The "Disable automatic generation" setting is now stored in a separate `sync.json` file instead of the main settings. This allows you to prevent the read-only state from syncing across devices when using Git or other sync solutions. The setting remains accessible in Settings → Generation → "Disable automatic generation". To prevent syncing read-only mode state, add `.obsidian/plugins/periodix-planner/sync.json` to your `.gitignore` file.
+
+---
+
 ## 1.6.0 - 2026-01-25
 
 ### Added

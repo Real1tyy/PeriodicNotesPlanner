@@ -143,6 +143,7 @@ Control automatic note generation behavior and which period types to enable.
 - Prevents automatic generation on startup, file open, and during indexing
 - Manual commands (like "Generate all periods for today") will still work
 - Useful for preventing conflicts during sync or when you want full control
+- **Stored locally**: This setting is saved in `.obsidian/plugins/periodix-planner/sync.json` instead of the main settings file, allowing you to prevent it from syncing across devices. Add `sync.json` to your `.gitignore` if using Git sync.
 - Blocks automatic operations:
   - Auto-generation on Obsidian startup
   - Automatic frontmatter property updates when opening notes

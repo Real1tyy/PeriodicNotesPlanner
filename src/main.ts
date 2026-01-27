@@ -1,4 +1,4 @@
-import { WhatsNewModal, type WhatsNewModalConfig } from "@real1ty-obsidian-plugins";
+import { SyncStore, WhatsNewModal, type WhatsNewModalConfig } from "@real1ty-obsidian-plugins";
 import { DateTime } from "luxon";
 import { Notice, Plugin, TFile } from "obsidian";
 import CHANGELOG_CONTENT from "../docs-site/docs/changelog.md";
@@ -16,7 +16,7 @@ import { SettingsStore } from "./core/settings-store";
 import { TemplateService } from "./services/template";
 import { PeriodicPlannerSettingsTab } from "./settings/settings-tab";
 import type { PeriodLinks } from "./types";
-import { PERIOD_CONFIG } from "./types";
+import { PERIOD_CONFIG, PeriodixSyncDataSchema } from "./types";
 import { createPeriodInfo, getNextPeriod, getPreviousPeriod, parseLinkToDateTime } from "./utils/date-utils";
 import { getPdfPath } from "./utils/file-operations";
 import {
@@ -36,6 +36,7 @@ import { getHoursForPeriodType } from "./utils/time-budget-utils";
 
 export default class PeriodicPlannerPlugin extends Plugin {
 	settingsStore!: SettingsStore;
+	syncStore!: SyncStore<typeof PeriodixSyncDataSchema>;
 	autoGenerator!: AutoGenerator;
 	indexer!: PeriodicNoteIndexer;
 	periodIndex!: PeriodIndex;
@@ -47,6 +48,9 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	async onload() {
 		this.settingsStore = new SettingsStore(this);
 		await this.settingsStore.loadSettings();
+
+		this.syncStore = new SyncStore(this.app, this, PeriodixSyncDataSchema);
+		await this.syncStore.loadData();
 
 		this.addSettingTab(new PeriodicPlannerSettingsTab(this.app, this));
 		this.registerCommands();
@@ -114,7 +118,12 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 		this.indexer = new PeriodicNoteIndexer(this.app, this.settingsStore.settings$);
 		this.templateService = new TemplateService(this.app, this.settingsStore.settings$);
-		this.autoGenerator = new AutoGenerator(this.app, this.settingsStore.settings$, this.templateService);
+		this.autoGenerator = new AutoGenerator(
+			this.app,
+			this.settingsStore.settings$,
+			this.templateService,
+			this.syncStore
+		);
 		this.periodIndex = new PeriodIndex(this.indexer);
 		this.globalStatsAggregator = new GlobalStatisticsAggregator(this.periodIndex);
 		this.categoryTracker = new CategoryTracker(this.periodIndex, this.settingsStore);
@@ -141,7 +150,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async runPastPeriodGeneration(): Promise<void> {
-		if (this.settingsStore.currentSettings.generation.readOnly) {
+		if (this.syncStore.data.readOnly) {
 			console.debug("Periodic Planner: Skipping past period generation (read-only mode)");
 			return;
 		}
@@ -160,7 +169,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async runAutoGeneration(): Promise<void> {
-		if (this.settingsStore.currentSettings.generation.readOnly) {
+		if (this.syncStore.data.readOnly) {
 			console.debug("Periodic Planner: Skipping auto-generation (read-only mode)");
 			return;
 		}
@@ -190,7 +199,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async openYesterdayPdfIfNotOpen(): Promise<void> {
-		if (this.settingsStore.currentSettings.generation.readOnly) {
+		if (this.syncStore.data.readOnly) {
 			console.debug("Periodic Planner: Skipping PDF generation (automatic generation disabled)");
 			return;
 		}
@@ -239,7 +248,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 
 	private async ensurePeriodicNoteComplete(file: TFile): Promise<void> {
 		if (!this.periodIndex) return;
-		if (this.settingsStore.currentSettings.generation.readOnly) return;
+		if (this.syncStore.data.readOnly) return;
 
 		const entry = this.periodIndex.getEntryForFile(file);
 		if (!entry) return;
@@ -249,7 +258,7 @@ export default class PeriodicPlannerPlugin extends Plugin {
 	}
 
 	private async ensureFrontmatterProperties(file: TFile, periodType: PeriodType, dateTime: DateTime): Promise<void> {
-		if (this.settingsStore.currentSettings.generation.readOnly) return;
+		if (this.syncStore.data.readOnly) return;
 
 		const settings = this.settingsStore.currentSettings;
 		const props = settings.properties;

@@ -1,6 +1,7 @@
 import type { SettingsUIBuilder } from "@real1ty-obsidian-plugins";
 import { Setting } from "obsidian";
 import { SETTINGS_DEFAULTS } from "../../constants";
+import type PeriodicPlannerPlugin from "../../main";
 import type { PeriodicPlannerSettingsSchema } from "../../types";
 import type { SettingsSection } from "../../types/settings";
 
@@ -8,7 +9,10 @@ export class GenerationSection implements SettingsSection {
 	readonly id = "generation";
 	readonly label = "Generation";
 
-	constructor(private uiBuilder: SettingsUIBuilder<typeof PeriodicPlannerSettingsSchema>) {}
+	constructor(
+		private uiBuilder: SettingsUIBuilder<typeof PeriodicPlannerSettingsSchema>,
+		private plugin: PeriodicPlannerPlugin
+	) {}
 
 	render(containerEl: HTMLElement): void {
 		new Setting(containerEl).setName("Note generation").setHeading();
@@ -25,11 +29,16 @@ export class GenerationSection implements SettingsSection {
 			placeholder: "YYYY-MM-DD",
 		});
 
-		this.uiBuilder.addToggle(containerEl, {
-			key: "generation.readOnly",
-			name: "Disable automatic generation",
-			desc: "Prevents automatic file generation and modifications (on startup, file open, etc.). Manual commands will still work when you explicitly trigger them. Use this to prevent conflicts during sync or when you want the plugin to only act on your explicit commands.",
-		});
+		new Setting(containerEl)
+			.setName("Disable automatic generation")
+			.setDesc(
+				"Prevents automatic file generation and modifications (on startup, file open, etc.). Manual commands will still work when you explicitly trigger them. Use this to prevent conflicts during sync or when you want the plugin to only act on your explicit commands. Stored in sync.json to prevent syncing across devices."
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.syncStore.data.readOnly).onChange(async (value) => {
+					await this.plugin.syncStore.updateData({ readOnly: value });
+				});
+			});
 
 		this.uiBuilder.addToggle(containerEl, {
 			key: "generation.autoGenerateOnLoad",

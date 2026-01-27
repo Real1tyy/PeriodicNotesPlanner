@@ -1,3 +1,4 @@
+import { SyncStore } from "@real1ty-obsidian-plugins";
 import type { DateTime } from "luxon";
 import type { App, TFile } from "obsidian";
 import type { Observable, Subscription } from "rxjs";
@@ -11,7 +12,7 @@ import type {
 	PropertySettings,
 	TimeAllocation,
 } from "../types";
-import { ORDERED_PERIOD_TYPES, PERIOD_CONFIG } from "../types";
+import { ORDERED_PERIOD_TYPES, PERIOD_CONFIG, PeriodixSyncDataSchema } from "../types";
 import {
 	createPeriodInfo,
 	formatPeriodName,
@@ -45,7 +46,8 @@ export class NoteGenerator {
 	constructor(
 		private app: App,
 		settings$: Observable<PeriodicPlannerSettings>,
-		private templateService: TemplateService
+		private templateService: TemplateService,
+		private syncStore: SyncStore<typeof PeriodixSyncDataSchema>
 	) {
 		this.settings = null!;
 		this.subscription = settings$.subscribe((settings) => {
@@ -246,7 +248,7 @@ export class NoteGenerator {
 	}
 
 	async ensureTimeBudgetBlock(file: TFile, periodType: PeriodType): Promise<void> {
-		if (this.settings.generation.readOnly) {
+		if (this.syncStore.data.readOnly) {
 			return;
 		}
 
